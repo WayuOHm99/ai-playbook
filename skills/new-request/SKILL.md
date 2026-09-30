@@ -5,45 +5,51 @@ description: Classify and route any new incoming request (bug, feedback, new ide
 
 # New request: classify, route, and name the next step
 
-The user often sends long, mixed messages that combine a bug, an idea and a new requirement. Your job is to split them, classify each part, and route it so nothing derails the current work. Details and rationale: `D:\ai-playbook\playbook\triage.md`.
+The user often sends long, mixed Thai messages that combine a bug, an idea and a new requirement. Split them, classify each part, and route it so nothing derails the current work. Rationale: `D:\ai-playbook\playbook\triage.md`.
 
-## Steps
+## 1. Read state (read-only)
+- Read the project's `AGENTS.md`, plus `STATE.md` and `BACKLOG.md` if they exist.
+- If `STATE.md` is missing, work out the current ticket from the branch name, `git log -5 --oneline`, and open issues (`gh issue list --state open`, if the project uses GitHub Issues — see `AGENTS.md` or `docs/agents/issue-tracker.md`).
+- Find the project's tracker: GitHub Issues if `AGENTS.md`/docs say so, otherwise `BACKLOG.md`. Use that one tracker for every class below.
+- Find decision records: `DECISIONS.md`, `docs/decisions/`, `docs/adr/`, or the path named in `AGENTS.md`/`CONTEXT.md`.
 
-1. **Read state.** Read the project's `AGENTS.md`, `STATE.md` and `BACKLOG.md` if they exist, and `git status`. Know the current ticket before judging anything.
+## 2. Split
+Break the message into separate items, one sentence each. A quality word like "ระดับโลก", "สวยๆ" or "ครบๆ" is not its own item: attach it to the item(s) it modifies and turn it into criteria (step 4).
 
-2. **Split.** Break the message into separate items (one sentence each). Mixed messages are normal; do not treat them as one task.
+## 3. Classify each item (first match wins)
+- **P0** ongoing outage, data loss, or personal/patient data exposure. A single transient error with no data impact is P2, not P0.
+- **P1** bug in the slice being built now.
+- **P2** bug in shipped behaviour.
+- **P3** feedback: doesn't meet agreed acceptance criteria.
+- **P4** feedback or request that changes what an existing feature does. Also use P4 for a new capability inside an existing system that needs an external service, secrets, cost, or a new personal-data flow (e.g. LINE/email notifications, payments).
+- **P5** nice-to-have or idea with none of the above.
+- **P6** cleanup or tech debt.
+- **P7** a new project or new system.
 
-3. **Classify each item** using the first matching class:
-   - P0 production down / data loss / personal or patient data exposure
-   - P1 bug in the slice being built now
-   - P2 bug in shipped behaviour
-   - P3 feedback: doesn't meet agreed acceptance criteria
-   - P4 feedback: changes what the feature should do (requirement change)
-   - P5 new idea / nice-to-have / "world-class" / "add this too"
-   - P6 cleanup or debt
-   - P7 new project or new system (not part of current work)
-   Check `BACKLOG.md` and decision records first: if the item was already decided or rejected, quote that decision.
+Before finalising, search the tracker and decision records: if the item was already decided, rejected or ticketed, quote it and link it. If the item refers to something you cannot find in this repo (a page, form or module), mark it "ต้องยืนยัน" rather than guessing.
 
-4. **Route**:
-   - P0 → stop other work, diagnose read-only, propose recovery; ask before any production change.
-   - P1/P3 → fix now inside the current ticket (hand off to `ship` if the ticket flow is active).
-   - P2 → reproduce with a failing test or script, then open a ticket (GitHub Issue if the project uses it, otherwise `BACKLOG.md`), then suggest `/ship` for it.
-   - P4 → draft the spec delta (what changes, why, what it displaces, which tickets are affected) and ask for approval. Do not implement yet.
-   - P5/P6 → append one line to `BACKLOG.md` (date, source, sentence, class) and return to the current work. If the user insists on "world-class", convert it into ≤5 checkable criteria and put those in the backlog item.
-   - P7 → start the lifecycle at phase 0–2: propose a tier (demo / ใช้ภายใน / ใช้จริง) and run `grill-with-docs` (inside a repo) or `grill-me` (outside a repo). Talk first; do not write code.
+## 4. Route — only actions that need no approval
+- **P0:** stop other work, diagnose read-only (logs, recent commits), propose recovery. Any production change needs the user's yes.
+- **P1/P3:** fix inside the current ticket (hand to `ship` if that flow is active).
+- **P2:** try to reproduce read-only (read code, logs, run existing tests). Then draft a ticket with steps to reproduce and acceptance criteria. Create the issue only after the user approves. The failing test is written later, inside `/ship`.
+- **P4:** draft the change: what changes, why, what it displaces, affected tickets, and external dependencies with current facts. For external services, check current official docs (use the `researcher` sub-agent). Ask for approval. Do not implement.
+- **P5/P6:** draft a tracker entry: an issue with the project's triage labels, or one `BACKLOG.md` line (`date | source | sentence | class`) when there is no issue tracker. Create it after approval, then continue the current work.
+- **P7:** propose a tier (demo / ใช้ภายใน / ใช้จริง) and start clarification with `grill-with-docs` inside a repo or `grill-me` outside one (fallback: `grilling`). Talk first; do not write code.
+- **Quality words:** convert them into at most 5 checkable criteria (numbers, viewports, timings, error behaviour) and attach them to the related items for approval.
 
-5. **Push back once.** For each item worth doing, name the main risk or the simpler alternative in one sentence. If an item conflicts with a decision, say so.
+## 5. Push back once
+For each item worth doing, name the main risk or a simpler alternative in one sentence. Flag conflicts with decisions.
 
-6. **Answer in Thai** with this format, and nothing else:
-
+## 6. Answer in Thai, in exactly this shape
 ```
 ## คัดแยกแล้ว
 | # | เรื่อง | ประเภท | ทำเมื่อไหร่ | ไปที่ |
 |---|---|---|---|---|
-| 1 | ... | P2 บั๊กที่ส่งไปแล้ว | หลังงานปัจจุบัน | Issue #.. |
+| 1 | ... | P2 บั๊กที่ส่งไปแล้ว | หลังงานปัจจุบัน | ร่าง Issue (รออนุมัติ) |
 
+เกณฑ์แทน "<quality word>": 1) ... (only if the user used one)
+❓ ต้องยืนยัน: <facts you could not find — omit if none>
 ⚠️ ข้อสังเกต: <risk / conflict / simpler alternative>
-👉 ขั้นถัดไป: <one action, ideally a command the user can type, e.g. `/ship #42`>
+👉 ขั้นถัดไป: <one action the user can take, e.g. "ตอบ ok เพื่อเปิด Issue ข้อ 1 แล้ว /ship">
 ```
-
-Only perform the actions that don't need approval (backlog lines, reproduction, read-only diagnosis). Everything else waits for the user's yes.
+Use only these values in "ทำเมื่อไหร่": ตอนนี้ / หลังงานปัจจุบัน / หลังอนุมัติ / เก็บไว้ก่อน.

@@ -8,7 +8,7 @@ description: Take one ticket (GitHub issue number, BACKLOG item, or a short scop
 One command, one ticket, one pull request, one report. The user approves only at two points: the scope box (skipped when the ticket already has acceptance criteria) and the merge (always theirs). Rules that always apply: `D:\ai-playbook\instructions\core.md` (autonomy contract, hard stops, report format).
 
 ## 0. Load and check
-- Read `AGENTS.md`, `STATE.md`, the ticket (`gh issue view <n>` or the BACKLOG line) and any spec it links.
+- Read `AGENTS.md`, `STATE.md` (if missing, use the branch, `git log -5` and open issues), the ticket (`gh issue view <n>` or the BACKLOG line) and any spec it links. If `STATE.md` is missing, create it from `D:i-playbook	emplatesprojectSTATE.md` at step 1.
 - `git status` must be clean and `main` up to date. If not, stop and report what's dirty.
 - If the ticket has no acceptance criteria, write a scope box (Do / Don't / Done when, ≤5 checkable criteria) and ask once. If it has criteria, continue without asking.
 - Name the biggest risk or a simpler approach in one sentence. If the ticket conflicts with a decision record or needs a hard-stop action (migration, auth, personal data, new dependency, editing existing tests), stop and ask now, not halfway.
