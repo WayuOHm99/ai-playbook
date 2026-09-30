@@ -16,7 +16,6 @@ s.permissions.defaultMode = 'auto';
 const deny = new Set(s.permissions.deny ?? []);
 for (const r of [
   'Edit(**/.env)', 'Edit(**/.env.local)', 'Edit(**/.env.production)',
-  'Write(**/.env)', 'Write(**/.env.local)', 'Write(**/.env.production)',
   'Bash(git push --force *)', 'Bash(git push -f *)', 'Bash(git reset --hard *)',
   'Bash(rm -rf *)', 'Bash(docker volume rm *)', 'Bash(docker compose down -v*)',
 ]) deny.add(r);
