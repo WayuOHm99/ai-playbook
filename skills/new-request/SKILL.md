@@ -10,7 +10,7 @@ The user often sends long, mixed Thai messages that combine a bug, an idea and a
 ## 1. Read state (read-only)
 - Read the project's `AGENTS.md`, plus `STATE.md` and `BACKLOG.md` if they exist.
 - If `STATE.md` is missing, work out the current ticket from the branch name, `git log -5 --oneline`, and open issues (`gh issue list --state open`, if the project uses GitHub Issues — see `AGENTS.md` or `docs/agents/issue-tracker.md`).
-- Find the project's tracker: GitHub Issues if `AGENTS.md`/docs say so, otherwise `BACKLOG.md`. Use that one tracker for every class below.
+- Inbox = `BACKLOG.md` in the repo root (create it from `D:/ai-playbook/templates/project/BACKLOG.md` if missing). Tickets = the issue tracker named in `AGENTS.md`/`docs/agents/issue-tracker.md` (usually GitHub Issues), otherwise `BACKLOG.md` rows with Triage = now.
 - Find decision records: `DECISIONS.md`, `docs/decisions/`, `docs/adr/`, or the path named in `AGENTS.md`/`CONTEXT.md`.
 
 ## 2. Split
@@ -33,7 +33,7 @@ Before finalising, search the tracker and decision records: if the item was alre
 - **P1/P3:** fix inside the current ticket (hand to `ship` if that flow is active).
 - **P2:** try to reproduce read-only (read code, logs, run existing tests). Then draft a ticket with steps to reproduce and acceptance criteria. Create the issue only after the user approves. The failing test is written later, inside `/ship`.
 - **P4:** draft the change: what changes, why, what it displaces, affected tickets, and external dependencies with current facts. For external services, check current official docs (use the `researcher` sub-agent). Ask for approval. Do not implement.
-- **P5/P6:** draft a tracker entry: an issue with the project's triage labels, or one `BACKLOG.md` line (`date | source | sentence | class`) when there is no issue tracker. Create it after approval, then continue the current work.
+- **P5/P6:** append one row to `BACKLOG.md` right away (no approval needed; columns as in the template, Triage = unsorted), then continue the current work.
 - **P7:** propose a tier (demo / ใช้ภายใน / ใช้จริง) and start clarification with `grill-with-docs` inside a repo or `grill-me` outside one (fallback: `grilling`). Talk first; do not write code.
 - **Quality words:** convert them into at most 5 checkable criteria (numbers, viewports, timings, error behaviour) and attach them to the related items for approval.
 

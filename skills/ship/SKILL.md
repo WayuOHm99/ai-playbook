@@ -1,35 +1,40 @@
 ---
 name: ship
-description: Take one ticket (GitHub issue number, BACKLOG item, or a short scoped task) from start to an open pull request in one run - branch, test-first implementation, real-app verification, independent review with at most two fix rounds, PR, and a Thai delivery report. Use when the user says /ship, "ทำให้จบ", "ทำต่อ" with a ready ticket, or asks to finish a ticket end-to-end.
+description: Take one approved ticket (GitHub issue number, BACKLOG item, or a short scoped task) from start to an open pull request in one run - worktree branch, reproduce-first test, implementation, real-app verification, independent review with at most two fix rounds, push of the feature branch, PR, and a Thai delivery report. Invoke explicitly with /ship.
+disable-model-invocation: true
 ---
 
 # Ship one ticket end-to-end
 
-One command, one ticket, one pull request, one report. The user approves only at two points: the scope box (skipped when the ticket already has acceptance criteria) and the merge (always theirs). Rules that always apply: `D:\ai-playbook\instructions\core.md` (autonomy contract, hard stops, report format).
+One command, one ticket, one pull request, one report. The user approves at two points only: the scope box (skipped when the ticket already has acceptance criteria) and the merge (always theirs). Hard stops and the report format come from `D:\ai-playbook\instructions\core.md`.
+
+## Project rules win
+Read `AGENTS.md` and `CONTRIBUTING.md` first. Many repos define their own delivery flow: an end-to-end skill (e.g. `finish-issue`), branch/commit/PR naming, issue binding, CHANGELOG entries, screenshots for UI changes. If the project has its own end-to-end skill, run it and add only what it lacks from this one (reproduce-first, verifier, capped review, Thai report). Follow the project wherever rules differ and say so in the report.
 
 ## 0. Load and check
-- Read `AGENTS.md`, `STATE.md` (if missing, use the branch, `git log -5` and open issues), the ticket (`gh issue view <n>` or the BACKLOG line) and any spec it links. If `STATE.md` is missing, create it from `D:/ai-playbook/templates/project/STATE.md` at step 1.
-- `git status` must be clean and `main` up to date. If not, stop and report what's dirty.
-- If the ticket has no acceptance criteria, write a scope box (Do / Don't / Done when, ≤5 checkable criteria) and ask once. If it has criteria, continue without asking.
-- Name the biggest risk or a simpler approach in one sentence. If the ticket conflicts with a decision record or needs a hard-stop action (migration, auth, personal data, new dependency, editing existing tests), stop and ask now, not halfway.
+- Read `STATE.md` (if missing: branch, `git log -5`, open issues) and the ticket (`gh issue view <n>` or the BACKLOG row) plus any linked spec.
+- `git fetch`; find the default branch (`git symbolic-ref refs/remotes/origin/HEAD`); the main checkout must have a clean `git status`. If not, stop and report what's dirty.
+- No acceptance criteria? Write a scope box (Do / Don't / Done when, ≤5 checkable criteria) and ask once. Otherwise continue without asking.
+- Name the biggest risk or a simpler approach in one sentence. If the ticket needs a hard stop (see core: migration, non-local DB, auth, personal data, dependency, editing existing tests, conflict with a decision), stop and ask now, not halfway.
+- If the project requires issue binding and there is no issue: draft it and ask; creating an issue is not a hard stop on the user's own repo, but it is on someone else's.
 
-## 1. Branch
-Create a short branch (`fix/<n>-<slug>` or `feat/<n>-<slug>`) or a worktree with a short path. Update `STATE.md`: current ticket, phase = implement.
+## 1. Branch in a worktree
+`git worktree add -b <type>/<issue>-<slug> D:\wt\<project>-<issue> origin/<default>` (short path — Windows long paths break git and npm). Install dependencies there with the project's install command. Create or update `STATE.md`: ticket, branch, phase = implement.
 
-## 2. Implement test-first
-Use the `implement` skill if installed (it drives `tdd`); otherwise: write a failing test that expresses the acceptance criterion, confirm it fails for the right reason, make it pass, refactor. Bugs start with a reproduction test. Keep the diff inside the ticket; anything else goes to `BACKLOG.md`. Retry a failing approach at most twice, then change approach or stop.
+## 2. Reproduce, then implement test-first
+Bugs start with a reproduction test using worst-case data (longest numbers, Thai text, narrowest supported screen) — even when comments or old reports say it is already fixed (the pilot found a "fixed" clipping bug still failing at 320px). Confirm the test fails for the right reason, then fix. If it passes before any change, the deliverable is the regression test alone; say so. Use the `implement`/`tdd` skills if installed. Keep the diff inside the ticket; anything else goes to `BACKLOG.md`. Retry an approach at most twice.
 
 ## 3. Verify
-Run the project's full verify command (from `AGENTS.md`, e.g. `npm run verify`) — tests, typecheck, lint, build. Then prove the behaviour in the running app: delegate to the `verifier` sub-agent (or do it yourself for tiny changes) with the acceptance criteria; collect evidence (screenshots, command output) under `.scratch/ship-<n>/` or the project's evidence folder. UI tickets need a phone-width and desktop check.
+Run the project's full verify command (from `AGENTS.md`, e.g. `npm run verify`). Then prove the behaviour in the running app: delegate to the `verifier` sub-agent (or do it yourself for tiny changes) with the acceptance criteria; save evidence under `.scratch/ship-<issue>/` (git-ignored). UI changes need phone-width and desktop checks and before/after screenshots if the project asks for them.
 
 ## 4. Review (max 2 rounds)
-Delegate to the `reviewer` sub-agent with: ticket text, acceptance criteria, `git diff main...HEAD`. It reports Spec and Standards findings as BLOCKER / SHOULD-FIX / COULD-FIX. Fix BLOCKERs (and cheap SHOULD-FIXes), re-run verify, and review again. After round 2 stop fixing: remaining non-blockers go to the report and `BACKLOG.md`. Never weaken tests or checks to pass review.
+Delegate to the `reviewer` sub-agent: ticket, acceptance criteria, `git diff origin/<default>...HEAD`. Fix BLOCKERs and cheap SHOULD-FIXes, re-run verify, review again. After round 2: an open BLOCKER means stop and report BLOCKED; other findings go to the report and `BACKLOG.md`. Never weaken tests or checks to pass review.
 
-## 5. Commit and PR
-Commit with a clear message referencing the ticket. Push the branch and open a PR (`gh pr create`) whose body has: summary, acceptance criteria with evidence, how to test, risks. Do not merge. Do not deploy.
+## 5. Commit, push the feature branch, open the PR
+Commit using the project's message format, including the updated `STATE.md` (phase = review, next action = user reviews PR). Push only the feature branch (`git push -u origin <branch>`) and open a PR (`gh pr create`) with: summary, acceptance criteria with evidence, how to test, risks, screenshots if UI. If the remote belongs to someone else and the user hasn't asked for a PR there, stop before pushing and show the PR text instead. Never merge, never push to the default branch, never deploy.
 
 ## 6. Hand back
-Update `STATE.md` (ticket status = PR open, next action = user reviews/merges PR #..., then next ticket). Finish with the Thai delivery report from `core.md` (ผลลัพธ์ / ที่ขอ vs ที่ได้ / สิ่งที่เจอ / ความเสี่ยงที่คุณไม่ได้ถาม / สิ่งที่ตัดสินใจแทน / ยังไม่ได้ทำ / ตรวจอย่างไร / ขั้นถัดไป) plus the PR link.
+Finish with the Thai delivery report from `core.md` plus the PR link (or the prepared PR text). The one next action is usually "review and merge PR #…".
 
 ## Stop conditions
-Stop and report BLOCKED (with what you tried and what you need) when: a hard stop is required; verify fails after two changed approaches; the acceptance criteria cannot be verified; the fix needs changes outside the ticket; or you've spent more than ~60 tool calls without progress.
+Stop and report BLOCKED (what you tried, what you need) when: a hard stop is required; verify fails after two changed approaches; the acceptance criteria cannot be verified; the fix needs changes outside the ticket; or ~60 tool calls pass without progress.

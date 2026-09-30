@@ -7,9 +7,12 @@ Copy into the root of a new project, replace every `<placeholder>`, delete the H
 | `AGENTS.md` | **Day 1, every project** | Human drafts, agent may propose edits | Canonical rules for Claude Code and Codex. Under 120 lines. Declare the **tier** (see `stacks/hospital-web.md` section 3). |
 | `CLAUDE.md` | Day 1 | Nobody | One line: `@AGENTS.md`. Claude Code reads it; Codex reads AGENTS.md directly. Do not symlink on Windows. |
 | `STATE.md` | Day 1 | **Agent, end of every session** | Phase, ticket, next action, blockers, last verified commands. Overwrite, do not append. |
-| `BACKLOG.md` | Day 1 | Anyone, agent for mid-task ideas | Inbox only. Approved items move to GitHub Issues. Never lets an idea change the current ticket. |
+| `BACKLOG.md` | Day 1 | Anyone, agent for mid-task ideas | Inbox only; agent appends P5/P6 rows directly. Approved items move to GitHub Issues (agent drafts, creates after approval) or get Triage = now if the project has no Issues. Never lets an idea change the current ticket. |
 | `DECISIONS.md` | First hard-to-reverse choice, or first deviation from the house stack | Human decides, agent drafts | Small projects. Large ones: `docs/decisions/` ADRs (as suth does) and skip this file. |
 | `RUN.md` | As soon as someone else (or a fresh agent) must start the app | Developer, agent verifies commands | Windows-first. Must be tested by running it. |
+| `.gitignore` | Day 1 | Nobody (add project-specific lines) | Ignores `.env*` (keeps `.env.example`), `.scratch/` (bulk evidence only), build and test output. |
+| `.gitattributes` | Day 1 | Nobody | `eol=lf` by default, CRLF for `.ps1`/`.bat`, binary images. Prevents line-ending noise in diffs on Windows. |
+| `HANDOFF.md` | Not copied: created by `/handoff-pack` on the feature branch | Agent | Session/tool handoff (goal, fences, open findings, next prompt), committed with `STATE.md` as `wip: handoff`. Deleted in the commit that finishes the ticket. |
 | `HANDOVER.md` | **Start of tier 2 (internal use)**, finish before internship ends | Developer + agent; hospital IT reviews | Bus-factor document. No secret values, only locations. Test with a fresh agent as new maintainer. |
 
 ## Order for a new project

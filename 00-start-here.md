@@ -22,20 +22,20 @@ Agent จะคัดแยกให้ว่าเป็นงานประ�
 | 🧱 **ตั้งค่าโปรเจกต์ครั้งแรก** | ก๊อปเทมเพลต ตอบ setup ครั้งเดียวจากไฟล์ที่ตอบไว้แล้ว | `/setup-matt-pocock-skills` + `setup/matt-pocock-setup-answers.md` | `templates/project/README.md` |
 | 🛠 **เลือก tech stack** | ใช้ stack มาตรฐานก่อน จะเปลี่ยนต้องมีเหตุผลเขียนไว้ | ตาม stack doc | `stacks/hospital-web.md` |
 | 📋 **spec เสร็จแล้ว จะเริ่มทำ** | แตกเป็น ticket ย่อยที่ตรวจได้ทีละชิ้น | `/to-tickets` | lifecycle ขั้น 7 |
-| ▶️ **ทำงานต่อ** ("ทำต่อ") | agent อ่าน `STATE.md` แล้วทำ ticket ถัดไป | `/ship` | `prompts/02-daily-work.md` |
-| 🚀 **ทำ ticket นี้ให้จบในคำสั่งเดียว** | implement → test → ตรวจในแอปจริง → review ไม่เกิน 2 รอบ → เปิด PR → รายงาน | `/ship #<เลข issue>` | `skills/ship/SKILL.md` |
+| ▶️ **ทำงานต่อ** ("ทำต่อ") | agent อ่าน `STATE.md` แล้วทำ **ขั้นถัดไปขั้นเดียว** ของแผนเดิม | prompt 02-A | `prompts/02-daily-work.md` |
+| 🚀 **ทำ ticket นี้ให้จบในคำสั่งเดียว** | branch ใน worktree → test ที่ทำให้บั๊กเกิดซ้ำ → แก้ → ตรวจในแอปจริง → review ไม่เกิน 2 รอบ → push branch + เปิด PR → รายงาน (**ต้องพิมพ์ `/ship` เอง** agent ไม่เรียกเองอัตโนมัติ เพราะมีการ push) | `/ship #<เลข issue>` | `skills/ship/SKILL.md` |
 | 🐞 **เจอบั๊ก** | ทำให้เกิดซ้ำด้วย test ก่อน แล้วค่อยแก้ | `/new-request` (บั๊ก) → `/diagnosing-bugs` | `prompts/03-bugs.md` |
-| 🔥 **ระบบจริงล่ม / ข้อมูลหาย / ข้อมูลรั่ว** | หยุดทุกอย่าง กู้ระบบก่อน แก้ทีหลัง ห้าม agent แตะ production เอง | prompt "เหตุฉุกเฉิน" | `playbook/triage.md` P0 |
+| 🔥 **ระบบจริงล่ม / ข้อมูลหาย / ข้อมูลรั่ว** | หยุดทุกอย่าง กู้ระบบก่อน แก้ทีหลัง ห้าม agent แตะ production เอง | prompt 03-D | `playbook/triage.md` P0 |
 | 💬 **มี feedback จากผู้ใช้** | แยกก่อน: ไม่ตรง spec (เป็นบั๊ก) หรือเปลี่ยนความต้องการ (ต้องแก้ spec) | `/new-request` | `prompts/04-change-requests.md` |
 | 💡 **มีไอเดีย / อยากเพิ่มฟีเจอร์** กลางคัน | **ยังไม่ทำ** จดลง `BACKLOG.md` แล้วทำงานเดิมต่อ | `/new-request` | `playbook/triage.md` P5 |
 | 🌍 **"อยากให้ระดับโลก" / หาตัวอย่างจากเว็บดังๆ** | ค้นจากแหล่งที่เชื่อถือได้ แล้วแปลงเป็นเกณฑ์ที่ตรวจได้ไม่เกิน 5 ข้อ | `/research` | `prompts/06-research.md` |
-| 🔍 **ตรวจทั้งระบบ หาช่องโหว่ / บั๊ก** | ตรวจแบบอ่านอย่างเดียว ได้รายงานเรียงตามความสำคัญ แล้วแตกเป็น ticket | prompt "audit" + `/security-review` | `prompts/05-review-audit.md` |
+| 🔍 **ตรวจทั้งระบบ หาช่องโหว่ / บั๊ก** | ตรวจแบบอ่านอย่างเดียว ได้รายงานเรียงตามความสำคัญ แล้วแตกเป็น ticket | prompt 05-A, 05-C (Claude มี `/security-review` ในตัว; Codex ใช้ prompt 05-C) | `prompts/05-review-audit.md` |
 | 👀 **อยากให้ agent อีกตัวตรวจงาน** | ใช้ reviewer ที่ไม่ได้เขียนโค้ดนั้น ไม่ต้องก๊อปรายงานส่งต่อเอง | `/code-review` หรือ sub-agent `reviewer` | `prompts/05-review-audit.md` |
 | 🔁 **สลับ Claude ↔ Codex / โควตาใกล้หมด / จะ /clear** | บันทึกสถานะลงไฟล์ก่อน ตัวใหม่อ่านจากไฟล์ต่อได้เลย | `/handoff-pack` | `prompts/07-handoff-delivery.md` |
-| 🤔 **ไม่แน่ใจว่าแผนนี้ดีไหม / กลัวพลาด** | ให้ agent แย้ง หาจุดอ่อน สมมติว่าพังแล้วไล่หาสาเหตุ | prompt "critique" | `prompts/08-critique.md` |
-| 🚢 **จะ deploy** | ทำ checklist, backup, แผนถอยกลับ แล้ว **คุณ** เป็นคนกด deploy | `engineering:deploy-checklist` | lifecycle ขั้น 11 |
-| 🎓 **ใกล้จบฝึกงาน / ส่งมอบให้ฝ่าย IT** | ทำ `HANDOVER.md` แล้วให้ agent ตัวใหม่ลองทำตามคู่มือเพื่อหาจุดที่ติด | prompt "handover" | `templates/project/HANDOVER.md` |
-| 🧹 **สิ้นวัน / พักงาน** | agent อัปเดต `STATE.md` ให้พรุ่งนี้เริ่มต่อได้ทันที | prompt "จบวัน" | `prompts/07-handoff-delivery.md` |
+| 🤔 **ไม่แน่ใจว่าแผนนี้ดีไหม / กลัวพลาด** | ให้ agent แย้ง หาจุดอ่อน สมมติว่าพังแล้วไล่หาสาเหตุ | prompt 08-A / 08-B / 08-C | `prompts/08-critique.md` |
+| 🚢 **จะ deploy** | ทำ checklist, backup, แผนถอยกลับ แล้ว **คุณ** เป็นคนกด deploy | prompt 07-C | lifecycle ขั้น 11 |
+| 🎓 **ใกล้จบฝึกงาน / ส่งมอบให้ฝ่าย IT** | ทำ `HANDOVER.md` แล้วให้ agent ตัวใหม่ลองทำตามคู่มือเพื่อหาจุดที่ติด | prompt 07-D | `templates/project/HANDOVER.md` |
+| 🧹 **สิ้นวัน / พักงาน** | บันทึกสถานะลง `STATE.md` + `HANDOFF.md` แล้ว commit ให้พรุ่งนี้เริ่มต่อได้ทันที | `/handoff-pack` หรือ prompt 07-B | `prompts/07-handoff-delivery.md` |
 
 ---
 
@@ -48,14 +48,16 @@ Agent จะคัดแยกให้ว่าเป็นงานประ�
 5. **ห้ามพิมพ์รหัสผ่าน / API key ลงแชท** ให้ตั้งเป็น env var แล้วบอก agent แค่ชื่อตัวแปร
 
 ## จุดที่ agent ต้องหยุดถามคุณก่อนเสมอ
-merge เข้า `main` · deploy · ลบข้อมูล · แตะฐานข้อมูลจริง · แก้ secret หรือ `.env` · เพิ่ม dependency · แก้ test เดิม · เปลี่ยนเรื่อง login/สิทธิ์/ข้อมูลส่วนบุคคล
-นอกเหนือจากนี้ agent ทำเองได้จนเปิด PR (รายละเอียดใน `instructions/core.md`)
+merge PR / push เข้า `main` · deploy · ฐานข้อมูลที่ไม่ใช่ในเครื่อง · migration · ลบข้อมูล/branch · secret หรือ `.env` · เพิ่ม/อัปเกรด dependency · แก้ CI/hooks/สิทธิ์ · แก้ test เดิม · login/สิทธิ์/ข้อมูลส่วนบุคคล · ส่งอะไรออกนอกเครื่อง (ยกเว้น push branch ของงานไปที่ repo ของโปรเจกต์)
+นอกเหนือจากนี้ agent ทำเองได้จน push branch และเปิด PR — รายการเต็มและเป็นต้นฉบับอยู่ใน `instructions/core.md` (Hard stops)
+
+> ⚠️ **ตัวกันคำสั่งอันตราย (`guardrails/`) ทำงานใน Claude แล้ว** ส่วน Codex จะทำงานหลังคุณพิมพ์ `/hooks` แล้วกดยอมรับ "Playbook guard" และต้องกดใหม่ทุกครั้งที่ไฟล์ hook เปลี่ยน
 
 ## แผนที่คลัง
 | โฟลเดอร์ | มีอะไร |
 |---|---|
 | `playbook/` | วงจรงาน 0–13 ขั้น, กติกาคัดแยกงาน |
-| `prompts/` | prompt ภาษาไทยพร้อมใช้ ~30 แบบ |
+| `prompts/` | prompt ภาษาไทยพร้อมใช้ 31 แบบ |
 | `stacks/` | stack มาตรฐานพร้อมเวอร์ชันที่ตรวจแล้ว |
 | `templates/project/` | ไฟล์ตั้งต้นของทุกโปรเจกต์ |
 | `skills/` | สกิลของคลัง: `new-request`, `ship`, `handoff-pack` |

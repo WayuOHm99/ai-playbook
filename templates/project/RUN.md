@@ -17,7 +17,8 @@ Last checked: <YYYY-MM-DD> on <Windows 11, Node 24.x, Docker Desktop x.y>
 git clone <repo-url> <folder>
 cd <folder>
 npm install
-copy <database/docker/compose.env.example> <database/docker/compose.env>   # then edit, never commit
+# ทำเอง (agent ถูกกันไม่ให้แก้ .env): copy สองไฟล์นี้แล้วแก้ค่าเอง, never commit
+copy <database/docker/compose.env.example> <database/docker/compose.env>
 copy <apps/api/.env.example> <apps/api/.env>
 ```
 
@@ -43,7 +44,7 @@ npm run verify                                   # full check before handing wor
 |---|---|---|
 | `docker info` errors | Docker Desktop not running | Start Docker Desktop, wait for "running" |
 | Container restarting | `docker logs <db-container>` | wrong password in env vs existing volume: `npm run <db:reset>` (**deletes local dev data**) |
-| Port already in use | `netstat -ano | findstr :<3310>` | stop the other process or change the port in compose.env |
+| Port already in use | `netstat -ano \| findstr :<3310>` | stop the other process or change the port in compose.env |
 | `db` not healthy after 2 min | `docker compose --env-file <...> logs db` | low disk/RAM in Docker Desktop settings |
 | WSL2 errors | `wsl --status` | `wsl --update`, reboot |
 

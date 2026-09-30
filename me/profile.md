@@ -48,7 +48,7 @@
 
 - เป็นเจ้าของผลิตภัณฑ์/ผู้อนุมัติที่ชัด ตัดสินใจเร็ว ถามแม้แต่ศัพท์พื้นฐาน จึงเรียนรู้เร็ว
 - ตัดงานเก่งหลังเจอปัญหาจริง (ลบเอกสารบวม, ตัด CI, ตัด issue ที่กว้างเกินไป)
-- สัญชาตญาณดีเรื่องความปลอดภัยข้อมูล: กันไฟล์ข้อมูลจริงออกจาก PR, ไม่อนุมัติ push จากรายงานอย่างเดียว, ใช้ฐานข้อมูลทดสอบแยก
+- สัญชาตญาณดีเรื่องความปลอดภัยข้อมูล: กันไฟล์ข้อมูลจริงออกจาก PR, ไม่อนุมัติ merge จากรายงานอย่างเดียว, ใช้ฐานข้อมูลทดสอบแยก
 - ให้ agent ตัวที่สองรีวิวแบบ read-only แล้วจับบั๊กที่ตัวเขียนมองไม่เห็น
 - ใช้ข้อมูลจริงยืนยัน (เทียบใบแจ้งหนี้จริงถึงหน่วยสตางค์)
 - สั่งให้ agent "เห็นต่างกับฉันและบอกสิ่งที่ฉันมองข้าม" ซึ่งเป็นนิสัยที่ดี
@@ -60,7 +60,7 @@
 2. ภาษาไทยธรรมดา ศัพท์เทคนิคอังกฤษได้ แต่ต้องอธิบายสั้นๆ (เช่น worktree, ADR, deduction)
 3. ห้ามเดา: ถ้าไม่รู้หรือไม่มีหลักฐาน ให้บอกตรงๆ และถาม
 4. ข้อแนะนำที่มีจุดยืนพร้อมหลักฐาน ไม่ใช่รายการตัวเลือกที่เท่ากันหมด (คุณตอบ "ตามคำแนะนำ" บ่อย จึงต้องมั่นใจว่าคำแนะนำผ่านการคิดมาแล้ว)
-5. ทำงานให้จบเป็นห่วงโซ่เมื่อสั่งมาโคร ไม่หยุดทุกเฟสเพื่อรอคำสั่งซ้ำ แต่หยุดที่ประตูสำคัญ (push/deploy/ลบ/ข้อมูลจริง/secret)
+5. ทำงานให้จบเป็นห่วงโซ่เมื่อสั่งมาโคร ไม่หยุดทุกเฟสเพื่อรอคำสั่งซ้ำ แต่หยุดที่ประตูสำคัญ (merge/push main/deploy/ลบ/ข้อมูลจริง/secret)
 6. ช่วยกันความเสี่ยงที่คุณมองข้าม (โควตาฟรี, ข้อมูลอ่อนไหว, ความเป็นไปได้ของ API, ความซับซ้อนเกินตัว)
 7. บันทึกสถานะลงไฟล์ให้เอง เพื่อไม่ต้องถามซ้ำหลัง `/clear`
 8. รายงานตามหลักฐานเท่านั้น โดยเฉพาะเอกสารที่ส่งให้หัวหน้า/ทุน ("ใช้เฉพาะที่ระบบพิสูจน์ได้")
@@ -73,7 +73,7 @@
 
 ## 8. agent: how to work with this user
 
-Import this section into agent instructions (AGENTS.md / CLAUDE.md).
+Reference only — not imported; instructions/core.md is the source of truth.
 
 - The user is a Thai intern at a hospital IT team; replies in Thai. Answer in plain Thai, keep English technical terms, explain jargon in one line. Address them as "คุณ".
 - Start every session by reading the project's STATE/HANDOFF file and `git status`; never ask "what were we doing" if it is on disk. Verify key handoff claims against the real repo.
@@ -84,10 +84,10 @@ Import this section into agent instructions (AGENTS.md / CLAUDE.md).
 - Treat "world-class / the best / most thorough" as a request for a concrete rubric: turn it into at most 5 checkable criteria and confirm before building.
 - Before changing a requirement, check the decisions ledger, show conflicts with earlier decisions, and ask which one wins. Do not silently redesign.
 - For money or data-semantics decisions, explain in 5 plain lines with one numeric example and wait for "understood" before coding.
-- Do not accept blanket "approve everything" as a scope. Restate the concrete allowed list (edit, test, local commit) and the always-ask list (push, merge, deploy, delete, prod DB, secrets, external accounts, sending messages). Stop after 2 failed review rounds and report.
+- Do not accept blanket "approve everything" as a scope. Restate the concrete allowed list (edit, test, commit, push a feature branch and open a PR when delivering) and the always-ask list (merge, push to main/master, deploy, delete, prod DB, secrets, external accounts, sending messages). Retry a failing approach at most twice; stop after 2 review rounds with an open BLOCKER and report BLOCKED.
 - Never ask the user to paste secrets. Refer to env var names only; if a secret appears in chat, say so, advise rotation, and do not echo the value.
-- Reviews: one Spec + Standards reviewer pair, read-only, max 2 fix rounds; only High/security blocks merge; the rest goes to backlog. Reviewers never edit.
-- Put findings and handoffs in committed files, not only in chat. Commit a WIP checkpoint before a handoff or before the user runs `/clear` or `/compact`.
+- Reviews: one Spec + Standards reviewer pair, read-only, max 2 fix rounds; severity words BLOCKER / SHOULD-FIX / COULD-FIX; an open BLOCKER after round 2 = stop and report BLOCKED; the rest goes to the report and BACKLOG.md. Reviewers never edit.
+- Put findings and handoffs in committed files (`STATE.md` + `HANDOFF.md`, commit prefix `wip: handoff`, via `/handoff-pack`), not only in chat. Do this before a handoff or before the user runs `/clear` or `/compact`.
 - One agent per branch/worktree. Run `git worktree list` first. On Windows use short worktree paths and `core.longpaths`; state branch, port, and commit you actually tested.
 - Before big work (new app, new integration), run a feasibility check (API access, ToS, cost, credentials) and freeze name/stack/hosting before scaffolding.
 - Use the simplest process that fits a 1-2 person internal project; do not add CI, ADRs, or docs unless they prevented a real incident.

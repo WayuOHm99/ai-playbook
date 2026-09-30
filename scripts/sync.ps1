@@ -9,8 +9,11 @@ function Backup-IfReal($path) {
   if (Test-Path -LiteralPath $path) {
     $item = Get-Item -LiteralPath $path -Force
     if ($item.LinkType -eq 'Junction') { return $item.Target }
-    Rename-Item -LiteralPath $path -NewName ("{0}.bak-{1}" -f $item.Name, $Stamp)
-    Write-Host "  backed up $path"
+    # Move backups out of skill folders so a backed-up SKILL.md is never loaded as a duplicate skill.
+    $backupDir = Join-Path $HomeDir ".ai-playbook-backups\$Stamp"
+    New-Item -ItemType Directory -Force -Path $backupDir | Out-Null
+    Move-Item -LiteralPath $path -Destination (Join-Path $backupDir $item.Name)
+    Write-Host "  backed up $path -> $backupDir"
   }
   return $null
 }
@@ -24,19 +27,19 @@ function Ensure-Junction($link, $target) {
 }
 
 function Write-IfChanged($path, $content) {
-  $old = if (Test-Path -LiteralPath $path) { Get-Content -LiteralPath $path -Raw } else { $null }
+  $old = if (Test-Path -LiteralPath $path) { Get-Content -LiteralPath $path -Raw -Encoding UTF8 } else { $null }
   if ($old -ne $content) {
     New-Item -ItemType Directory -Force -Path (Split-Path $path) | Out-Null
-    Set-Content -LiteralPath $path -Value $content -NoNewline -Encoding utf8
+    [IO.File]::WriteAllText($path, $content, (New-Object System.Text.UTF8Encoding $false))
     Write-Host "  wrote $path"
   }
 }
 
 Write-Host "1) Instructions"
-$core = Get-Content -LiteralPath "$Vault\instructions\core.md" -Raw
+$core = Get-Content -LiteralPath "$Vault\instructions\core.md" -Raw -Encoding UTF8
 $claudeMd = "$HomeDir\.claude\CLAUDE.md"
 $claudeImport = "@D:/ai-playbook/instructions/core.md`n"
-if ((Test-Path $claudeMd) -and -not ((Get-Content $claudeMd -Raw) -match 'ai-playbook')) { Backup-IfReal $claudeMd | Out-Null }
+if ((Test-Path $claudeMd) -and -not ((Get-Content $claudeMd -Raw -Encoding UTF8) -match 'ai-playbook')) { Backup-IfReal $claudeMd | Out-Null }
 Write-IfChanged $claudeMd $claudeImport
 $header = "<!-- GENERATED from D:\ai-playbook\instructions\core.md by scripts\sync.ps1. Edit the vault, not this file. -->`n`n"
 Write-IfChanged "$HomeDir\.codex\AGENTS.md" ($header + $core)
@@ -49,10 +52,10 @@ foreach ($s in Get-ChildItem -Directory "$Vault\skills") {
 
 Write-Host "3) Sub-agents"
 foreach ($a in Get-ChildItem "$Vault\agents\claude\*.md") {
-  Write-IfChanged "$HomeDir\.claude\agents\$($a.Name)" (Get-Content -LiteralPath $a.FullName -Raw)
+  Write-IfChanged "$HomeDir\.claude\agents\$($a.Name)" (Get-Content -LiteralPath $a.FullName -Raw -Encoding UTF8)
 }
 foreach ($a in Get-ChildItem "$Vault\agents\codex\*.toml") {
-  Write-IfChanged "$HomeDir\.codex\agents\$($a.Name)" (Get-Content -LiteralPath $a.FullName -Raw)
+  Write-IfChanged "$HomeDir\.codex\agents\$($a.Name)" (Get-Content -LiteralPath $a.FullName -Raw -Encoding UTF8)
 }
 
 Write-Host "4) Codex guard hook"
@@ -77,7 +80,7 @@ $hooks = @'
 }
 '@
 $codexHooks = "$HomeDir\.codex\hooks.json"
-if ((Test-Path $codexHooks) -and -not ((Get-Content $codexHooks -Raw) -match 'ai-playbook')) {
+if ((Test-Path $codexHooks) -and -not ((Get-Content $codexHooks -Raw -Encoding UTF8) -match 'ai-playbook')) {
   Write-Host "  ~/.codex/hooks.json exists with other hooks; merge the playbook guard by hand."
 } else { Write-IfChanged $codexHooks $hooks }
 
