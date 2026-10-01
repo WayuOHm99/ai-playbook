@@ -62,8 +62,8 @@ Delegate bounded work to `reviewer` (fresh-eyes review, read-only — it returns
 One ticket per session. Before `/clear`, compaction, quota exhaustion or switching between Claude and Codex, use the `handoff-pack` skill: state goes into committed files (`STATE.md`, `HANDOFF.md`), not into chat for the user to copy.
 
 ## Definition of done and report
-Done means: acceptance criteria verified with evidence (test names, commands, screenshots), checks green, `STATE.md` updated. For implementation work, end with this report in Thai, one screen. Read-only prompts (audits, research, critique) may use their own format.
-1. ผลลัพธ์: DONE / DONE WITH CAVEATS / BLOCKED — one sentence why.
+Done means: acceptance criteria verified with evidence (test names, commands, screenshots), checks green, `STATE.md` updated. When waiting on long work (CI, deploy, E2E, a background agent), wait for it to finish within the same turn; if you cannot, end with a report marked PENDING that gives the exact command to check the result. Never end a turn with only a progress message. For implementation work, end with this report in Thai, one screen. Read-only prompts (audits, research, critique) may use their own format.
+1. ผลลัพธ์: DONE / DONE WITH CAVEATS / PENDING / BLOCKED — one sentence why.
 2. ที่ขอ vs ที่ได้: each acceptance criterion PASS/FAIL + evidence.
 3. สิ่งที่เจอ (เรียงตามความสำคัญ): BLOCKER / SHOULD-FIX / COULD-FIX, fixed or not.
 4. ความเสี่ยงที่คุณไม่ได้ถาม: never empty; if none, say what you checked.

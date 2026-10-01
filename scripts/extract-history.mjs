@@ -6,6 +6,7 @@ import { readFileSync, readdirSync, statSync, mkdirSync, writeFileSync, existsSy
 import { join, dirname, resolve, basename, sep } from 'node:path';
 import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
+import { dedupeSessions } from './lib/dedupe-sessions.mjs';
 
 const VAULT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
@@ -90,8 +91,10 @@ for (const f of walk(join(homedir(), '.codex', 'sessions'))) {
 
 mkdirSync(OUT, { recursive: true });
 const summary = [];
-for (const [proj, list] of Object.entries(sessions)) {
-  list.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+for (const [proj, all] of Object.entries(sessions)) {
+  all.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+  const list = dedupeSessions(all);
+  if (!list.length) continue;
   const body = list.map((s) => `\n## ${s.tool} ${s.date} ${s.id}\n${s.out.join('\n')}`).join('\n');
   writeFileSync(join(OUT, `${proj}.txt`), `# ${proj} (since ${since}, secrets masked)\n${body}\n`);
   summary.push(`${proj}: ${list.length} sessions, ${list.reduce((n, s) => n + s.out.filter((x) => x.startsWith('[U]')).length, 0)} prompts`);
