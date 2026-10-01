@@ -14,9 +14,9 @@
 | Layer | เลือกใช้ | Version | หมายเหตุ |
 |---|---|---|---|
 | Runtime | Node.js 24 LTS | 24.21.0 | LTS ถึง 2028-04-30; Node 26 เป็น LTS 2026-10-28 ให้รอ 2-3 เดือนก่อนย้าย; suth ยังประกาศ `>=20` (ต้องแก้) |
-| Language | TypeScript | 7.0.2 | โค้ดใหม่เป็น TS; JS เดิมแปลงทีละไฟล์ตอนแตะ; **ตรวจว่า vue-tsc 3.3.11 / typescript-eslint 8.71.0 รับ TS 7 ก่อนอัปเกรด** (UNVERIFIED), fallback TS 6.0.3 |
+| Language | TypeScript | 6.0.3 | โค้ดใหม่เป็น TS; JS เดิมแปลงทีละไฟล์ตอนแตะ; **ยังไม่ใช้ TS 7.0.2** เพราะ typescript-eslint 8.71.0 ประกาศ peer `typescript >=4.8.4 <6.1.0` (npm registry, ตรวจ 2026-10-01) |
 | Frontend | Vue 3 (SPA, `<script setup>`) | 3.5.43 | ไม่ใช้ Nuxt/Next: internal tool ไม่ต้องมี SSR server |
-| Build | Vite | 8.3.1 | |
+| Build | Vite | 8.3.2 | |
 | Router | vue-router | 5.3.1 | |
 | Server state | TanStack Vue Query | 5.104.0 | ADR-0009; Pinia เฉพาะ client-only state |
 | UI primitives | reka-ui | 2.10.5 | หน้าธุรกิจเรียกผ่าน `ui/` kit เท่านั้น |
@@ -236,4 +236,4 @@ Retention เริ่มต้น (T3 ไม่ใช่คำแนะนำ�
 ทุกต้นเดือน (ตั้ง scheduled task หรือ calendar) ให้ agent: (1) `npm view <pkg> version` ทุกแถวใน section 1 (2) ดู Node release schedule (3) เช็ก security advisory ของ Express/Vue/Vite/mysql2/Caddy/Docker (4) อัปเดตคอลัมน์ Version + บรรทัด **Last verified** ด้านบน (5) ถ้า major เปลี่ยน ให้เปิด issue ไม่ใช่อัปเกรดทันที
 
 Patch/minor ของ dependency ทำผ่าน Dependabot; major ต้องมี ADR.
-ยังไม่รู้ ณ 2026-10-01: Node 26 LTS (2026-10-28), TS 7 กับ vue-tsc/typescript-eslint, Bugsink DB support, Biome รองรับ Vue SFC เต็มไหม
+ยังไม่รู้ ณ 2026-10-01: Node 26 LTS (2026-10-28), Bugsink DB support, Biome รองรับ Vue SFC เต็มไหม

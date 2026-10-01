@@ -24,7 +24,7 @@ prompts/           prompt ภาษาไทยพร้อมใช้ 31 แ�
 skills/            สกิลของคลัง
 agents/            sub-agents ของ Claude และ Codex
 guardrails/        ตัวกันคำสั่งอันตราย
-stacks/            stack มาตรฐานสำหรับระบบโรงพยาบาล
+stacks/            สูตร stack: โรงพยาบาล, แดชบอร์ด, cloud web, มือถือ/PWA, วิดีโอ
 templates/project/ ไฟล์ตั้งต้นของทุกโปรเจกต์ (AGENTS, STATE, BACKLOG, DECISIONS, HANDOVER, RUN)
 me/                โปรไฟล์ จุดพลาดบ่อย และสิ่งที่ได้ผล
 setup/             คำตอบ setup สำเร็จรูป และข้อเสนอคัดสกิล
