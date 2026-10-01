@@ -1,4 +1,4 @@
-# Skills cleanup proposal (PROPOSAL ONLY: nothing has been modified)
+# Skills cleanup proposal (APPLIED 2026-10-01: sections B1–B3, C1, C2; B4 plugins not applied)
 
 Date: 2026-10-01. Source: `research/05-skills-inventory.md` (scan 2026-09-30) and `research/07-review.md`.
 Goal: stop the "skill descriptions shortened to fit the listing budget" warnings so the lifecycle skills (grilling, tdd, code-review...) are always auto-discoverable with full descriptions.

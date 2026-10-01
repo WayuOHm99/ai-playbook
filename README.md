@@ -10,7 +10,7 @@
 | ส่วน | อยู่ที่ | ทำหน้าที่ |
 |---|---|---|
 | กฎกลาง | `instructions/core.md` → `~/.claude/CLAUDE.md` (import) และ `~/.codex/AGENTS.md` (สำเนาที่ sync สร้าง) | agent ทุกตัวคัดแยกงาน คุมขอบเขต แย้งได้ และรายงานรูปแบบเดียวกัน |
-| สกิลของคลัง | `skills/` → junction เข้า `~/.claude/skills` และ `~/.agents/skills` | `/new-request`, `/ship`, `/handoff-pack` |
+| สกิลของคลัง | `skills/` → **สำเนา** ใน `~/.claude/skills` (แอป Desktop ไม่แสดงสกิลแบบ junction ในเมนู "/" ดู anthropics/claude-code#68318) และ junction ใน `~/.agents/skills` สำหรับ Codex; commit ในคลังแล้ว sync ให้อัตโนมัติ (post-commit hook) | `/new-request`, `/ship`, `/handoff-pack` |
 | Sub-agents | `agents/claude/*.md` → `~/.claude/agents`, `agents/codex/*.toml` → `~/.codex/agents` | reviewer, researcher, verifier (Claude: Sonnet effort high) |
 | ตัวกันคำสั่งอันตราย | `guardrails/guard.mjs` → hook ใน `~/.claude/settings.json` และ `~/.codex/hooks.json` | บล็อก `rm -rf`, force push, `reset --hard`, `DROP`/`TRUNCATE`, `docker volume rm`, การเขียน `.env` |
 | Claude settings | `scripts/merge-claude-settings.mjs` | auto mode, deny rules, hook (มี backup ของไฟล์เดิม) |

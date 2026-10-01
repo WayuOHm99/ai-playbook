@@ -26,6 +26,18 @@ function Ensure-Junction($link, $target) {
   Write-Host "  linked $link -> $target"
 }
 
+# Claude Desktop's "/" menu omits junction-linked skills (anthropics/claude-code#68318, closed not planned),
+# so Claude gets real copies. The vault's post-commit hook re-runs this script, keeping copies current.
+function Ensure-Copy($dest, $src) {
+  if (Test-Path -LiteralPath $dest) {
+    $item = Get-Item -LiteralPath $dest -Force
+    if ($item.LinkType -eq 'Junction') { $item.Delete(); Write-Host "  replaced junction $dest" }  # removes only the link
+  }
+  robocopy $src $dest /MIR /NJH /NJS /NFL /NDL /NP | Out-Null
+  if ($LASTEXITCODE -ge 8) { throw "robocopy failed for $dest ($LASTEXITCODE)" }
+  $global:LASTEXITCODE = 0
+}
+
 function Write-IfChanged($path, $content) {
   $old = if (Test-Path -LiteralPath $path) { Get-Content -LiteralPath $path -Raw -Encoding UTF8 } else { $null }
   if ($old -ne $content) {
@@ -44,9 +56,9 @@ Write-IfChanged $claudeMd $claudeImport
 $header = "<!-- GENERATED from D:\ai-playbook\instructions\core.md by scripts\sync.ps1. Edit the vault, not this file. -->`n`n"
 Write-IfChanged "$HomeDir\.codex\AGENTS.md" ($header + $core)
 
-Write-Host "2) Skills (junctions into ~/.claude/skills and ~/.agents/skills)"
+Write-Host "2) Skills (copies into ~/.claude/skills, junctions into ~/.agents/skills for Codex)"
 foreach ($s in Get-ChildItem -Directory "$Vault\skills") {
-  Ensure-Junction "$HomeDir\.claude\skills\$($s.Name)" $s.FullName
+  Ensure-Copy "$HomeDir\.claude\skills\$($s.Name)" $s.FullName
   Ensure-Junction "$HomeDir\.agents\skills\$($s.Name)" $s.FullName
 }
 
@@ -88,3 +100,9 @@ Write-Host "5) Git long paths"
 if ((git config --global core.longpaths) -ne 'true') { git config --global core.longpaths true; Write-Host "  set core.longpaths=true" }
 
 Write-Host "Done. Claude settings (hooks, deny rules, auto mode) are merged by scripts\merge-claude-settings.mjs."
+
+$hook = "$Vault\.git\hooks\post-commit"
+if (-not (Test-Path $hook) -or ((Get-Content $hook -Raw) -ne (Get-Content "$Vault\scripts\post-commit" -Raw))) {
+  Copy-Item "$Vault\scripts\post-commit" $hook -Force
+  Write-Host "Installed vault post-commit hook (auto-sync after every commit)."
+}
