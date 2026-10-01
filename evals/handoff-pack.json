@@ -1,0 +1,23 @@
+{
+  "skill": "handoff-pack",
+  "should": [
+    "โควตาใกล้หมดแล้ว จะสลับไปใช้ Codex ต่อ บันทึกสถานะไว้ให้หน่อย",
+    "เลิกงานแล้ว พรุ่งนี้ค่อยทำต่อ เก็บงานให้หน่อย",
+    "จะ /clear แล้วนะ ก่อนล้างช่วยบันทึกว่าทำถึงไหน",
+    "ต่อจาก Codex: อ่าน handoff แล้วทำต่อ",
+    "I'm switching to Claude Code on my other session, prepare a handoff.",
+    "ทำต่อจากเมื่อวาน ดูว่าค้างอะไรไว้",
+    "context ใกล้เต็มแล้ว เตรียมส่งต่องานให้ session ใหม่",
+    "Wrap up for today and leave notes so the next agent can continue."
+  ],
+  "shouldNot": [
+    "อัปเดต README ให้มีวิธีติดตั้ง",
+    "สรุป diff ของ branch นี้ให้หน่อย",
+    "เขียน CHANGELOG entry สำหรับฟีเจอร์ใหม่",
+    "What is the difference between git stash and git commit?",
+    "ส่งมอบระบบให้ฝ่าย IT ต้องเตรียมเอกสารอะไรบ้าง",
+    "เปิด PR ให้หน่อย",
+    "อ่าน AGENTS.md แล้วบอกว่าคำสั่ง test คืออะไร",
+    "Commit the current changes with a good message."
+  ]
+}

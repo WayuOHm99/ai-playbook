@@ -40,7 +40,7 @@ Hard stops — ask first, every time:
 3. deleting files outside the ticket, branches, tags or remote refs;
 4. secrets, credentials, `.env` files, accounts, network/firewall settings;
 5. authentication, authorisation, audit logging, or any new field that can hold personal or patient data;
-6. adding or upgrading dependencies; changing CI, hooks or permission settings;
+6. adding or upgrading dependencies — including installing or updating third-party skills, plugins or MCP servers (vet them with `D:\ai-playbook\setup\skill-intake.md`); changing CI, hooks or permission settings;
 7. editing or deleting existing tests;
 8. anything outside this machine except the project's own git remote (email, chat, issues or PRs on repos the user doesn't own unless they asked);
 9. conflicts with the spec, a decision record (`DECISIONS.md`, `docs/decisions/`, `docs/adr/`), or an earlier recorded decision.

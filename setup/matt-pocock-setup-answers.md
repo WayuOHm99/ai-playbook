@@ -2,6 +2,8 @@
 
 Purpose: run `/setup-matt-pocock-skills` in any new repo and answer every question from this file, so you never decide again. Based on the skill's own SKILL.md (`C:\Users\wayuo\.agents\skills\setup-matt-pocock-skills\SKILL.md`) and on what `D:\suth-helpdesk-assets` already did (`docs/agents/*.md`).
 
+> **Glossary file name (decided 2026-10-01).** Matt's upstream skills are renaming `CONTEXT.md` to `GLOSSARY.md` (pending changeset `rename-context-to-glossary`, see `research/09`). Until that release is installed here, keep `CONTEXT.md`. When you update Matt's skills (`npx skills update`) to a version whose CHANGELOG mentions the rename, run `git mv CONTEXT.md GLOSSARY.md` in each repo in the same session. Vault files accept either name.
+
 ## How to use
 1. Open the new repo in Claude Code (repo must have a GitHub remote and `gh auth status` must be OK).
 2. Copy the **Kick-off message** below as your first message, then run `/setup-matt-pocock-skills`.

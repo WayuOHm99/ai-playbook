@@ -1,6 +1,8 @@
 ---
 name: new-request
-description: Classify and route any new incoming request (bug, feedback, new idea, new requirement, "add this too", "make it world-class", audit request) before acting on it. Use when the user brings something new mid-project or starts a new project and it is not obvious which phase it belongs to.
+description: Use when the user brings something new that is not the current ticket - a bug report, user or boss feedback, a new feature idea, a new requirement, an "add this too" or "make it world-class" request, or a mixed message containing several of these (Thai cues: เจอบั๊ก, มี feedback, อยากได้, อยากเพิ่ม, ทำให้ระดับโลก, requirement ใหม่, เริ่มระบบใหม่). Splits the message, classifies each item P0-P7, routes it, and names one next step. Do not use for direct small tasks on the current ticket (run tests, rename, explain code, commit).
+metadata:
+  version: "1.1.0"
 ---
 
 # New request: classify, route, and name the next step
@@ -11,7 +13,7 @@ The user often sends long, mixed Thai messages that combine a bug, an idea and a
 - Read the project's `AGENTS.md`, plus `STATE.md` and `BACKLOG.md` if they exist.
 - If `STATE.md` is missing, work out the current ticket from the branch name, `git log -5 --oneline`, and open issues (`gh issue list --state open`, if the project uses GitHub Issues — see `AGENTS.md` or `docs/agents/issue-tracker.md`).
 - Inbox = `BACKLOG.md` in the repo root (create it from `D:/ai-playbook/templates/project/BACKLOG.md` if missing). Tickets = the issue tracker named in `AGENTS.md`/`docs/agents/issue-tracker.md` (usually GitHub Issues), otherwise `BACKLOG.md` rows with Triage = now.
-- Find decision records: `DECISIONS.md`, `docs/decisions/`, `docs/adr/`, or the path named in `AGENTS.md`/`CONTEXT.md`.
+- Find decision records: `DECISIONS.md`, `docs/decisions/`, `docs/adr/`, or the path named in `AGENTS.md`/`CONTEXT.md/GLOSSARY.md`.
 
 ## 2. Split
 Break the message into separate items, one sentence each. A quality word like "ระดับโลก", "สวยๆ" or "ครบๆ" is not its own item: attach it to the item(s) it modifies and turn it into criteria (step 4).
@@ -53,3 +55,16 @@ For each item worth doing, name the main risk or a simpler alternative in one se
 👉 ขั้นถัดไป: <one action the user can take, e.g. "ตอบ ok เพื่อเปิด Issue ข้อ 1 แล้ว /ship">
 ```
 Use only these values in "ทำเมื่อไหร่": ตอนนี้ / หลังงานปัจจุบัน / หลังอนุมัติ / เก็บไว้ก่อน.
+
+## Excuses and rebuttals
+| Excuse | Rebuttal |
+|---|---|
+| "It's a small idea, I'll just add it now." | Ideas are P5 even when small. The login page was redesigned 6 times this way. Append to `BACKLOG.md`. |
+| "World-class means build it properly — backups, cookies, ACLs." | Turn it into ≤5 checkable criteria for the tier first. RubricLens got enterprise features it didn't need. |
+| "The user sounds sure, no need to check earlier decisions." | Search the tracker and decision records first; quote any earlier decision. Requirements have flipped before (20% → 2%). |
+| "I'll guess which page/form they mean." | Mark it ❓ ต้องยืนยัน. The "repair form" in the test message did not exist in the repo. |
+
+## Red flags
+- You are about to write code while the current ticket is still open.
+- An item needs an external service, secrets, cost, or new personal data but you classified it P5 (it is P4).
+- You produced more than one "next step".

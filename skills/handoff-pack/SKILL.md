@@ -1,6 +1,8 @@
 ---
 name: handoff-pack
-description: Save the full working state to committed files before /clear, compaction, ending the day, quota exhaustion, or switching between Claude Code and Codex, so the next agent continues from files instead of the user copy-pasting. Also use at the start of a session when the user says "ต่อจาก Codex/Claude" or "ทำต่อจากเมื่อวาน" to load a handoff.
+description: Use when a work session is ending or moving - the user is stopping for the day, about to /clear or compact, running out of quota or context, switching between Claude Code and Codex, or starting a session that continues earlier work (Thai cues: เลิกงาน, พักงาน, เก็บงาน, จะ /clear, โควตาใกล้หมด, context ใกล้เต็ม, สลับไป Codex/Claude, ต่อจาก Codex/Claude, ทำต่อจากเมื่อวาน). Saves or loads state in committed STATE.md and HANDOFF.md. Do not use for README, CHANGELOG, PR descriptions or handing a system over to IT.
+metadata:
+  version: "1.1.0"
 ---
 
 # Handoff pack: continue from files, not from copy-paste

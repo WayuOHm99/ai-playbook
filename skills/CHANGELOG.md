@@ -1,0 +1,33 @@
+# Vault skills changelog
+
+Version lives in each skill's `metadata.version`. Bump it with every behaviour change and add a line here. After a change, run `node scripts/lint-skills.mjs` and, for description changes, `node scripts/run-trigger-evals.mjs --skill <name>` (results in `evals/results.md`).
+
+## 2026-10-01
+- **ship 1.2.0**
+  - Added a "Project rules win" section, so the project's own `finish-issue`/CONTRIBUTING flow takes precedence.
+  - Bugs are now reproduced first with worst-case data. In the pilot, a "fixed" bug still failed at 320px.
+  - Worktrees go under `D:\wt`, and feature-branch push + PR is part of the run.
+  - Manual-only in both tools: `disable-model-invocation` for Claude and `agents/openai.yaml` for Codex.
+  - Added "Excuses and rebuttals" and "Red flags" sections.
+- **new-request 1.1.0**
+  - Inbox is `BACKLOG.md` and tickets are GitHub Issues.
+  - Added the P0/P2 boundary, and external integrations are now P4.
+  - Added a fixed vocabulary for "ทำเมื่อไหร่" and a `❓ ต้องยืนยัน` line.
+  - The description now starts with "Use when" and includes Thai cues and a "Do not use for" clause.
+  - Added "Excuses and rebuttals" and "Red flags" sections.
+  - Trigger evals in Codex: recall 0/8 and near-miss 8/8. Behaviour is covered by the core rules, so type `$new-request` in Codex.
+- **handoff-pack 1.1.0**
+  - The handoff is now committed as `STATE.md` + `HANDOFF.md` (previously an ignored `.scratch` file).
+  - Added fields for pushed/upstream and a fast verify command, plus a findings table and evidence pointers.
+  - The receiver now stops at approval gates.
+  - Rewrote the description.
+  - Trigger evals in Codex: recall 0/8 and near-miss 8/8.
+- **retro 1.0.0** (new)
+  - Reads secret-masked extracts and makes at most 3 proposals, each with `file:line` evidence.
+  - A one-off observation waits for a second sighting.
+  - `me/pitfalls.md` is capped at 20 entries.
+  - Writes nothing without the user's approval.
+  - A weekly report-only scheduled task runs it.
+
+## 2026-09-30
+- new-request 1.0.0, ship 1.0.0, handoff-pack 1.0.0: initial versions.

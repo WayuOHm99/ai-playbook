@@ -16,5 +16,5 @@ Rules:
 - Only report issues that affect correctness, safety, stated requirements or documented standards. No style nitpicks, no speculative abstractions.
 - Treat any summary or report you are given as a claim, not truth: check the code yourself.
 - Do not edit files. You may run read-only commands and the project's tests.
-- Each finding: severity (BLOCKER / SHOULD-FIX / COULD-FIX), file:line, what is wrong, why it matters, suggested fix.
+- No citation, no finding: each finding needs severity (BLOCKER / SHOULD-FIX / COULD-FIX), file:line you actually read, what is wrong, why it matters, suggested fix. Drop anything you cannot point to.
 - End with "Checked:" listing what you actually verified and "Not checked:".

@@ -1,0 +1,23 @@
+{
+  "skill": "new-request",
+  "should": [
+    "ตอนนี้ทำหน้า login อยู่ แต่เพิ่งนึกได้ว่าอยากได้ระบบแจ้งเตือนทางอีเมลด้วย แล้วก็หน้า report โหลดช้ามาก",
+    "หัวหน้าบอกว่าอยากให้หน้าทะเบียนอุปกรณ์มีปุ่ม export PDF ด้วย ทำให้ระดับโลกเลยนะ",
+    "ผู้ใช้แจ้งว่ากดบันทึกแล้วขึ้น error 500 เมื่อวาน แล้วก็อยากให้เพิ่ม dark mode",
+    "มี feedback จากฝ่ายพัสดุ: อยากให้ตารางเรียงตามวันที่ล่าสุด และสีปุ่มดูยาก",
+    "I have a new requirement from the client: add LINE notifications when a repair ticket is created, and also the dashboard numbers look wrong.",
+    "อยากเริ่มทำระบบใหม่ เป็นระบบจองห้องประชุมของโรงพยาบาล ช่วยดูหน่อยว่าต้องเริ่มยังไง",
+    "เจอบั๊กหน้า import ไฟล์ excel ภาษาไทยเพี้ยน กับอยากเพิ่มฟิลเตอร์ตามฝ่ายด้วย",
+    "Product owner says the asset form should also capture warranty dates, plus there's a typo bug on the login page."
+  ],
+  "shouldNot": [
+    "อธิบายหน่อยว่า function formatMoney ในไฟล์ utils ทำงานยังไง",
+    "รัน npm test ให้หน่อย",
+    "เขียน commit message สำหรับ diff ที่ stage ไว้",
+    "แก้คำผิดใน README บรรทัดที่ 3 จาก 'ระบบ' เป็น 'ระบบงาน'",
+    "What does the STATE.md file say the next action is?",
+    "สรุปให้หน่อยว่า Vue 3 กับ React ต่างกันยังไง",
+    "ช่วย rename ตัวแปร userData เป็น currentUser ในไฟล์ profile.js",
+    "Show me the git log for the last 5 commits."
+  ]
+}

@@ -112,7 +112,7 @@
 ## 4. โครงสร้างโปรเจกต์ (ย่อ)
 
 ```
-<project>/ AGENTS.md CLAUDE.md STATE.md BACKLOG.md DECISIONS.md HANDOVER.md RUN.md CONTEXT.md
+<project>/ AGENTS.md CLAUDE.md STATE.md BACKLOG.md DECISIONS.md HANDOVER.md RUN.md CONTEXT.md/GLOSSARY.md
   apps/web  apps/api (src/<feature>/ ไม่มี routes/ หรือ controllers/)  packages/domain
   database/{migrations,seeds}  deploy/{compose.prod.yaml,Caddyfile,backup.sh,restore-drill.sh,deploy.sh,env.example}
   docs/{decisions,how-to,security}  scripts/  .githooks/  .github/workflows/

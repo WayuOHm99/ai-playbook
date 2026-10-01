@@ -2,6 +2,8 @@
 name: ship
 description: Take one approved ticket (GitHub issue number, BACKLOG item, or a short scoped task) from start to an open pull request in one run - worktree branch, reproduce-first test, implementation, real-app verification, independent review with at most two fix rounds, push of the feature branch, PR, and a Thai delivery report. Invoke explicitly with /ship.
 disable-model-invocation: true
+metadata:
+  version: "1.2.0"
 ---
 
 # Ship one ticket end-to-end
@@ -38,3 +40,21 @@ Finish with the Thai delivery report from `core.md` plus the PR link (or the pre
 
 ## Stop conditions
 Stop and report BLOCKED (what you tried, what you need) when: a hard stop is required; verify fails after two changed approaches; the acceptance criteria cannot be verified; the fix needs changes outside the ticket; or ~60 tool calls pass without progress.
+
+## Excuses and rebuttals
+These come from real sessions (`me/pitfalls.md`). If you catch yourself thinking the left column, do the right one.
+
+| Excuse | Rebuttal |
+|---|---|
+| "The code comment says it's already fixed." | Reproduce with worst-case data. The pilot's "fixed" clipping bug still failed at 320px. |
+| "While I'm here I'll also tidy this up." | That's P6. Add it to `BACKLOG.md`; the diff stays inside the ticket. |
+| "The reviewer found more, one more round." | Max 2 rounds. Non-blockers go to the report. Rounds 6–10 happened before and wasted days. |
+| "Tests are flaky, I'll loosen this assertion." | Never weaken a test to get green. Report BLOCKED with the evidence. |
+| "The user said ทำต่อ, so I'll keep going past the PR." | One-word approval covers the last proposed step only. Merge and deploy are always theirs. |
+| "Pushing to main is faster for a one-line fix." | Feature branch + PR only. The guard will block it anyway. |
+
+## Red flags — stop and re-read the ticket
+- The diff touches files the ticket never mentions.
+- You are editing an existing test, a migration, auth code, `.env`, or CI.
+- You have run the same failing command three times.
+- You are about to claim "done" without a command output or screenshot to show.

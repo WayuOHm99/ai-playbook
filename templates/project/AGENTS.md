@@ -60,6 +60,6 @@ Hard stops, triage, push policy (feature branch + PR allowed; merge/main/deploy 
 - Current phase, ticket, next action: `STATE.md` (update at the end of every session).
 - Ideas and feedback inbox: `BACKLOG.md` (agent appends P5/P6 rows directly). Approved work: GitHub Issues (`<owner/repo>`, use `gh`; agent drafts, creates after approval) <or BACKLOG rows with Triage = now if no Issues>.
 - Handoff between sessions/tools: committed `STATE.md` + `HANDOFF.md` on the feature branch (`wip: handoff`), via `/handoff-pack`.
-- Decisions: `DECISIONS.md` <or `docs/decisions/` ADRs>. Domain terms: `CONTEXT.md`.
+- Decisions: `DECISIONS.md` <or `docs/decisions/` ADRs>. Domain terms: `CONTEXT.md/GLOSSARY.md`.
 - Run locally: `RUN.md`. Handover to hospital IT: `HANDOVER.md`.
 - Before starting: read STATE.md, then the ticket, then only the docs it points to.

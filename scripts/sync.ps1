@@ -106,3 +106,6 @@ if (-not (Test-Path $hook) -or ((Get-Content $hook -Raw) -ne (Get-Content "$Vaul
   Copy-Item "$Vault\scripts\post-commit" $hook -Force
   Write-Host "Installed vault post-commit hook (auto-sync after every commit)."
 }
+
+Write-Host "6) Skill lint + drift check (warn-only)"
+node "$Vault\scripts\lint-skills.mjs"
