@@ -13,3 +13,13 @@
 | Vault skills (`new-request`, `ship`, `handoff-pack`, `retro`) | 4 | `scripts/sync.ps1` | copies in `~/.claude/skills`, junctions in `~/.agents/skills` | own | Versions in each SKILL.md `metadata.version`; history in `skills/CHANGELOG.md`. |
 
 Parked (moved, not deleted) on 2026-10-01: 29 duplicate Codex copies and 20 Cursor built-ins → `C:\Users\wayuo\.skills-trash\2026-10-01\`.
+
+## Local patches (re-apply after any `npx skills update`)
+`npx skills update` overwrites these edits silently. After updating, re-run the Set-Manual step in `setup/skills-cleanup-proposal.md` §E, then check with `node scripts/lint-skills.mjs`.
+
+| Skill(s) | Patch | Date |
+|---|---|---|
+| 17 HyperFrames skills (all except `hyperframes`), 11 Cloudflare, `developing-with-streamlit` | `disable-model-invocation: true` in the `~/.claude/skills` copy | 2026-10-01 |
+| `wizard`, `setup-pre-commit`, `scaffold-exercises`, `migrate-to-shoehorn`, `requirements-clarity` | `disable-model-invocation: true` in the `~/.agents/skills` copy (shared by Claude and Codex) | 2026-10-01 |
+
+Policy overrides for the Matt Pocock skills live in each project's `AGENTS.md` (template: `templates/project/AGENTS.md`, section "Overrides for installed third-party skills"), so they survive skill updates.

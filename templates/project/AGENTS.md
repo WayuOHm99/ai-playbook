@@ -49,6 +49,15 @@ Data: <synthetic only | staff/asset data | other>. **Patient or health data is n
 Hard stops, triage, push policy (feature branch + PR allowed; merge/main/deploy = ask), retry limit (2), definition of done and report format: `instructions/core.md` (loaded globally, do not copy here). Project-specific additions only:
 - Project DoD extras: `<npm run verify>` green (and `verify:db` if DB touched); docs updated if behavior, commands or config changed (RUN.md / HANDOVER.md / ADR / CHANGELOG).
 
+## Overrides for installed third-party skills
+Some Matt Pocock skills act without asking. In this repo the global rules win over them:
+- `to-spec`, `to-tickets`, `wayfinder`, `triage`: draft issues and labels, show them, and publish them (or apply `ready-for-agent`) only after the user says yes. Never mark an issue touching personal data, auth or migrations `ready-for-agent`.
+- `diagnosing-bugs`: for a bug in shipped behaviour (P2), stop after reproduce + diagnosis and draft the ticket; fix only inside an approved ticket or `/ship`.
+- `tdd`: take the test seams from the ticket's acceptance criteria instead of asking the user to confirm them.
+- `code-review`: report findings as BLOCKER / SHOULD-FIX / COULD-FIX; at most 2 fix rounds.
+- `prototype`: scratch databases must be local (Docker or SQLite), never a shared or real one.
+- Session handoff: use `handoff-pack` (committed `STATE.md` + `HANDOFF.md`), not `handoff` (writes to a temp folder).
+
 ## Constraints
 <!-- Confirmed external constraints only (who confirmed, date). Prompt 01-E reads this section. Delete rows that do not apply. -->
 - Hosting: <where it may run; who confirmed>

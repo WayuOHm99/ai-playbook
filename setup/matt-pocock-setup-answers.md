@@ -17,6 +17,7 @@ Use my pre-answered setup. Do not ask me the questions; apply these and show me 
 - Triage labels: keep the five defaults exactly (needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix). Yes.
 - Domain docs: single-context. CONTEXT.md at root; ADRs in docs/decisions/ (NOT docs/adr/), numbered NNNN-title.md.
 - Edit AGENTS.md for the "## Agent skills" block. CLAUDE.md contains only "@AGENTS.md"; do not add anything to CLAUDE.md.
+- Keep the "## Overrides for installed third-party skills" section from the vault template (D:/ai-playbook/templates/project/AGENTS.md) in AGENTS.md; if the repo has no such section yet, copy it in.
 - Write docs/agents/issue-tracker.md, triage-labels.md, domain.md from the skill's templates, adapting domain.md to docs/decisions/.
 - Language: write the docs/agents files in English unless the repo is already Thai (then Thai, like suth).
 - Then print the gh label commands for me to run; do not create labels yourself without asking.

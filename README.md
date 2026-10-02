@@ -20,7 +20,7 @@
 00-start-here.md   แผนที่: สถานการณ์ → สิ่งที่ต้องทำ
 instructions/      กฎกลางสำหรับ agent (ภาษาอังกฤษ)
 playbook/          วงจรงาน 0–13 และกติกาคัดแยกงาน
-prompts/           prompt ภาษาไทยพร้อมใช้ 31 แบบ
+prompts/           prompt ภาษาไทยพร้อมใช้ 34 แบบ
 skills/            สกิลของคลัง
 agents/            sub-agents ของ Claude และ Codex
 guardrails/        ตัวกันคำสั่งอันตราย

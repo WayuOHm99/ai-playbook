@@ -22,7 +22,7 @@ Agent จะคัดแยกให้ว่าเป็นงานประ�
 |---|---|---|---|
 | 🆕 **เริ่มโปรเจกต์ใหม่** / ได้ requirement มา | คุยก่อน ยังไม่ต้องเขียนโค้ด → เลือกระดับงาน → ซักถามให้ชัด → spec | `/new-request` แล้วต่อด้วย `/grill-with-docs` → `/to-spec` | `playbook/lifecycle.md` ขั้น 0–4, `prompts/01-start-project.md` |
 | 🧱 **ตั้งค่าโปรเจกต์ครั้งแรก** | ก๊อปเทมเพลต ตอบ setup ครั้งเดียวจากไฟล์ที่ตอบไว้แล้ว | `/setup-matt-pocock-skills` + `setup/matt-pocock-setup-answers.md` | `templates/project/README.md` |
-| 🛠 **เลือก tech stack** | เลือกสูตรตามประเภทงาน ใช้ตามสูตรก่อน จะเปลี่ยนต้องมีเหตุผลเขียนไว้ใน `DECISIONS.md` ทุกไฟล์มี prompt เริ่มโปรเจกต์ให้ก๊อป | ระบบโรงพยาบาล: `stacks/hospital-web.md` · แดชบอร์ดข้อมูล: `stacks/data-dashboard.md` · เว็บแอปส่วนตัวบน cloud: `stacks/cloud-web.md` · แอปมือถือ: `stacks/mobile-pwa.md` (ผ่าน feasibility gate ก่อน) · วิดีโอ: `stacks/video-hyperframes.md` | `stacks/` |
+| 🛠 **เลือก tech stack / เครื่องมือ** | agent วิเคราะห์ข้อจำกัดของงาน ค้นข้อมูลล่าสุด เทียบ 2–3 ตัวเลือก แนะนำพร้อมเหตุผลและแหล่งอ้างอิง แล้วบันทึก ADR โดยใช้สูตรใน `stacks/` เป็นข้อมูลอ้างอิง ไม่ใช่คำตอบตายตัว | `/choose-stack` | `stacks/README.md` |
 | 📋 **spec เสร็จแล้ว จะเริ่มทำ** | แตกเป็น ticket ย่อยที่ตรวจได้ทีละชิ้น | `/to-tickets` | lifecycle ขั้น 7 |
 | ▶️ **ทำงานต่อ** ("ทำต่อ") | agent อ่าน `STATE.md` แล้วทำ **ขั้นถัดไปขั้นเดียว** ของแผนเดิม | prompt 02-A | `prompts/02-daily-work.md` |
 | 🚀 **ทำ ticket นี้ให้จบในคำสั่งเดียว** | branch ใน worktree → test ที่ทำให้บั๊กเกิดซ้ำ → แก้ → ตรวจในแอปจริง → review ไม่เกิน 2 รอบ → push branch + เปิด PR → รายงาน (**ต้องพิมพ์ `/ship` เอง** agent ไม่เรียกเองอัตโนมัติ เพราะมีการ push) | `/ship #<เลข issue>` | `skills/ship/SKILL.md` |
@@ -60,7 +60,7 @@ merge PR / push เข้า `main` · deploy · ฐานข้อมูลท�
 | โฟลเดอร์ | มีอะไร |
 |---|---|
 | `playbook/` | วงจรงาน 0–13 ขั้น, กติกาคัดแยกงาน |
-| `prompts/` | prompt ภาษาไทยพร้อมใช้ 31 แบบ |
+| `prompts/` | prompt ภาษาไทยพร้อมใช้ 34 แบบ |
 | `stacks/` | สูตร stack 5 แบบพร้อมเวอร์ชันที่ตรวจแล้ว |
 | `templates/project/` | ไฟล์ตั้งต้นของทุกโปรเจกต์ |
 | `skills/` | สกิลของคลัง: `new-request`, `ship`, `handoff-pack` |

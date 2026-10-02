@@ -3,7 +3,7 @@ name: retro
 description: Review recent Claude Code and Codex sessions and propose at most three evidence-backed lessons for the playbook vault (pitfalls, wins, rule or hook changes). Run by hand at the end of a ticket or week, or from the weekly scheduled report. Writes nothing without the user's approval.
 disable-model-invocation: true
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Retro: turn recent sessions into at most three lessons
@@ -21,6 +21,8 @@ Only these:
 - **Repeated manual work**: the user typed the same kind of instruction in 2+ sessions (e.g. the same fence, the same setup answer).
 - **Rework loop**: the same fix/review cycle ran 3+ times, or a bug came back.
 - **Clear win**: a pattern the user explicitly approved that finished cleanly.
+- **Missing check**: a rule in `core.md` or `AGENTS.md` was broken, and no hook, test or script enforces it. Propose the check, not more prose.
+- **Instruction bloat**: `instructions/core.md` or a project `AGENTS.md` is over ~200 lines. Propose what to cut or move into a skill.
 
 A pattern seen once goes to `_inbox/retro-candidates.md` (date, one line, evidence pointer) and waits for a second sighting in a later run. Cite every finding as `<file>:<line>` of the extract, or a commit hash.
 

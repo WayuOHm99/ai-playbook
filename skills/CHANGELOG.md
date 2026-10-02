@@ -2,6 +2,17 @@
 
 Version lives in each skill's `metadata.version`. Bump it with every behaviour change and add a line here. After a change, run `node scripts/lint-skills.mjs` and, for description changes, `node scripts/run-trigger-evals.mjs --skill <name>` (results in `evals/results.md`).
 
+## 2026-10-02
+- **choose-stack 1.0.0** (new, auto-invoked)
+  - Stack decisions are analysed fresh for each project.
+  - Steps: constraints table, then 2–3 candidates (one house default and one from outside the vault), then fresh research from primary sources, then weighted scoring, then a recommendation with "would change if" conditions and feasibility items, then an ADR.
+  - `stacks/*.md` are now evidence and defaults, not a fixed menu.
+- **ship 1.3.0**
+  - Test seams come from the acceptance criteria, so the run doesn't stall when `tdd` asks.
+  - The PR body adds Evidence and Merge danger (one- or two-way door, blast radius, rollback), adapted from Matt Pocock's `pr` skill.
+  - Removed the dead reference to `implement`.
+- **retro 1.1.0**: added two evidence kinds: a rule with no enforcing check, and instruction files over ~200 lines.
+
 ## 2026-10-01
 - **ship 1.2.0**
   - Added a "Project rules win" section, so the project's own `finish-issue`/CONTRIBUTING flow takes precedence.

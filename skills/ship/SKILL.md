@@ -3,7 +3,7 @@ name: ship
 description: Take one approved ticket (GitHub issue number, BACKLOG item, or a short scoped task) from start to an open pull request in one run - worktree branch, reproduce-first test, implementation, real-app verification, independent review with at most two fix rounds, push of the feature branch, PR, and a Thai delivery report. Invoke explicitly with /ship.
 disable-model-invocation: true
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Ship one ticket end-to-end
@@ -24,7 +24,7 @@ Read `AGENTS.md` and `CONTRIBUTING.md` first. Many repos define their own delive
 `git worktree add -b <type>/<issue>-<slug> D:\wt\<project>-<issue> origin/<default>` (short path — Windows long paths break git and npm). Install dependencies there with the project's install command. Create or update `STATE.md`: ticket, branch, phase = implement.
 
 ## 2. Reproduce, then implement test-first
-Bugs start with a reproduction test using worst-case data (longest numbers, Thai text, narrowest supported screen) — even when comments or old reports say it is already fixed (the pilot found a "fixed" clipping bug still failing at 320px). Confirm the test fails for the right reason, then fix. If it passes before any change, the deliverable is the regression test alone; say so. Use the `implement`/`tdd` skills if installed. Keep the diff inside the ticket; anything else goes to `BACKLOG.md`. Retry an approach at most twice.
+Bugs start with a reproduction test using worst-case data (longest numbers, Thai text, narrowest supported screen) — even when comments or old reports say it is already fixed (the pilot found a "fixed" clipping bug still failing at 320px). Confirm the test fails for the right reason, then fix. If it passes before any change, the deliverable is the regression test alone; say so. Take the test seams from the ticket's acceptance criteria; do not stop to ask the user to confirm seams (the `tdd` skill may ask — answer from the criteria). Keep the diff inside the ticket; anything else goes to `BACKLOG.md`. Retry an approach at most twice.
 
 ## 3. Verify
 Run the project's full verify command (from `AGENTS.md`, e.g. `npm run verify`). Then prove the behaviour in the running app: delegate to the `verifier` sub-agent (or do it yourself for tiny changes) with the acceptance criteria; save evidence under `.scratch/ship-<issue>/` (git-ignored). UI changes need phone-width and desktop checks and before/after screenshots if the project asks for them.
@@ -33,7 +33,7 @@ Run the project's full verify command (from `AGENTS.md`, e.g. `npm run verify`).
 Delegate to the `reviewer` sub-agent: ticket, acceptance criteria, `git diff origin/<default>...HEAD`. Fix BLOCKERs and cheap SHOULD-FIXes, re-run verify, review again. After round 2: an open BLOCKER means stop and report BLOCKED; other findings go to the report and `BACKLOG.md`. Never weaken tests or checks to pass review.
 
 ## 5. Commit, push the feature branch, open the PR
-Commit using the project's message format, including the updated `STATE.md` (phase = review, next action = user reviews PR). Push only the feature branch (`git push -u origin <branch>`) and open a PR (`gh pr create`) with: summary, acceptance criteria with evidence, how to test, risks, screenshots if UI. If the remote belongs to someone else and the user hasn't asked for a PR there, stop before pushing and show the PR text instead. Never merge, never push to the default branch, never deploy.
+Commit using the project's message format, including the updated `STATE.md` (phase = review, next action = user reviews PR). Push only the feature branch (`git push -u origin <branch>`) and open a PR (`gh pr create`). Use the project's PR template if it has one; otherwise this body (adapted from Matt Pocock's `pr` skill): **Summary** (what and why, 2–3 lines), **Evidence** (screenshots first, then test names and command results per acceptance criterion), **Merge danger** (one-way or two-way door, blast radius: which users/data are affected if it is wrong, how to roll back), **Not tested**. If the remote belongs to someone else and the user hasn't asked for a PR there, stop before pushing and show the PR text instead. Never merge, never push to the default branch, never deploy.
 
 ## 6. Hand back
 Finish with the Thai delivery report from `core.md` plus the PR link (or the prepared PR text). The one next action is usually "review and merge PR #…".

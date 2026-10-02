@@ -17,6 +17,7 @@
 | ไม่รู้ว่าอยู่ขั้นไหน | 02-daily-work.md | 02-B ตอนนี้เหลืออะไร | ask-matt |
 | มี ticket ชัดแล้ว อยากให้จบในรอบเดียว | 02-daily-work.md | 02-C ทำ ticket ให้จบ | implement, tdd, /ship |
 | จะเปิดระบบดู / หน้าขาว | 02-daily-work.md | 02-D รันโปรเจกต์ | ใช้ skill ของโปรเจกต์ถ้ามี (เช่น run-web ใน suth) ไม่มีก็ใช้ prompt 02-D |
+| อัปเดต dependency / มีช่องโหว่ | 02-daily-work.md | 02-E อัปเดต dependency อย่างปลอดภัย | /ship ทีละ PR |
 | เจออาการผิดปกติ ยังไม่รู้สาเหตุ | 03-bugs.md | 03-A รายงานบั๊กและหาสาเหตุ | diagnosing-bugs, tdd |
 | ข้อมูลไม่ตรง ยังไม่แน่ใจว่าเป็นบั๊ก | 03-bugs.md | 03-B วินิจฉัยอย่างเดียว | diagnosing-bugs |
 | รู้สาเหตุแล้ว ต้องแก้ | 03-bugs.md | 03-C แก้บั๊กเดียวที่ยืนยันแล้ว | tdd |
@@ -35,16 +36,18 @@
 | จบวัน | 07-handoff-delivery.md | 07-B ปิดวัน | handoff, /handoff-pack |
 | จะขึ้นระบบจริง | 07-handoff-delivery.md | 07-C เช็กลิสต์ก่อนปล่อย | engineering:deploy-checklist (อาจไม่ได้ติดตั้ง; ถ้าไม่มีใช้ prompt 07-C) |
 | ส่งมอบให้ไอทีโรงพยาบาล | 07-handoff-delivery.md | 07-D ชุดส่งมอบ | engineering:documentation (อาจไม่ได้ติดตั้ง; ถ้าไม่มีใช้ prompt 07-D) |
+| เปลี่ยน schema ฐานข้อมูล | 07-handoff-delivery.md | 07-E ตรวจ migration (plan-only) | - |
+| ซ้อมกู้ backup (ทุกเดือน / ก่อนส่งมอบ) | 07-handoff-delivery.md | 07-F restore drill | - |
 | อยากให้ agent ค้านแผน | 08-critique.md | 08-A คัดค้านแผนของฉัน | grill-me |
 | ก่อนอนุมัติสเปก/ปล่อยระบบ | 08-critique.md | 08-B pre-mortem | grilling |
 | รู้สึกไม่มั่นใจ / กดตามคำแนะนำมาหลายข้อ | 08-critique.md | 08-C ฉันมองข้ามอะไร | grill-with-docs |
 | จะเปลี่ยนการตัดสินใจเดิม | 08-critique.md | 08-D ตรวจเทียบ ADR | domain-modeling |
 
-รวม 31 prompt ใน 8 ไฟล์ สำหรับงานส่วนใหญ่ให้ใช้สกิล `/new-request`, `/ship`, `/handoff-pack` ก่อน แล้วค่อยมาใช้ prompt ในไฟล์เหล่านี้เมื่อต้องการคุมรายละเอียดเอง
+รวม 34 prompt ใน 8 ไฟล์ สำหรับงานส่วนใหญ่ให้ใช้สกิล `/new-request`, `/ship`, `/handoff-pack` ก่อน แล้วค่อยมาใช้ prompt ในไฟล์เหล่านี้เมื่อต้องการคุมรายละเอียดเอง
 
 ## ลำดับงานโดยรวม (ถ้าไม่มั่นใจว่าอยู่ขั้นไหน ให้ใช้ 02-B)
 
-ไอเดีย (01-A, 01-B) -> ระดับงานและ stack (01-C, 01-D, 01-E) -> spec และ tickets (`/to-spec`, `/to-tickets`) -> ทำทีละ ticket (02-A, 02-C) -> ตรวจ (05-A ถึง 05-D) -> ปล่อยและส่งมอบ (07-C, 07-D) โดยแทรก 08-A ถึง 08-D ก่อนจุดตัดสินใจใหญ่ และ 04-D ทุกครั้งที่นึกอะไรออกกลางงาน
+ไอเดีย (01-A, 01-B) -> ระดับงานและ stack (01-C, 01-D, 01-E) -> spec และ tickets (`/to-spec`, `/to-tickets`) -> ทำทีละ ticket (02-A, 02-C) -> ตรวจ (05-A ถึง 05-D) -> ปล่อยและส่งมอบ (07-C, 07-D, 07-E, 07-F) โดยแทรก 08-A ถึง 08-D ก่อนจุดตัดสินใจใหญ่ และ 04-D ทุกครั้งที่นึกอะไรออกกลางงาน
 
 ## 5 กฎเขียน prompt เอง
 
