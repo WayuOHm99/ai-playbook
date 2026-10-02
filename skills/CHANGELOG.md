@@ -3,7 +3,7 @@
 Version lives in each skill's `metadata.version`. Bump it with every behaviour change and add a line here. After a change, run `node scripts/lint-skills.mjs` and, for description changes, `node scripts/run-trigger-evals.mjs --skill <name>` (results in `evals/results.md`).
 
 ## 2026-10-02
-- **choose-stack 1.0.0** (new, auto-invoked)
+- **choose-stack 1.1.0** (new, auto-invoked; 1.1.0 applies the first live test: core-feature risk step, /50 scoring, non-interactive assumptions, PDPA s.28 check, snippets are not sources)
   - Stack decisions are analysed fresh for each project.
   - Steps: constraints table, then 2–3 candidates (one house default and one from outside the vault), then fresh research from primary sources, then weighted scoring, then a recommendation with "would change if" conditions and feasibility items, then an ADR.
   - `stacks/*.md` are now evidence and defaults, not a fixed menu.
