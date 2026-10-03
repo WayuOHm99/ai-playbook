@@ -1,6 +1,6 @@
 ---
 name: researcher
-description: Read-only research against current primary sources (official docs, release notes, standards, well-known repos) with URLs and dates. Use for tech choices, versions, API facts, "how do world-class systems do X", and compliance questions.
+description: Read-only research against current primary sources with URLs and dates. Use only when a playbook skill (such as choose-stack) delegates to it or the user asks for the researcher agent by name; do not delegate to it on your own initiative.
 tools: Read, Grep, Glob, WebSearch, WebFetch, Write
 model: sonnet
 effort: high

@@ -1,6 +1,6 @@
 ---
 name: reviewer
-description: Independent fresh-eyes code review of a diff against its ticket/spec and the repo's standards. Use after implementation, before a PR, or when the user asks for a second opinion. Read-only.
+description: Fresh-eyes code review of a diff against its ticket and the repo's standards. Read-only. Use only when a playbook skill (such as ship) delegates to it or the user asks for the reviewer agent by name; do not delegate to it on your own initiative.
 tools: Read, Grep, Glob, Bash
 model: sonnet
 effort: high

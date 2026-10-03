@@ -1,5 +1,5 @@
 name = "verifier"
-description = "Prove a change works in the running app (browser/HTTP) and capture evidence. Does not edit app code."
+description = "Proves a change works in the running app and captures evidence. Use only when a playbook skill (such as ship) delegates to it or the user asks for the verifier agent by name; do not delegate to it on your own initiative."
 model = "gpt-6-luna"
 model_reasoning_effort = "high"
 developer_instructions = """

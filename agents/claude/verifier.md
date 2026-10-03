@@ -1,6 +1,6 @@
 ---
 name: verifier
-description: Prove that a change works in the running app, not just in tests. Starts the app locally, exercises the acceptance criteria in a browser or via HTTP, captures evidence. Use after implementation and before review/PR.
+description: Proves a change works in the running app and captures evidence. Use only when a playbook skill (such as ship) delegates to it or the user asks for the verifier agent by name; do not delegate to it on your own initiative.
 tools: Read, Grep, Glob, Bash, PowerShell
 model: sonnet
 effort: high

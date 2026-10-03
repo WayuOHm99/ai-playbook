@@ -1,5 +1,5 @@
 name = "reviewer"
-description = "Independent fresh-eyes review of a diff against its ticket and the repo standards. Read-only."
+description = "Fresh-eyes code review of a diff against its ticket and the repo's standards. Read-only. Use only when a playbook skill (such as ship) delegates to it or the user asks for the reviewer agent by name; do not delegate to it on your own initiative."
 model = "gpt-6-sol"
 model_reasoning_effort = "high"
 developer_instructions = """
