@@ -1,8 +1,9 @@
 ---
 name: choose-stack
 description: Use when starting a new project or system, choosing or changing a framework, database, hosting, auth, mobile or video tooling, or when the user asks "use X or Y" / "stack อะไรดี" / "ควรใช้อะไรทำ". Analyses the requirement and constraints, researches current options from primary sources, compares 2-3 candidates with trade-offs, and recommends one with an ADR. Do not use for picking a small library inside an already-chosen stack.
+disable-model-invocation: true
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Choose a stack: analyse, research, recommend

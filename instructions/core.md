@@ -1,6 +1,6 @@
-# Global agent rules (from D:\ai-playbook — edit there, then run scripts\sync.ps1)
+# Agent working rules (reference)
 
-These rules apply to every project for this user. They are the single source for hard stops, triage classes and the report format; other vault files point here. Project `AGENTS.md`/`CONTRIBUTING.md` files add to them; if a project rule conflicts, follow the project rule and say so.
+This file is not loaded automatically. The vault's skills read it when invoked, and the user may ask an agent to read and follow it in a session. When it is in effect, these rules apply to the project at hand. They are the single source for hard stops, triage classes and the report format; other vault files point here. Project `AGENTS.md`/`CONTRIBUTING.md` files add to them; if a project rule conflicts, follow the project rule and say so.
 
 ## Who you work with
 - A Thai intern developer building internal hospital web systems, mostly alone. Talk in plain Thai; keep code, commands, file names and technical terms in English.

@@ -1,19 +1,27 @@
 # ai-playbook: คลังขั้นตอนการทำงานกับ AI Agents
 
-คลังนี้รวมวิธีทำงานตั้งแต่ได้ requirement จนส่งมอบระบบ ใช้ร่วมกันทั้ง **Claude Code** และ **Codex**
-แก้ที่นี่ที่เดียว แล้วรัน `scripts\sync.ps1` เพื่อให้ทั้งสองเครื่องมือเห็นการเปลี่ยนแปลง
+คลังนี้รวมวิธีทำงานตั้งแต่ได้ requirement จนส่งมอบระบบ เป็น**คลังไว้เปิดอ่านและหยิบใช้เอง** ใช้ได้ทั้งกับ **Claude Code** และ **Codex**
 
 👉 **เริ่มที่ [`00-start-here.md`](00-start-here.md)** ในนั้นบอกว่าเจอสถานการณ์ไหนให้ทำอะไร
 
-## ติดตั้งแล้วอะไรบ้าง (2026-10-01)
+## คลังนี้ไม่ตั้งค่าอะไรให้เองเบื้องหลัง (ตั้งแต่ 2026-10-03)
 
-| ส่วน | อยู่ที่ | ทำหน้าที่ |
-|---|---|---|
-| กฎกลาง | `instructions/core.md` → `~/.claude/CLAUDE.md` (import) และ `~/.codex/AGENTS.md` (สำเนาที่ sync สร้าง) | agent ทุกตัวคัดแยกงาน คุมขอบเขต แย้งได้ และรายงานรูปแบบเดียวกัน |
-| สกิลของคลัง (`new-request`, `ship`, `handoff-pack`, `retro`) | `skills/` → **สำเนา** ใน `~/.claude/skills` (แอป Desktop ไม่แสดงสกิลแบบ junction ในเมนู "/" ดู anthropics/claude-code#68318) และ junction ใน `~/.agents/skills` สำหรับ Codex; commit ในคลังแล้ว sync ให้อัตโนมัติ (post-commit hook) | `/new-request`, `/ship`, `/handoff-pack`, `/retro` — ประวัติใน `skills/CHANGELOG.md` |
-| Sub-agents | `agents/claude/*.md` → `~/.claude/agents`, `agents/codex/*.toml` → `~/.codex/agents` | reviewer, researcher, verifier (Claude: Sonnet effort high) |
-| ตัวกันคำสั่งอันตราย | `guardrails/guard.mjs` → hook ใน `~/.claude/settings.json` และ `~/.codex/hooks.json` | บล็อก `rm -rf`, force push, `reset --hard`, `DROP`/`TRUNCATE`, `docker volume rm`, การเขียน `.env` |
-| Claude settings | `scripts/merge-claude-settings.mjs` | auto mode, deny rules, hook (มี backup ของไฟล์เดิม) |
+เปิดแชทใหม่ใน Claude Code หรือ Codex จะไม่มีกฎหรือการตั้งค่าของคลังโหลดเข้ามา ของในคลังจะทำงานเมื่อคุณเรียกเองเท่านั้น
+
+| สิ่งที่ติดตั้งไว้ในเครื่อง | เรียกใช้ยังไง |
+|---|---|
+| สกิล 5 ตัว: `new-request`, `ship`, `handoff-pack`, `retro`, `choose-stack` | พิมพ์ `/ชื่อสกิล` ใน Claude หรือ `$ชื่อสกิล` ใน Codex ทุกตัวตั้งไว้ให้เรียกเองเท่านั้น agent เรียกเองไม่ได้ |
+| Sub-agents: reviewer, researcher, verifier | ไม่ทำงานเอง สกิลจะเรียกเมื่อต้องใช้ |
+| ตัวกันคำสั่งอันตราย (`guardrails/guard.mjs`) | ทำงานตลอด ทำอย่างเดียวคือบล็อก `rm -rf`, force push, ลบฐานข้อมูล, แตะ `.env` ไม่ได้สั่งให้ agent ทำอะไร |
+
+ส่วนที่เหลือเป็นเอกสารให้เปิดอ่านหรือก๊อปไปวางในแชทเอง:
+- `instructions/core.md` กฎการทำงาน สกิลจะอ่านไฟล์นี้ตอนถูกเรียก ถ้าอยากให้ agent ทำตามในแชทไหน ให้พิมพ์ว่า "อ่าน D:\ai-playbook\instructions\core.md แล้วทำตาม"
+- `prompts/` prompt ภาษาไทย 34 แบบ
+- `playbook/`, `stacks/`, `templates/`, `me/`, `research/`
+
+**แก้สกิลในคลังแล้ว** ต้องรัน `scripts\sync.ps1` เองหนึ่งครั้ง สคริปต์นี้ติดตั้งแค่สกิล sub-agents และตัวกันคำสั่ง ไม่ติดตั้งกฎกลาง
+
+**ถ้าวันหลังอยากให้ทั้งสองเครื่องมือทำตามกฎของคลังทุกแชท** สร้างไฟล์ `~/.claude/CLAUDE.md` ที่มีบรรทัดเดียว `@D:/ai-playbook/instructions/core.md` และก๊อปเนื้อหา `core.md` ไปไว้ที่ `~/.codex/AGENTS.md`
 
 ## โครงสร้างคลัง
 ```
@@ -40,12 +48,7 @@ _inbox/            ข้อมูลส่วนตัวและไฟล์ 
 - เมื่อ Claude Code หรือ Codex ออกเวอร์ชันใหม่: รัน `scripts\sync.ps1` แล้วทดสอบ guard ตาม `guardrails/README.md`
 - หลังจบแต่ละโปรเจกต์: เพิ่มบทเรียนลง `me/pitfalls.md` หรือ `me/wins.md`
 
-## ระบบดูแลคลังอัตโนมัติ (ตั้งแล้ว 2026-10-01)
-| อะไร | เมื่อไหร่ | ทำอะไร |
-|---|---|---|
-| `ai-playbook-weekly-retro` (scheduled task ในแอป Claude) | ทุกจันทร์ 9:10 | อ่านแชทสัปดาห์ที่ผ่านมาแบบปิดบังรหัส เสนอบทเรียนไม่เกิน 3 ข้อ **ไม่แก้คลังเอง** |
-| `ai-playbook-monthly-freshness` | วันที่ 1 ทุกเดือน 9:00 | ตรวจเวอร์ชัน stack, Claude Code/Codex และสกิลของ Matt เทียบแหล่งทางการ **ไม่แก้คลังเอง** |
-| post-commit hook ของคลัง | ทุก commit | รัน `sync.ps1` + `lint-skills.mjs` ให้ Claude/Codex ได้ของล่าสุดและเตือนถ้าสกิลผิดรูปแบบ |
-
-งานตั้งเวลาจะรันเมื่อแอป Claude เปิดอยู่ ถ้าปิดแอปไว้ตอนถึงเวลา จะรันตอนเปิดแอปครั้งถัดไป
-ติดตั้งสกิลของคนอื่นทุกครั้ง: ตรวจตาม `setup/skill-intake.md` และบันทึกใน `setup/skills-lock.md`
+## ดูแลคลังด้วยตัวเอง (ไม่มีงานอัตโนมัติ)
+- **อยากให้ agent สรุปบทเรียนจากแชทล่าสุด:** พิมพ์ `/retro` มันจะเสนอไม่เกิน 3 ข้อและรอคุณอนุมัติก่อนบันทึก
+- **อยากตรวจว่าเวอร์ชันใน `stacks/` ยังใหม่ไหม:** ใช้ prompt ในหัวข้อ "ทำให้คลังไม่ล้าสมัย" ด้านบน
+- **ติดตั้งสกิลของคนอื่น:** ตรวจตาม `setup/skill-intake.md` และบันทึกใน `setup/skills-lock.md`

@@ -2,6 +2,10 @@
 
 Version lives in each skill's `metadata.version`. Bump it with every behaviour change and add a line here. After a change, run `node scripts/lint-skills.mjs` and, for description changes, `node scripts/run-trigger-evals.mjs --skill <name>` (results in `evals/results.md`).
 
+## 2026-10-03
+- **All vault skills are now manual-only** (`disable-model-invocation: true` plus `agents/openai.yaml` with `allow_implicit_invocation: false`): new-request 1.2.0, handoff-pack 1.2.0, choose-stack 1.2.0. Nothing from the vault runs unless the user types the skill name.
+- **The vault no longer installs global rules.** Removed `~/.claude/CLAUDE.md`, emptied `~/.codex/AGENTS.md`, deleted the two scheduled tasks and the post-commit auto-sync hook. `sync.ps1` now installs only skills, sub-agents and the guard hook, and is run by hand.
+
 ## 2026-10-02
 - **choose-stack 1.1.0** (new, auto-invoked; 1.1.0 applies the first live test: core-feature risk step, /50 scoring, non-interactive assumptions, PDPA s.28 check, snippets are not sources)
   - Stack decisions are analysed fresh for each project.

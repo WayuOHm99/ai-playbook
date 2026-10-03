@@ -1,8 +1,9 @@
 ---
 name: handoff-pack
 description: Use when a work session is ending or moving - the user is stopping for the day, about to /clear or compact, running out of quota or context, switching between Claude Code and Codex, or starting a session that continues earlier work (Thai cues: เลิกงาน, พักงาน, เก็บงาน, จะ /clear, โควตาใกล้หมด, context ใกล้เต็ม, สลับไป Codex/Claude, ต่อจาก Codex/Claude, ทำต่อจากเมื่อวาน). Saves or loads state in committed STATE.md and HANDOFF.md. Do not use for README, CHANGELOG, PR descriptions or handing a system over to IT.
+disable-model-invocation: true
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Handoff pack: continue from files, not from copy-paste

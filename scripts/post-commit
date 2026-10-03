@@ -1,3 +1,0 @@
-#!/bin/sh
-# Installed into .git/hooks by scripts/sync.ps1: keeps Claude/Codex copies of the vault current after every commit.
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "D:/ai-playbook/scripts/sync.ps1" > /dev/null 2>&1 || echo "ai-playbook: sync.ps1 failed; run it by hand" >&2

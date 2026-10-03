@@ -1,0 +1,6 @@
+interface:
+  display_name: "Choose stack"
+  short_description: "Analyse, research and recommend a stack"
+  default_prompt: "Use $choose-stack for this."
+policy:
+  allow_implicit_invocation: false

@@ -1,4 +1,5 @@
-# Sync the playbook vault into Claude Code and Codex. Idempotent; safe to re-run after editing the vault.
+# Install the vault's skills, sub-agents and guard hook into Claude Code and Codex. Run by hand after editing a skill.
+# It does not install global rules, scheduled tasks or auto-sync: nothing from the vault loads unless you type /<skill>.
 # Never deletes: existing real folders/files with the same name are renamed to <name>.bak-<date>.
 $ErrorActionPreference = 'Stop'
 $Vault = Split-Path $PSScriptRoot -Parent
@@ -27,7 +28,7 @@ function Ensure-Junction($link, $target) {
 }
 
 # Claude Desktop's "/" menu omits junction-linked skills (anthropics/claude-code#68318, closed not planned),
-# so Claude gets real copies. The vault's post-commit hook re-runs this script, keeping copies current.
+# so Claude gets real copies. Re-run this script by hand after editing a skill.
 function Ensure-Copy($dest, $src) {
   if (Test-Path -LiteralPath $dest) {
     $item = Get-Item -LiteralPath $dest -Force
@@ -47,14 +48,7 @@ function Write-IfChanged($path, $content) {
   }
 }
 
-Write-Host "1) Instructions"
-$core = Get-Content -LiteralPath "$Vault\instructions\core.md" -Raw -Encoding UTF8
-$claudeMd = "$HomeDir\.claude\CLAUDE.md"
-$claudeImport = "@D:/ai-playbook/instructions/core.md`n"
-if ((Test-Path $claudeMd) -and -not ((Get-Content $claudeMd -Raw -Encoding UTF8) -match 'ai-playbook')) { Backup-IfReal $claudeMd | Out-Null }
-Write-IfChanged $claudeMd $claudeImport
-$header = "<!-- GENERATED from D:\ai-playbook\instructions\core.md by scripts\sync.ps1. Edit the vault, not this file. -->`n`n"
-Write-IfChanged "$HomeDir\.codex\AGENTS.md" ($header + $core)
+# Global instructions are NOT installed: the vault is a library. Skills read instructions/core.md only when you invoke them.
 
 Write-Host "2) Skills (copies into ~/.claude/skills, junctions into ~/.agents/skills for Codex)"
 foreach ($s in Get-ChildItem -Directory "$Vault\skills") {
@@ -99,13 +93,7 @@ if ((Test-Path $codexHooks) -and -not ((Get-Content $codexHooks -Raw -Encoding U
 Write-Host "5) Git long paths"
 if ((git config --global core.longpaths) -ne 'true') { git config --global core.longpaths true; Write-Host "  set core.longpaths=true" }
 
-Write-Host "Done. Claude settings (hooks, deny rules, auto mode) are merged by scripts\merge-claude-settings.mjs."
-
-$hook = "$Vault\.git\hooks\post-commit"
-if (-not (Test-Path $hook) -or ((Get-Content $hook -Raw) -ne (Get-Content "$Vault\scripts\post-commit" -Raw))) {
-  Copy-Item "$Vault\scripts\post-commit" $hook -Force
-  Write-Host "Installed vault post-commit hook (auto-sync after every commit)."
-}
-
 Write-Host "6) Skill lint + drift check (warn-only)"
 node "$Vault\scripts\lint-skills.mjs"
+
+Write-Host "Done. The Claude guard hook is added by scripts\merge-claude-settings.mjs (hook only)."

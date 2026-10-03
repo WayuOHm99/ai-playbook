@@ -1,8 +1,9 @@
 ---
 name: new-request
 description: Use when the user brings something new that is not the current ticket - a bug report, user or boss feedback, a new feature idea, a new requirement, an "add this too" or "make it world-class" request, or a mixed message containing several of these (Thai cues: เจอบั๊ก, มี feedback, อยากได้, อยากเพิ่ม, ทำให้ระดับโลก, requirement ใหม่, เริ่มระบบใหม่). Splits the message, classifies each item P0-P7, routes it, and names one next step. Do not use for direct small tasks on the current ticket (run tests, rename, explain code, commit).
+disable-model-invocation: true
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # New request: classify, route, and name the next step

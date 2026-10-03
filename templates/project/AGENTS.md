@@ -46,7 +46,7 @@ Data: <synthetic only | staff/asset data | other>. **Patient or health data is n
 - Anything outside the current ticket. Log it in BACKLOG.md instead.
 
 ## Global rules
-Hard stops, triage, push policy (feature branch + PR allowed; merge/main/deploy = ask), retry limit (2), definition of done and report format: `instructions/core.md` (loaded globally, do not copy here). Project-specific additions only:
+Hard stops, triage, push policy (feature branch + PR allowed; merge/main/deploy = ask), retry limit (2), definition of done and report format: `D:\ai-playbook\instructions\core.md` (not loaded automatically: paste the parts you want into this file, or tell the agent to read it). Project-specific additions only:
 - Project DoD extras: `<npm run verify>` green (and `verify:db` if DB touched); docs updated if behavior, commands or config changed (RUN.md / HANDOVER.md / ADR / CHANGELOG).
 
 ## Overrides for installed third-party skills
