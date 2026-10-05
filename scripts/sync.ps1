@@ -1,6 +1,8 @@
 # Install the vault's skills and sub-agents into Claude Code and Codex. Run by hand after editing a skill.
 # It does not install global rules, scheduled tasks or auto-sync: nothing from the vault loads unless you type /<skill>.
-# Never deletes: existing real folders/files with the same name are renamed to <name>.bak-<date>.
+# Claude copies retain destination-only files; matching source paths may be overwritten.
+# Codex junction installation backs up existing real paths under ~/.ai-playbook-backups/<stamp>/<name>.
+# Replacing a junction removes only the link. This script may also enable global Git core.longpaths.
 $ErrorActionPreference = 'Stop'
 $Vault = Split-Path $PSScriptRoot -Parent
 $HomeDir = $env:USERPROFILE
@@ -34,7 +36,8 @@ function Ensure-Copy($dest, $src) {
     $item = Get-Item -LiteralPath $dest -Force
     if ($item.LinkType -eq 'Junction') { $item.Delete(); Write-Host "  replaced junction $dest" }  # removes only the link
   }
-  robocopy $src $dest /MIR /NJH /NJS /NFL /NDL /NP | Out-Null
+  # Copy all subdirectories, including empty ones, without purging destination-only files.
+  robocopy $src $dest /E /NJH /NJS /NFL /NDL /NP | Out-Null
   if ($LASTEXITCODE -ge 8) { throw "robocopy failed for $dest ($LASTEXITCODE)" }
   $global:LASTEXITCODE = 0
 }
