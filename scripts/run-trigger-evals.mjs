@@ -1,12 +1,13 @@
 // Trigger evals: does the agent load a skill for the queries that should trigger it, and not for near-misses?
-// Usage: node scripts/run-trigger-evals.mjs --skill new-request [--tool codex|claude] [--runs 1] [--concurrency 3]
-// Each query runs in its own throwaway fixture repo under D:\ev\<id> (short path for Windows).
+// Usage: node scripts/run-trigger-evals.mjs --skill new-request [--tool codex|claude] [--runs 1] [--concurrency 3] [--fixture-root D:/ev]
+// Each invocation owns a unique D:\ev\run-<random> root; queries get separate children.
 // Detection: Claude = a Skill tool call with that skill name; Codex = the agent reading <skill>/SKILL.md.
 // Results are appended to evals/results.md.
 import { spawn } from 'node:child_process';
-import { readFileSync, writeFileSync, mkdirSync, appendFileSync, rmSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, appendFileSync, existsSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { DEFAULT_FIXTURE_PARENT, runEvalFixtures, waitForEvalChildClose } from './lib/eval-workspace.mjs';
 
 const VAULT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
@@ -14,6 +15,7 @@ const skill = arg('--skill');
 const tool = arg('--tool', 'codex');
 const runs = Number(arg('--runs', 1));
 const concurrency = Number(arg('--concurrency', 3));
+const fixtureParent = arg('--fixture-root', DEFAULT_FIXTURE_PARENT);
 const TIMEOUT_MS = 240_000;
 if (!skill) { console.error('--skill is required'); process.exit(2); }
 const set = JSON.parse(readFileSync(join(VAULT, 'evals', `${skill}.json`), 'utf8'));
@@ -34,10 +36,7 @@ const detect = (out) => tool === 'claude'
   ? out.split('\n').some((l) => { try { return JSON.parse(l).message?.content?.some((b) => b.type === 'tool_use' && b.name === 'Skill' && String(b.input?.skill || '').includes(skill)); } catch { return false; } })
   : new RegExp(`[\\\\/]${skill}[\\\\/]+SKILL\\.md`, 'i').test(out);
 
-const runOne = (job) => new Promise((res) => {
-  const dir = join('D:\\ev', job.id);
-  rmSync(dir, { recursive: true, force: true });
-  mkdirSync(dir, { recursive: true });
+const runOne = async (job, dir) => {
   for (const [f, c] of Object.entries(FIXTURE)) writeFileSync(join(dir, f), c);
   const cmd = tool === 'claude'
     ? ['claude', ['-p', job.q, '--model', 'sonnet', '--permission-mode', 'plan', '--max-turns', '3', '--output-format', 'stream-json', '--verbose']]
@@ -47,25 +46,24 @@ const runOne = (job) => new Promise((res) => {
   p.stdout.on('data', (d) => (out += d));
   p.stderr.on('data', (d) => (out += d));
   const t = setTimeout(() => p.kill(), TIMEOUT_MS);
-  p.on('close', () => {
+  try {
+    await waitForEvalChildClose(p);
+  } finally {
     clearTimeout(t);
-    const fired = detect(out);
-    const authFail = /Failed to authenticate|usage limit/i.test(out);
-    res({ ...job, fired, pass: authFail ? null : fired === (job.expect === 'trigger'), authFail });
-  });
-});
-
-const results = [];
-let next = 0;
-await Promise.all(Array.from({ length: concurrency }, async () => {
-  while (next < jobs.length) {
-    const job = jobs[next++];
-    const r = await runOne(job);
-    results.push(r);
-    console.log(`${r.pass === null ? 'ERR ' : r.pass ? 'pass' : 'FAIL'} ${r.expect.padEnd(10)} fired=${r.fired} ${r.q.slice(0, 70)}`);
   }
-}));
-rmSync('D:\\ev', { recursive: true, force: true });
+  const fired = detect(out);
+  const authFail = /Failed to authenticate|usage limit/i.test(out);
+  return { ...job, fired, pass: authFail ? null : fired === (job.expect === 'trigger'), authFail };
+};
+
+const results = await runEvalFixtures(jobs, {
+  fixtureParent,
+  concurrency,
+  execute: runOne,
+  onResult(r) {
+    console.log(`${r.pass === null ? 'ERR ' : r.pass ? 'pass' : 'FAIL'} ${r.expect.padEnd(10)} fired=${r.fired} ${r.q.slice(0, 70)}`);
+  },
+});
 
 const valid = results.filter((r) => r.pass !== null);
 const recall = valid.filter((r) => r.expect === 'trigger');

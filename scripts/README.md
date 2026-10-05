@@ -22,6 +22,7 @@ Run from the vault root with Node.js and Git installed; no package installation 
 
 ```powershell
 node --test scripts/review-candidate.test.mjs
+node --test scripts/lib/eval-workspace.test.mjs
 node --test guardrails/guard.test.mjs scripts/lib/dedupe-sessions.test.mjs
 node scripts/lint-skills.mjs --strict
 git diff --check
@@ -32,3 +33,9 @@ Candidate tests create isolated Git repositories under `.scratch/review-candidat
 Skill lint also compares the vault with installed copies. A feature branch that changes skills will report expected installation drift until those changes are installed. Record that separately from syntax failures; do not synchronize global skills merely to make a branch check green.
 
 These deterministic checks do not prove an agent follows the entire `/ship` workflow or loads core in a live Claude/Codex session. That needs a separate behavioral trial after installation.
+
+## Eval fixture isolation
+
+`run-trigger-evals.mjs` uses `lib/eval-workspace.mjs` to allocate a unique `run-<random>` root under `D:/ev` (or `--fixture-root <parent>`). Each job gets its own child directory. Cleanup removes only the current run after every active worker settles, checks canonical paths, original directory identity and the ownership marker, and refuses a replaced/junction root. A worker with a child error waits for `close` before rejecting. It never removes the shared parent or reuses a previous run.
+
+`eval-workspace.test.mjs` exercises real files and Windows junctions with fake workers: simultaneous runs using the same job id, preservation of unrelated/prior files, rejected workers, delayed active jobs, and refused cleanup after ownership/path changes. No agent login or model quota is required. This does not change the trigger grader or prove live CLI timeout/process-tree behavior.

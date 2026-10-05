@@ -6,7 +6,17 @@ Checks whether an agent loads a vault skill for the messages that should trigger
 node scripts/run-trigger-evals.mjs --skill new-request --tool codex      # or --tool claude (needs `claude` CLI logged in)
 node scripts/run-trigger-evals.mjs --skill handoff-pack --tool claude --runs 3
 ```
-Each query runs in a throwaway fixture repo under `D:\ev\`, which is removed afterwards. Results are appended to `results.md`.
+Each invocation creates its own short fixture root, `D:\ev\run-<random>\`, with a separate child for each query. Only that owned root is cleaned up after all active jobs finish, including when a worker rejects. The shared `D:\ev\` parent, other runs and leftovers from interrupted runs are never removed. Results are appended to `results.md`.
+
+Use `--fixture-root <parent-directory>` to select another parent. Cleanup checks the absolute path, canonical path, original directory identity and per-run ownership marker before recursive deletion, and refuses a replaced or linked root. A child error is retained until its `close` event; an error alone does not prove the process has stopped. A forcibly terminated process can leave its run behind; later runs do not reuse or delete it.
+
+Filesystem regression tests run without Claude/Codex or network access:
+
+```bash
+node --test scripts/lib/eval-workspace.test.mjs
+```
+
+This patch isolates fixture storage and cleanup only. The trigger scoring and historical results below are unchanged; they do not measure today's manual-only workflow or its output quality.
 
 ## Findings 2026-10-01 (Codex 0.157.1, gpt-6-luna)
 - **Recall 0/8 for both skills**, before and after rewriting the descriptions with "Use when…" and Thai cue words. **Near-misses were 8/8 correct**, so no false triggers.
