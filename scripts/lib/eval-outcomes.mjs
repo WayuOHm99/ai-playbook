@@ -33,8 +33,14 @@ export function parseCodexTrace(stdout) {
     } catch { return { problem: 'invalid-json-events', events: [] }; }
   }
   if (events.some(e => e.type === 'error' || e.type === 'turn.failed')) return { problem: 'agent-error', events };
-  const messages = events.filter(e => e.type === 'item.completed' && e.item?.type === 'agent_message' && typeof e.item.text === 'string');
-  if (!events.some(e => e.type === 'turn.completed') || !messages.length || !messages.at(-1).item.text.trim()) return { problem: 'incomplete-events', events };
+  // An earlier completed turn cannot certify a truncated continuation. Be
+  // conservative about trailing events and require this turn's own reply.
+  if (events.at(-1)?.type !== 'turn.completed') return { problem: 'incomplete-events', events };
+  const previousCompletion = events.slice(0, -1).findLastIndex(e => e.type === 'turn.completed');
+  const lastStart = events.findLastIndex(e => e.type === 'turn.started');
+  const finalTurn = events.slice(Math.max(lastStart, previousCompletion + 1));
+  const messages = finalTurn.filter(e => e.type === 'item.completed' && e.item?.type === 'agent_message' && typeof e.item.text === 'string');
+  if (!messages.length || !messages.at(-1).item.text.trim()) return { problem: 'incomplete-events', events };
   return { problem: null, events, final: messages.at(-1).item.text };
 }
 

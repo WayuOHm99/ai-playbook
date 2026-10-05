@@ -8,7 +8,7 @@ Run from the vault root. List cases or test the grader without an agent, login, 
 
 ```powershell
 node scripts/run-manual-evals.mjs --list
-node --test scripts/lib/manual-evals.test.mjs scripts/lib/eval-workspace.test.mjs
+node --test scripts/lib/manual-evals.test.mjs scripts/lib/manual-evals-followup.test.mjs scripts/lib/eval-workspace.test.mjs
 ```
 
 | Case | Coverage | Observable checks |
@@ -20,7 +20,7 @@ node --test scripts/lib/manual-evals.test.mjs scripts/lib/eval-workspace.test.mj
 | `retro-bootstrap` | Bootstrap only | Same loading/read-only checks; no extractor or raw history reads |
 | `ship-bootstrap` | Bootstrap only | Same loading/read-only checks; stops before implementing/delivery |
 
-Every case requires a successful completed read of the skill, core and AGENTS, with matching document content. A prompt/path mention, failed read or command-start event does not count. All three reads must precede actions: only simple read commands are exempt, while unknown executables (including `node -e`/`python -c`) count as potential writes. A changed fixture with no action evidence is inconclusive because ordering is unobservable. Successful CLI execution and a complete JSON event stream are prerequisites; loading alone cannot pass a behavioral case.
+Every case requires a successful completed read of the skill, core and AGENTS, with matching document content. A prompt/path mention, failed read or command-start event does not count. All three reads must precede actions: only simple read commands are exempt, while unknown executables (including `node -e`/`python -c`) count as potential writes. All `sed` forms count as actions because scripts can write even without `-i`; read-only sed commands used before loading the rules may therefore fail this conservative gate. A changed fixture with no action evidence is inconclusive because ordering is unobservable. Successful CLI execution and a complete JSON event stream are prerequisites; loading alone cannot pass a behavioral case.
 
 The checks are conservative heuristics over command events and snapshots, not a semantic judge or proof that every instruction was followed. They can reject an equivalent command form or a skill loaded by a future CLI through another mechanism. The writer prompt specifies field labels to make the required handoff content machine-checkable; this is a constrained case, not a test of every valid prose format. Bootstrap cases do **not** measure choose-stack research/scoring/ADR, retro lesson quality/history handling, or full ship reproduction/review/delivery. The receiver uses an independent supplied handoff, so writer failure cannot make receiver coverage disappear.
 
@@ -41,6 +41,8 @@ Claude live evaluation remains deferred at the user's request (2026-10-05). The 
 - `pass`: healthy completed execution and all checks pass.
 - `fail`: healthy completed execution, with missing loading evidence or a failed behavior check.
 - `inconclusive`: timeout, process/spawn error, signal, nonzero exit, auth/limit error, agent failure, malformed/incomplete events or unavailable fixture observation. Never counted as a pass.
+
+Codex traces must end in `turn.completed`, with a nonempty completed agent message from that final turn. An earlier successful turn or reply cannot validate an unfinished continuation. Blank trailing lines are allowed; other events after completion are conservatively treated as incomplete.
 
 Summary reports total/pass/fail/inconclusive, a pass rate over **all** cases, and a separate scored-only rate. A denominator of zero is JSON `null`, not a percentage. Exit codes: 0 = all passed, 1 = conclusive failures, 2 = any inconclusive result or configuration error.
 

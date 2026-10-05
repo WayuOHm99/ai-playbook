@@ -69,10 +69,12 @@ export function gradeManualCase(testCase, processResult, before, after) {
   const projectIndex = successfulRead(events, /AGENTS\.md/i, /# Synthetic eval/);
   // Unknown executables can write. Only simple read commands are exempt from
   // the ordering gate; e.g. node -e cannot silently write before loading rules.
+  // sed is never exempt: it can write via -i or via its script without -i.
   const simpleRead = command => {
-    let body = command.trim().replace(/^.*?powershell(?:\.exe)?\s+.*?-Command\s+/i, '');
+    // Unwrap only a leading shell, never discard preceding executable actions.
+    let body = command.trim().replace(/^powershell(?:\.exe)?\s+.*?-Command\s+/i, '');
     if ((body.startsWith('"') && body.endsWith('"')) || (body.startsWith("'") && body.endsWith("'"))) body = body.slice(1, -1);
-    return body.split(/[;\r\n]+/).filter(s => s.trim()).every(part => /^(?:Get-Content|cat|type|sed|more|pwd|Get-Location)\b/i.test(part.trim()) && !/[&|><`$()[\]{}]/.test(part));
+    return body.split(/[;\r\n]+/).filter(s => s.trim()).every(part => /^(?:Get-Content|cat|type|more|pwd|Get-Location)\b/i.test(part.trim()) && !/[&|><`$()[\]{}]/.test(part));
   };
   const firstAction = events.findIndex(e => e.item?.type === 'file_change' || (e.item?.type === 'command_execution' && !simpleRead(e.item.command ?? '')) || ['mcp_tool_call', 'collab_tool_call', 'web_search'].includes(e.item?.type));
   const changed = [...new Set([...Object.keys(before.files), ...Object.keys(after.files)])].filter(name => before.files[name] !== after.files[name]).sort();

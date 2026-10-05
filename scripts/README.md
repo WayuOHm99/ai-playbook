@@ -24,6 +24,7 @@ Run from the vault root with Node.js and Git installed; no package installation 
 node --test scripts/review-candidate.test.mjs
 node --test scripts/lib/eval-workspace.test.mjs
 node --test scripts/lib/manual-evals.test.mjs
+node --test scripts/lib/manual-evals-followup.test.mjs
 node --test guardrails/guard.test.mjs scripts/lib/dedupe-sessions.test.mjs
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/sync.test.ps1
 node scripts/lint-skills.mjs --strict
@@ -57,3 +58,5 @@ Both eval runners use `lib/eval-workspace.mjs` to allocate a unique `run-<random
 See [`evals/README.md`](../evals/README.md) for cases, rubrics, options, limits and legacy-mode migration. `run-manual-evals.mjs --list` has no side effects. Live Codex execution requires `--live --codex-bin <native executable or Node CLI entry point>`; it uses existing installed skills without sync or installation. Claude live testing remains deferred.
 
 `manual-evals.test.mjs` tests execution health, successful loading evidence, six synthetic cases, behavior failures, safe stdin, missing executables, real exit codes and Windows timeout/descendant termination. Fake agent events verify the runner/grader, not actual model skill quality. Both runners return pass/fail/inconclusive and never treat execution errors as passes. Historical auto-trigger results are preserved; new JSON output is separate and does not append to them.
+
+`manual-evals-followup.test.mjs` covers truncated continuations after an earlier successful turn, missing/empty final-turn replies, manual and legacy grader results, `sed` actions before rule loading, and the running manual CLI's exit-2/report/cleanup behavior with a fake truncated stream. It adds regressions without editing the existing tests.
