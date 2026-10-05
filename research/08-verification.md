@@ -1,5 +1,8 @@
 # 08 Verification of playbook technical assumptions
 
+> **Historical snapshot:** Findings and recommendations below belong to the date shown; they do not describe today's installed configuration.
+> **Guard update (2026-10-05):** The playbook guard was removed at the user's request, and manual sync does not install it. See [guard status](../guardrails/README.md) and the [current workflow](../00-start-here.md).
+
 Date: 2026-10-01. Method: fetched current official docs, then inspected the real local files (not the intent).
 Tiers: T1 official doc, T2 practitioner/high-adoption, T3 other (GitHub issues, blogs).
 Note on quotes: pages were read through a fetch tool. "(raw)" = read from the saved page text. "(fetch)" = rendered by the fetch summariser, not guaranteed character-exact; re-read the page before relying on the exact wording.

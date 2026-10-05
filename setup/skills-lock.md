@@ -10,7 +10,7 @@
 | github.com/softaworks/agent-toolkit | 1 (`requirements-clarity`) | `npx skills` | `~/.agents/skills` | not reviewed | Set manual-only 2026-10-01; overlaps `grilling`. |
 | Cloudflare skills | 11 | unknown (not in the npx lock) | real folders in `~/.claude/skills` and `~/.agents/skills` | not reviewed (UNVERIFIED source) | Set manual-only 2026-10-01. |
 | Claude plugins (`engineering`, `operations`, `data`, …) | ~60 | Claude plugin marketplaces / Cowork sync | `~/.claude/plugins` | not reviewed | Disable unused plugins from the app's plugin settings (setup/skills-cleanup-proposal.md B4). |
-| Vault skills (`new-request`, `ship`, `handoff-pack`, `retro`) | 4 | `scripts/sync.ps1` | copies in `~/.claude/skills`, junctions in `~/.agents/skills` | own | Versions in each SKILL.md `metadata.version`; history in `skills/CHANGELOG.md`. |
+| Vault skills (`new-request`, `ship`, `handoff-pack`, `retro`, `choose-stack`) | 5 | `scripts/sync.ps1` | copies in `~/.claude/skills`, junctions in `~/.agents/skills` | own | Versions in each SKILL.md `metadata.version`; history in `skills/CHANGELOG.md`. |
 
 Parked (moved, not deleted) on 2026-10-01: 29 duplicate Codex copies and 20 Cursor built-ins → `C:\Users\wayuo\.skills-trash\2026-10-01\`.
 

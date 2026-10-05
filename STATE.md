@@ -1,25 +1,25 @@
 # State
 
-Updated: 2026-10-05 | Branch: `fix/sync-preserve-destination`
+Updated: 2026-10-05 | Branch: `docs/current-workflow-guide`
 
-Current ticket: F4 — preserve destination-only files during manual skill sync (approved).
-Phase: review. Next action: user reviews the pull request after verification and independent review pass.
-Base: `24bc111743f6089262c208393d784bd0a276da27`.
+Current ticket: F5/F6 — align current guard guidance and repair the start-here page (approved).
+Phase: review. Next action: user reviews the pull request after documentation verification and independent review pass.
+Base: `883cdee564114092cba42721e30ddc79c6705d83`.
 
 Acceptance criteria:
-- Preserve destination-only files and nested/empty directories in Claude skill copies.
-- Keep copying source files and updating same-name files on repeated sync.
-- Retain existing junction replacement behavior without changing its old target; propagate robocopy failure codes.
-- Document retained obsolete files, same-name overwrite behavior and the existing global core.longpaths side effect.
+- One intact start-here introduction/quick start, with correct Claude slash and Codex dollar examples.
+- Start-here, README and skills-lock list all five actual vault skills.
+- Active guidance treats the playbook guard as optional/uninstalled, not an automatic gate; points to its current status.
+- Historical reports keep their original bodies with dated status notices; local navigation links resolve.
 
 Verification evidence (2026-10-05):
-- Baseline regression suite: 12 pass, 2 fail because `/MIR` deletes local/removed-upstream files; log: `.scratch/ship-F4/sync-baseline.txt`.
-- Fixed suite: 14 cases pass on Windows PowerShell 5.1 and PowerShell 7; real script/robocopy/junctions in synthetic vaults/homes, with stubbed Git/Node and stubbed copy exit-code cases; logs: `.scratch/ship-F4/sync-windows-powershell.txt`, `.scratch/ship-F4/sync-pwsh.txt`.
-- Existing Node suites: eval lifecycle 16, candidate 13, guard 64, dedupe 3 pass; log: `.scratch/ship-F4/node-tests.txt`. Total distinct logical checks including sync: 110.
-- PowerShell parser, strict skill lint and `git diff --check` pass.
+- One-off documentation checker: baseline 19 pass, 16 fail/missing updates; fixed 35/35 pass. Covers duplicate/corrupt quick start, dollar examples, skill lists/counts, active guard guidance, preserved historical bodies, fenced blocks and relative links/anchors. Logs: `.scratch/ship-F5-F6/docs-baseline.json`, `.scratch/ship-F5-F6/docs-check.json`.
+- `node scripts/lint-skills.mjs --strict` and `git diff --check` pass; diff touches Markdown only.
+- GitHub GFM render: one page title, intact Claude slash quick start and all five Codex dollar examples; evidence `.scratch/ship-F5-F6/render-check.json`, `start-here-rendered.html`.
+- Checker lives outside the repo and is saved with evidence, not added as a new production script or committed test. No new dependencies.
 
-Decision: additive `/E` copy preserves destination-only files rather than mirroring. Same-name local edits may still be overwritten; removed/renamed upstream files are retained for manual inspection. No automatic backup/purge mechanism was added.
+Decision: dated notices distinguish historical findings from current policy; original report/changelog bodies remain intact. Project-specific required hooks still follow that project's rules.
 
-Scope fences: do not run sync against the user's installed skills or mutate global settings; no dependency, existing-test, CI/hook, skill-content, eval or historical-results changes. Git longpaths behavior is disclosed, not changed.
+Scope fences: no skill behavior/version, scripts, existing tests, dependencies, CI/hooks, installed skills, global settings or local-main update. F7 eval modernization and F8 history privacy stay outside this ticket. No automatic guard installation.
 
-Not tested: real installed-home sync, actual global Git updates or lint invocation from sync (stubbed in fixtures), live Claude/Codex, access-denied/retry behavior and partial-copy recovery.
+Not tested: live Claude/Codex invocation, installed guard behavior or external source links. No code changed; unchanged application/unit suites were not rerun for this documentation-only ticket.

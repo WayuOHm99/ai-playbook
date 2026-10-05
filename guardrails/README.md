@@ -1,6 +1,10 @@
 # Guardrails
 
-`guard.mjs` is a PreToolUse hook shared by Claude Code and Codex. It reads the tool call as JSON on stdin and exits 2 (block) for:
+## Status (2026-10-05): not installed
+
+The user asked to remove the playbook guard from both tools. It is no longer in `~/.claude/settings.json`, and `~/.codex/hooks.json` was deleted. `scripts/sync.ps1` does not install it. The vault's approval rules are agent instructions; this hook does not enforce them unless explicitly installed.
+
+`guard.mjs` is an optional PreToolUse hook for Claude Code and Codex. When installed, it reads the tool call as JSON on stdin and exits 2 (block) for:
 - recursive force deletes (bash `rm` with -r and -f, PowerShell `Remove-Item`/`rm`/`ri`/`del` with -Recurse -Force, cmd `/s`, `find -delete`)
 - force push, deleting remote branches, pushing to `main`/`master`, merging PRs with `gh`
 - `reset --hard`, `clean -f`, discarding all changes, `branch -D`, `stash clear/drop`
@@ -18,8 +22,7 @@ node D:/ai-playbook/guardrails/guard.test.mjs
 
 The guard scans the whole command text. A shell command that only *mentions* a blocked pattern, such as a heredoc or `node -e` containing one, is blocked too. Agents should write such text with a file tool instead.
 
-## Status (2026-10-05): not installed
-The user asked to remove the guard from both tools. It is no longer in `~/.claude/settings.json`, and `~/.codex/hooks.json` was deleted. `scripts/sync.ps1` does not install it.
+## Enable by hand
 
 To enable it again by hand:
 - **Claude Code:** run `node D:/ai-playbook/scripts/merge-claude-settings.mjs` (adds only this hook).

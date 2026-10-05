@@ -32,7 +32,7 @@ playbook/          วงจรงาน 0–13 และกติกาคั�
 prompts/           prompt ภาษาไทยพร้อมใช้ 34 แบบ
 skills/            สกิลของคลัง
 agents/            sub-agents ของ Claude และ Codex
-guardrails/        ตัวกันคำสั่งอันตราย
+guardrails/        ตัวกันคำสั่งอันตรายที่เปิดใช้เองได้ (ไม่ได้ติดตั้ง)
 stacks/            สูตร stack: โรงพยาบาล, แดชบอร์ด, cloud web, มือถือ/PWA, วิดีโอ
 templates/project/ ไฟล์ตั้งต้นของทุกโปรเจกต์ (AGENTS, STATE, BACKLOG, DECISIONS, HANDOVER, RUN)
 me/                โปรไฟล์ จุดพลาดบ่อย และสิ่งที่ได้ผล
@@ -46,7 +46,7 @@ _inbox/            ข้อมูลส่วนตัวและไฟล์ 
 - ทุกหน้าที่มีเวอร์ชันหรือข้อเท็จจริงภายนอกต้องมีวันที่ "ตรวจล่าสุด" และลิงก์แหล่งที่มา
 - **เดือนละครั้ง:** สั่ง agent ว่า
   `ใช้ sub-agent researcher ตรวจ stacks/hospital-web.md และ research/02-tool-mechanics.md เทียบกับแหล่งทางการล่าสุด อัปเดตเวอร์ชันและวันที่ แล้วสรุปว่าอะไรเปลี่ยน`
-- เมื่อ Claude Code หรือ Codex ออกเวอร์ชันใหม่: รัน `scripts\sync.ps1` แล้วทดสอบ guard ตาม `guardrails/README.md`
+- เมื่อ Claude Code หรือ Codex ออกเวอร์ชันใหม่: ตรวจว่าสกิลยังเรียกได้ตามคำแนะนำข้างบน ทดสอบ guard เฉพาะเมื่อคุณเปิดใช้ guard เองตาม [guardrails/README.md](guardrails/README.md); `sync.ps1` ไม่ติดตั้ง guard
 - หลังจบแต่ละโปรเจกต์: เพิ่มบทเรียนลง `me/pitfalls.md` หรือ `me/wins.md`
 
 ## ดูแลคลังด้วยตัวเอง (ไม่มีงานอัตโนมัติ)

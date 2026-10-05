@@ -1,5 +1,8 @@
 # 13 — aihero.dev deep dive (2026-10-02)
 
+> **Historical snapshot:** Findings and recommendations below belong to the date shown; they do not describe today's installed configuration.
+> **Guard update (2026-10-05):** The playbook guard was removed at the user's request, and manual sync does not install it. See [guard status](../guardrails/README.md) and the [current workflow](../00-start-here.md).
+
 This is the researcher sub-agent's report, saved by the main session. Pages were read through a summarising fetch tool, so quotes may be paraphrased. Re-open a source before relying on a figure.
 
 Tiers: T1 = official docs. T2 = Matt Pocock's own site or repo, treated as a primary source for his own work. T3 = other.

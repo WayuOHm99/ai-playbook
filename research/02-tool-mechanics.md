@@ -1,5 +1,8 @@
 # 02 - Tool mechanics: Claude Code vs OpenAI Codex (verified 2026-09-30/10-01)
 
+> **Historical snapshot:** Findings and recommendations below belong to the date shown; they do not describe today's installed configuration.
+> **Guard update (2026-10-05):** The playbook guard was removed at the user's request, and manual sync does not install it. See [guard status](../guardrails/README.md) and the [current workflow](../00-start-here.md).
+
 Scope: shared "playbook vault" at `D:\ai-playbook` used by Claude Code (Desktop Code tab, CLI, VS Code) and Codex (CLI, VS Code). Windows 11.
 Research was read-only. The only things executed: `--version`, `codex doctor`, `codex features list`, `codex execpolicy check` against a temp rules file, and a regex test of the guard script in a scratch folder. Nothing in the recommended setup (section 10) has been applied.
 Legend: [DOC] = official doc fetched; [LOCAL] = observed on this machine; **UNVERIFIED** = not confirmed.

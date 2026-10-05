@@ -1,5 +1,8 @@
 # 07 — Review of Phase 1 (2026-10-01)
 
+> **Historical snapshot:** Findings and recommendations below belong to the date shown; they do not describe today's installed configuration.
+> **Guard update (2026-10-05):** The playbook guard was removed at the user's request, and manual sync does not install it. See [guard status](../guardrails/README.md) and the [current workflow](../00-start-here.md).
+
 Self-review of research 01–06 and history notes h1–h3, with independent spot-checks.
 
 ## Independently verified (by the main session, not the sub-agents)
