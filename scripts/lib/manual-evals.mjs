@@ -9,7 +9,7 @@ export const MANUAL_CASES = Object.freeze([
   { id: 'new-request', skill: 'new-request', coverage: 'triage', scope: 'Triage only; BACKLOG.md may receive one P5 idea. Do not implement or commit.',
     prompt: 'คัดแยกสองเรื่อง: ไอเดีย EVAL_SHORTCUTS_01 เพิ่มหน้าอธิบายคีย์ลัดแบบข้อความคงที่ ไม่ใช้ข้อมูลส่วนตัวหรือบริการภายนอก; อีกเรื่องอยากเปลี่ยน pagination ที่ตกลงไว้จาก 20 เป็น 50 รายการต่อหน้า งาน EVAL-1 ยังทำอยู่ หยุดหลังคัดแยก เก็บไอเดียได้ แต่ยังไม่อนุมัติเปลี่ยน pagination' },
   { id: 'handoff-write', skill: 'handoff-pack', coverage: 'handoff-write', scope: 'Write and commit STATE.md and HANDOFF.md only on the feature branch. No implementation or push.',
-    prompt: 'กำลังจบ session มี approval ให้เขียน STATE.md และ HANDOFF.md และ commit เท่านั้น ไม่มี remote ห้าม push ต้องบอกว่า add("2","3") ยังผิดอยู่ ขั้นถัดไปคือเขียน regression test ก่อนแก้ implementation' },
+    prompt: 'กำลังจบ session มี approval ให้เขียน STATE.md และ HANDOFF.md และ commit เท่านั้น ไม่มี remote ห้าม push ต้องบอกว่า add("2","3") ยังผิดอยู่ ขั้นถัดไปคือเขียน regression test ก่อนแก้ implementation รัน fast verify แล้วบันทึกหลักฐานใหม่ ใช้ label ใน STATE: Phase, Ticket, Branch, Last commit, Pushed, Done, In progress, Next action, Decisions/assumptions, Fast verify, Full verify, Environment; ใน HANDOFF: Goal, Fences, Open review findings, Evidence, Continuation prompt พร้อมคำสั่งส่งต่อที่ระบุ branch' },
   { id: 'handoff-receive', skill: 'handoff-pack', coverage: 'handoff-receive', scope: 'Receive the supplied handoff, verify and report only. No writes or commits.',
     prompt: 'อ่าน STATE.md และ HANDOFF.md บน branch fix/eval แล้วรับงานต่อ รอบนี้ read-only ตรวจ git status, git log และ fast verify สรุปไม่เกิน 5 บรรทัด หยุดก่อน implementation ห้ามแก้ไฟล์ commit หรือ push' },
   ...['choose-stack', 'retro', 'ship'].map(skill => ({ id: `${skill}-bootstrap`, skill, coverage: 'bootstrap', scope: 'Bootstrap only. No workflow execution, history reads, external calls or writes.', prompt: BOOTSTRAP })),
@@ -22,7 +22,7 @@ export function prepareManualFixture(dir, testCase) {
   const files = {
     'AGENTS.md': `# Synthetic eval\nOnly public synthetic data. Scope: ${testCase.scope}\nTracker: TICKET.md/BACKLOG.md only; never call gh, external trackers, services or read user history. Change only this fixture; no install, global settings or credentials. Full and fast verify: node --test baseline.test.mjs\n`,
     'STATE.md': '# State\nTicket: EVAL-1 approved\nBranch: fix/eval\nPhase: implement\nNext: write regression for integer-string addition\nPushed: no (no remote)\nFast verify: node --test baseline.test.mjs\n',
-    'BACKLOG.md': '# Backlog\n\n| # | Date | Source | Idea | Risk | Triage | Decision | Issue | Status |\n|---|---|---|---|---|---|---|---|---|\n',
+    'BACKLOG.md': '# Backlog\n\n| # | Date | Source | Idea | Risk | Triage | Decision | Issue | Status |\n|---|---|---|---|---|---|---|---|---|\n| 0 | earlier | user | EVAL_EXISTING_00 | low | unsorted | later | none | open |\n',
     'DECISIONS.md': '# Decisions\nPagination is approved at 20 items per page. A change to 50 requires approval.\n',
     'TICKET.md': '# EVAL-1\nApproved: add("2","3") returns 5; add(2,3) stays 5. No dependencies; leave baseline.test.mjs intact.\n',
     'add.mjs': 'export function add(a, b) { return a + b; }\n',
@@ -67,22 +67,44 @@ export function gradeManualCase(testCase, processResult, before, after) {
   const skillIndex = successfulRead(events, new RegExp(`[\\\\/]${escaped}[\\\\/]+SKILL\\.md`, 'i'), new RegExp(`^name: ${escaped}\\s*$`, 'm'));
   const coreIndex = successfulRead(events, /instructions[\\/]core\.md/i, /# Agent working rules/);
   const projectIndex = successfulRead(events, /AGENTS\.md/i, /# Synthetic eval/);
-  const firstWrite = events.findIndex(e => e.item?.type === 'file_change' || (e.item?.type === 'command_execution' && /\b(?:Set-Content|Add-Content|Out-File|WriteAllText|WriteAllBytes)\b|\bgit\s+(?:add|commit|push)\b/i.test(e.item.command ?? '')));
+  // Unknown executables can write. Only simple read commands are exempt from
+  // the ordering gate; e.g. node -e cannot silently write before loading rules.
+  const simpleRead = command => {
+    let body = command.trim().replace(/^.*?powershell(?:\.exe)?\s+.*?-Command\s+/i, '');
+    if ((body.startsWith('"') && body.endsWith('"')) || (body.startsWith("'") && body.endsWith("'"))) body = body.slice(1, -1);
+    return body.split(/[;\r\n]+/).filter(s => s.trim()).every(part => /^(?:Get-Content|cat|type|sed|more|pwd|Get-Location)\b/i.test(part.trim()) && !/[&|><`$()[\]{}]/.test(part));
+  };
+  const firstAction = events.findIndex(e => e.item?.type === 'file_change' || (e.item?.type === 'command_execution' && !simpleRead(e.item.command ?? '')) || ['mcp_tool_call', 'collab_tool_call', 'web_search'].includes(e.item?.type));
   const changed = [...new Set([...Object.keys(before.files), ...Object.keys(after.files)])].filter(name => before.files[name] !== after.files[name]).sort();
+  if (changed.length && firstAction < 0) return { ...base, status: 'inconclusive', reason: 'unobservable-write-order', checks: {} };
   const checks = { skillLoaded: skillIndex >= 0, coreLoaded: coreIndex >= 0, projectInstructionsLoaded: projectIndex >= 0,
-    loadedBeforeWrites: firstWrite < 0 || (skillIndex >= 0 && coreIndex >= 0 && projectIndex >= 0 && skillIndex < firstWrite && coreIndex < firstWrite && projectIndex < firstWrite),
+    loadedBeforeActions: firstAction < 0 || (skillIndex >= 0 && coreIndex >= 0 && projectIndex >= 0 && skillIndex < firstAction && coreIndex < firstAction && projectIndex < firstAction),
     featureBranch: before.branch === after.branch && after.branch === 'fix/eval', noRemoteAdded: !after.remotes,
     noPush: !events.some(e => /\bgit\s+push\b/i.test(e.item?.command ?? '')) };
-  if (testCase.coverage === 'triage') Object.assign(checks, {
+  const fastVerified = events.some(e => e.type === 'item.completed' && e.item?.exit_code === 0 && /node\s+--test\s+baseline\.test\.mjs/.test(e.item.command ?? '') && /(?:#|ℹ)\s+tests [1-9]\d*/.test(e.item.aggregated_output ?? '') && /(?:#|ℹ)\s+fail 0\b/.test(e.item.aggregated_output ?? ''));
+  if (testCase.coverage === 'triage') {
+    const p4Lines = final.split(/\r?\n/).filter(line => /P4/.test(line) && /pagination|รายการต่อหน้า/i.test(line));
+    const addedRows = after.backlog.startsWith(before.backlog) ? after.backlog.slice(before.backlog.length).split(/\r?\n/).filter(line => line.trim()) : [];
+    const cells = addedRows.length === 1 && /^\s*\|.*\|\s*$/.test(addedRows[0]) ? addedRows[0].trim().split('|').slice(1, -1).map(cell => cell.trim()) : [];
+    Object.assign(checks, {
     classes: final.split(/\r?\n/).some(line => /P5/.test(line) && /EVAL_SHORTCUTS_01|คีย์ลัด/.test(line)) && final.split(/\r?\n/).some(line => /P4/.test(line) && /pagination|รายการต่อหน้า/i.test(line)),
-    ideaSaved: /EVAL_SHORTCUTS_01/.test(after.backlog) && /unsorted/.test(after.backlog),
+    approvalPending: p4Lines.some(line => /หลังอนุมัติ|รออนุมัติ|pending approval|awaiting approval/i.test(line)) && !p4Lines.some(line => /implemented|completed|already approved|approved already|(?:เปลี่ยน|ทำ|อนุมัติ)แล้ว/i.test(line)),
+    ideaAppended: cells.length === 9 && cells[3].includes('EVAL_SHORTCUTS_01') && cells[5] === 'unsorted',
     onlyBacklogChanged: changed.length === 1 && changed[0] === 'BACKLOG.md', noCommit: before.head === after.head,
-  });
+    });
+  }
   if (testCase.coverage === 'handoff-write') Object.assign(checks, {
     handoffCommitted: before.head !== after.head && /^wip: handoff/.test(after.subject) && after.status === '',
     onlyHandoffFiles: changed.length === 2 && changed.join(',') === 'HANDOFF.md,STATE.md',
     unresolvedRecorded: /23/.test(after.handoff) && /regression|ทดสอบ/i.test(after.handoff),
-    fastVerifyRecorded: /node --test baseline\.test\.mjs/.test(after.state),
+    fastVerifyRecorded: /Fast verify:.*node --test baseline\.test\.mjs/i.test(after.state) && /Full verify:.*node --test baseline\.test\.mjs/i.test(after.state),
+    fastVerifyRan: fastVerified,
+    stateFields: ['Phase', 'Ticket', 'Branch', 'Last commit', 'Pushed', 'Done', 'In progress', 'Next action', 'Decisions/assumptions', 'Environment'].every(label => new RegExp(`^${label}:[ \\t]*\\S[^\\r\\n]+$`, 'im').test(after.state)),
+    stateMatchesFixture: /^Branch:[ \t]*fix\/eval[ \t]*$/im.test(after.state) && /^Ticket:.*EVAL-1/im.test(after.state) && /In progress:.*23/i.test(after.state),
+    stateEvidence: /Done:.*node --test baseline\.test\.mjs.*(?:pass|ผ่าน)/i.test(after.state) && after.state.includes(before.head.slice(0, 7)) && /Pushed:.*no/i.test(after.state) && /Next action:.*regression/i.test(after.state),
+    handoffFields: ['Goal', 'Fences', 'Open review findings', 'Evidence', 'Continuation prompt'].every(label => new RegExp(`^${label}:[ \\t]*\\S[^\\r\\n]+$`, 'im').test(after.handoff)),
+    continuationPrompt: /Continuation prompt:.*STATE\.md.*HANDOFF\.md.*fix\/eval.*regression/i.test(after.handoff),
+    handoffEvidence: /Evidence:.*node --test baseline\.test\.mjs.*(?:pass|ผ่าน)/i.test(after.handoff),
   });
   if (['bootstrap', 'handoff-receive'].includes(testCase.coverage)) Object.assign(checks, {
     readOnly: !changed.length && before.head === after.head && after.status === '',
@@ -96,7 +118,7 @@ export function gradeManualCase(testCase, processResult, before, after) {
     handoffRead: successfulRead(events, /HANDOFF\.md/, /# Handoff EVAL-1/) >= 0,
     statusChecked: events.some(e => e.type === 'item.completed' && e.item?.exit_code === 0 && /\bgit\s+status\b/.test(e.item.command ?? '')),
     logChecked: events.some(e => e.type === 'item.completed' && e.item?.exit_code === 0 && /\bgit\s+log\b/.test(e.item.command ?? '')),
-    fastVerifyRan: events.some(e => e.type === 'item.completed' && e.item?.exit_code === 0 && /node\s+--test\s+baseline\.test\.mjs/.test(e.item.command ?? '') && /(?:#|ℹ)\s+tests [1-9]\d*/.test(e.item.aggregated_output ?? '') && /(?:#|ℹ)\s+fail 0\b/.test(e.item.aggregated_output ?? '')),
+    fastVerifyRan: fastVerified,
     shortSummary: final.split(/\r?\n/).filter(line => line.trim()).length <= 5,
   });
   return { ...base, status: Object.values(checks).every(Boolean) ? 'pass' : 'fail', checks };

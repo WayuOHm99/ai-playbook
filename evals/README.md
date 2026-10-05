@@ -13,16 +13,16 @@ node --test scripts/lib/manual-evals.test.mjs scripts/lib/eval-workspace.test.mj
 
 | Case | Coverage | Observable checks |
 |---|---|---|
-| `new-request` | Triage behavior | P5 idea/P4 pagination classification, idea saved as unsorted, only BACKLOG changes, no implementation or commit |
-| `handoff-write` | Writer behavior | STATE/HANDOFF change and are committed on a feature branch, clean tree, unresolved bug and next regression recorded, no push |
+| `new-request` | Triage behavior | P5 idea/P4 pagination classification, P4 pending approval, one unsorted row appended with prior BACKLOG intact, no implementation or commit |
+| `handoff-write` | Writer behavior | STATE/HANDOFF committed on a feature branch, clean tree, required progress/goal/fence/continuation fields, fresh fast-test evidence, unresolved bug and next regression, no push |
 | `handoff-receive` | Receiver behavior | Supplied handoff read, successful git status/log and fast test with a nonzero test count, summary <=5 lines, files/HEAD unchanged |
 | `choose-stack-bootstrap` | Bootstrap only | Skill/core/project rules loaded, no files/HEAD change, no research or delegation |
 | `retro-bootstrap` | Bootstrap only | Same loading/read-only checks; no extractor or raw history reads |
 | `ship-bootstrap` | Bootstrap only | Same loading/read-only checks; stops before implementing/delivery |
 
-Every case requires a successful completed read of the skill, core and AGENTS, with matching document content. A prompt/path mention, failed read or command-start event does not count. Observable writes must follow those reads. Successful CLI execution and a complete JSON event stream are prerequisites; loading alone cannot pass a behavioral case.
+Every case requires a successful completed read of the skill, core and AGENTS, with matching document content. A prompt/path mention, failed read or command-start event does not count. All three reads must precede actions: only simple read commands are exempt, while unknown executables (including `node -e`/`python -c`) count as potential writes. A changed fixture with no action evidence is inconclusive because ordering is unobservable. Successful CLI execution and a complete JSON event stream are prerequisites; loading alone cannot pass a behavioral case.
 
-The checks are conservative heuristics over command events and snapshots, not a semantic judge or proof that every instruction was followed. They can reject an equivalent command form or a skill loaded by a future CLI through another mechanism. Bootstrap cases do **not** measure choose-stack research/scoring/ADR, retro lesson quality/history handling, or full ship reproduction/review/delivery. The receiver uses an independent supplied handoff, so writer failure cannot make receiver coverage disappear.
+The checks are conservative heuristics over command events and snapshots, not a semantic judge or proof that every instruction was followed. They can reject an equivalent command form or a skill loaded by a future CLI through another mechanism. The writer prompt specifies field labels to make the required handoff content machine-checkable; this is a constrained case, not a test of every valid prose format. Bootstrap cases do **not** measure choose-stack research/scoring/ADR, retro lesson quality/history handling, or full ship reproduction/review/delivery. The receiver uses an independent supplied handoff, so writer failure cannot make receiver coverage disappear.
 
 ## Optional live Codex run
 
