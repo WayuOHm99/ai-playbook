@@ -7,7 +7,7 @@ import { spawn } from 'node:child_process';
 import { readFileSync, writeFileSync, appendFileSync, existsSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { DEFAULT_FIXTURE_PARENT, runEvalFixtures } from './lib/eval-workspace.mjs';
+import { DEFAULT_FIXTURE_PARENT, runEvalFixtures, waitForEvalChildClose } from './lib/eval-workspace.mjs';
 
 const VAULT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
@@ -36,7 +36,7 @@ const detect = (out) => tool === 'claude'
   ? out.split('\n').some((l) => { try { return JSON.parse(l).message?.content?.some((b) => b.type === 'tool_use' && b.name === 'Skill' && String(b.input?.skill || '').includes(skill)); } catch { return false; } })
   : new RegExp(`[\\\\/]${skill}[\\\\/]+SKILL\\.md`, 'i').test(out);
 
-const runOne = (job, dir) => new Promise((res, rej) => {
+const runOne = async (job, dir) => {
   for (const [f, c] of Object.entries(FIXTURE)) writeFileSync(join(dir, f), c);
   const cmd = tool === 'claude'
     ? ['claude', ['-p', job.q, '--model', 'sonnet', '--permission-mode', 'plan', '--max-turns', '3', '--output-format', 'stream-json', '--verbose']]
@@ -46,14 +46,15 @@ const runOne = (job, dir) => new Promise((res, rej) => {
   p.stdout.on('data', (d) => (out += d));
   p.stderr.on('data', (d) => (out += d));
   const t = setTimeout(() => p.kill(), TIMEOUT_MS);
-  p.on('error', (error) => { clearTimeout(t); rej(error); });
-  p.on('close', () => {
+  try {
+    await waitForEvalChildClose(p);
+  } finally {
     clearTimeout(t);
-    const fired = detect(out);
-    const authFail = /Failed to authenticate|usage limit/i.test(out);
-    res({ ...job, fired, pass: authFail ? null : fired === (job.expect === 'trigger'), authFail });
-  });
-});
+  }
+  const fired = detect(out);
+  const authFail = /Failed to authenticate|usage limit/i.test(out);
+  return { ...job, fired, pass: authFail ? null : fired === (job.expect === 'trigger'), authFail };
+};
 
 const results = await runEvalFixtures(jobs, {
   fixtureParent,

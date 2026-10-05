@@ -6,10 +6,21 @@ import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 export const DEFAULT_FIXTURE_PARENT = resolve('D:/ev');
 const OWNER_FILE = '.eval-run-owner';
 
+export function waitForEvalChildClose(child) {
+  return new Promise((resolve, reject) => {
+    let failure;
+    // An error can come from a running child; only close permits fixture cleanup.
+    child.on('error', error => { failure ??= error; });
+    child.once('close', () => { if (failure) reject(failure); else resolve(); });
+  });
+}
+
 export function createEvalWorkspace(parent = DEFAULT_FIXTURE_PARENT) {
   mkdirSync(resolve(parent), { recursive: true });
   const parentRoot = realpathSync(resolve(parent));
   const root = mkdtempSync(join(parentRoot, 'run-'));
+  // BigInt preserves Windows file IDs without Number precision loss.
+  const identity = lstatSync(root, { bigint: true });
   const owner = randomUUID();
   writeFileSync(join(root, OWNER_FILE), owner, { flag: 'wx' });
   let closed = false;
@@ -20,8 +31,8 @@ export function createEvalWorkspace(parent = DEFAULT_FIXTURE_PARENT) {
     if (!within || within === '..' || within.startsWith(`..${sep}`) || isAbsolute(within) || dirname(target) !== parentRoot) {
       throw new Error(`Refusing eval cleanup outside its parent: ${target}`);
     }
-    const info = lstatSync(target);
-    if (!info.isDirectory() || info.isSymbolicLink() || realpathSync(parentRoot) !== parentRoot || realpathSync(target) !== target) {
+    const info = lstatSync(target, { bigint: true });
+    if (!info.isDirectory() || info.isSymbolicLink() || info.dev !== identity.dev || info.ino !== identity.ino || info.birthtimeNs !== identity.birthtimeNs || realpathSync(parentRoot) !== parentRoot || realpathSync(target) !== target) {
       throw new Error(`Refusing replaced or linked eval workspace: ${target}`);
     }
     const marker = join(target, OWNER_FILE);

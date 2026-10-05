@@ -1,10 +1,11 @@
 // Real filesystem fixtures only; no Claude/Codex sessions, settings or network.
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { EventEmitter } from 'node:events';
 import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, renameSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createEvalWorkspace, runEvalFixtures } from './eval-workspace.mjs';
+import { createEvalWorkspace, runEvalFixtures, waitForEvalChildClose } from './eval-workspace.mjs';
 
 const testRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../../.scratch/eval-workspace-tests');
 mkdirSync(testRoot, { recursive: true });
@@ -98,6 +99,19 @@ test('refuses a root replaced with a junction/symlink; target data survives', t 
   assert.equal(readFileSync(join(outside, 'keep.txt'), 'utf8'), 'outside data');
 });
 
+test('refuses a replacement ordinary directory even with a copied ownership marker', t => {
+  const f = fixture(t);
+  const workspace = createEvalWorkspace(f.parent);
+  const owner = readFileSync(join(workspace.root, '.eval-run-owner'), 'utf8');
+  renameSync(workspace.root, join(f.parent, 'held-root'));
+  mkdirSync(workspace.root);
+  writeFileSync(join(workspace.root, '.eval-run-owner'), owner);
+  writeFileSync(join(workspace.root, 'keep.txt'), 'replacement data');
+  assert.throws(() => workspace.cleanup(), /Refusing replaced or linked/);
+  assert.throws(() => workspace.createFixture('s0r0'), /Refusing replaced or linked/);
+  assert.equal(readFileSync(join(workspace.root, 'keep.txt'), 'utf8'), 'replacement data');
+});
+
 test('recursive cleanup does not follow a junction/symlink inside an owned root', t => {
   const f = fixture(t);
   const workspace = createEvalWorkspace(f.parent);
@@ -178,6 +192,25 @@ test('worker failure waits for active jobs before cleanup and starts no further 
   releaseActive.release();
   await assert.rejects(batch, /synthetic spawn failure/);
   assert.deepEqual(started, ['s0r0', 's1r0']);
+  assert.deepEqual(readdirSync(f.parent), ['keep.txt']);
+});
+
+test('a child error does not settle the worker or remove its fixture before close', async t => {
+  const f = fixture(t);
+  const child = new EventEmitter();
+  let dir, settled = false;
+  const batch = runEvalFixtures([{ id: 's0r0' }], {
+    fixtureParent: f.parent,
+    execute: async (job, fixtureDir) => { dir = fixtureDir; await waitForEvalChildClose(child); return job.id; },
+  });
+  batch.then(() => { settled = true; }, () => { settled = true; });
+  child.emit('error', new Error('child kill failed'));
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(settled, false);
+  assert.equal(existsSync(dir), true);
+  child.emit('close', 1);
+  await assert.rejects(batch, /child kill failed/);
+  assert.equal(existsSync(dirname(dir)), false);
   assert.deepEqual(readdirSync(f.parent), ['keep.txt']);
 });
 

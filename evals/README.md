@@ -8,7 +8,7 @@ node scripts/run-trigger-evals.mjs --skill handoff-pack --tool claude --runs 3
 ```
 Each invocation creates its own short fixture root, `D:\ev\run-<random>\`, with a separate child for each query. Only that owned root is cleaned up after all active jobs finish, including when a worker rejects. The shared `D:\ev\` parent, other runs and leftovers from interrupted runs are never removed. Results are appended to `results.md`.
 
-Use `--fixture-root <parent-directory>` to select another parent. Cleanup checks the absolute path, canonical path and per-run ownership marker before recursive deletion, and refuses a replaced or linked root. A forcibly terminated process can leave its run behind; later runs do not reuse or delete it.
+Use `--fixture-root <parent-directory>` to select another parent. Cleanup checks the absolute path, canonical path, original directory identity and per-run ownership marker before recursive deletion, and refuses a replaced or linked root. A child error is retained until its `close` event; an error alone does not prove the process has stopped. A forcibly terminated process can leave its run behind; later runs do not reuse or delete it.
 
 Filesystem regression tests run without Claude/Codex or network access:
 

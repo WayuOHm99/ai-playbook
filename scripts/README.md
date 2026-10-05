@@ -36,6 +36,6 @@ These deterministic checks do not prove an agent follows the entire `/ship` work
 
 ## Eval fixture isolation
 
-`run-trigger-evals.mjs` uses `lib/eval-workspace.mjs` to allocate a unique `run-<random>` root under `D:/ev` (or `--fixture-root <parent>`). Each job gets its own child directory. Cleanup removes only the current run after every active worker settles, checks canonical paths and the ownership marker, and refuses a replaced/junction root. It never removes the shared parent or reuses a previous run.
+`run-trigger-evals.mjs` uses `lib/eval-workspace.mjs` to allocate a unique `run-<random>` root under `D:/ev` (or `--fixture-root <parent>`). Each job gets its own child directory. Cleanup removes only the current run after every active worker settles, checks canonical paths, original directory identity and the ownership marker, and refuses a replaced/junction root. A worker with a child error waits for `close` before rejecting. It never removes the shared parent or reuses a previous run.
 
 `eval-workspace.test.mjs` exercises real files and Windows junctions with fake workers: simultaneous runs using the same job id, preservation of unrelated/prior files, rejected workers, delayed active jobs, and refused cleanup after ownership/path changes. No agent login or model quota is required. This does not change the trigger grader or prove live CLI timeout/process-tree behavior.
