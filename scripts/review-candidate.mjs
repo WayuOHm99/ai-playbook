@@ -9,7 +9,7 @@ export function captureReviewCandidate({ cwd = process.cwd(), base, expectedCand
     cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'],
   });
   if (!base) throw new Error('A base commit or ref is required.');
-  const status = git('status', '--porcelain=v1', '--untracked-files=all').trim();
+  const status = git('status', '--porcelain=v1', '--untracked-files=all', '--ignore-submodules=none').trim();
   if (status) throw new Error(`Uncommitted changes: ${status.split('\n').join('; ')}`);
   const resolveCommit = (ref, label) => {
     try { return git('rev-parse', '--verify', '--end-of-options', `${ref}^{commit}`).trim(); }
@@ -23,11 +23,11 @@ export function captureReviewCandidate({ cwd = process.cwd(), base, expectedCand
   let mergeBase;
   try { mergeBase = git('merge-base', baseSha, candidate).trim(); }
   catch { throw new Error('Base and candidate have no common history.'); }
-  const changedFiles = git('diff', '--name-only', '-z', mergeBase, candidate).split('\0').filter(Boolean);
+  const changedFiles = git('diff', '--ignore-submodules=none', '--name-only', '-z', mergeBase, candidate).split('\0').filter(Boolean);
   if (!changedFiles.length) throw new Error('No changes to review between base and candidate.');
   return {
     base: baseSha, mergeBase, candidate, changedFiles,
-    diffCommand: `git diff ${mergeBase} ${candidate} --`,
+    diffCommand: `git diff --ignore-submodules=none ${mergeBase} ${candidate} --`,
   };
 }
 

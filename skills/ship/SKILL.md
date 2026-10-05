@@ -3,7 +3,7 @@ name: ship
 description: Take one approved ticket (GitHub issue number, BACKLOG item, or a short scoped task) from start to an open pull request in one run - worktree branch, reproduce-first test, implementation, real-app verification, independent review with at most two fix rounds, push of the feature branch, PR, and a Thai delivery report. Invoke explicitly with /ship.
 disable-model-invocation: true
 metadata:
-  version: "1.4.0"
+  version: "1.4.1"
 ---
 
 # Ship one ticket end-to-end
@@ -35,7 +35,7 @@ Run the project's full verify command (from `AGENTS.md`, e.g. `npm run verify`).
 ## 4. Commit a review candidate, then review (max 2 rounds)
 1. Update `STATE.md` (phase = review, next action = user reviews PR after verification and review pass) and finish all ticket changes and verification. Stage only your ticket's files, including new tests and `STATE.md`, then make a local commit using the project's message format. Keep evidence under a git-ignored path; if unrelated changes remain, report them instead of staging them. This commit is local: push comes later.
 2. In the ticket worktree run `node D:/ai-playbook/scripts/review-candidate.mjs --base origin/<default>`. It rejects uncommitted/untracked work or an empty diff. Save its successful JSON output under `.scratch/ship-<issue>/candidate.json`. Record the returned **base**, **mergeBase** and **candidate** SHAs; use those frozen SHAs throughout this review, even if a remote branch moves.
-3. Delegate to the `reviewer` sub-agent: ticket, acceptance criteria, candidate JSON and its `diffCommand` (`git diff <mergeBase-SHA> <candidate-SHA> --`). The reviewer must report the SHAs it actually checked. A review of an empty diff or a different SHA does not count.
+3. Delegate to the `reviewer` sub-agent: ticket, acceptance criteria, candidate JSON and its exact `diffCommand` (`git diff --ignore-submodules=none <mergeBase-SHA> <candidate-SHA> --`). This keeps Git configuration from hiding submodule changes. The reviewer must report the SHAs it actually checked. A review of an empty diff or a different SHA does not count.
 4. Fix BLOCKERs and cheap SHOULD-FIXes. After any change, re-run full verify and the affected running-app acceptance checks, update evidence, and commit the fixes before capturing and reviewing the new candidate. Use the original frozen base SHA for later captures. Any change to `STATE.md`, BACKLOG, tests or code creates a new candidate too; record known deferred findings before the final candidate commit. After round 2: an open BLOCKER means stop and report BLOCKED; other findings go to the report. Defer any new tracked backlog entry to follow-up work instead of adding an unreviewed commit or a third round. Never weaken tests or checks to pass review.
 
 ## 5. Check the reviewed candidate, push the feature branch, open the PR

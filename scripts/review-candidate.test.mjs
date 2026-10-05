@@ -143,3 +143,45 @@ test('CLI emits candidate JSON, returns nonzero for stale review, and rejects ma
     assert.equal(run(...args).status, 1, `Expected rejection for ${args.join(' ')}`);
   }
 });
+
+function submoduleFixture(t) {
+  const f = fixture(t);
+  const source = fixture(t);
+  f.git('-c', 'protocol.file.allow=always', '-c', 'core.autocrlf=false', 'submodule', 'add', source.cwd, 'module');
+  f.git('commit', '-m', 'add local fixture submodule');
+  const base = f.git('rev-parse', 'HEAD');
+  const child = (...args) => f.git('-C', 'module', ...args);
+  child('config', 'user.name', 'Workflow fixture');
+  child('config', 'user.email', 'fixture@example.invalid');
+  child('config', 'core.autocrlf', 'false');
+  assert.equal(child('status', '--porcelain=v1'), '', 'child fixture must start clean');
+  return { ...f, base, child };
+}
+
+test('rejects dirty submodule work even when Git configuration hides it', t => {
+  const f = submoduleFixture(t);
+  f.commit('app.txt', 'candidate change\n');
+  f.git('config', 'diff.ignoreSubmodules', 'all');
+  writeFileSync(join(f.cwd, 'module', 'app.txt'), 'uncommitted child change\n');
+  assert.equal(f.git('status', '--porcelain=v1', '--untracked-files=all'), '');
+  assert.throws(() => captureReviewCandidate({ cwd: f.cwd, base: f.base }), /Uncommitted.*module/);
+  writeFileSync(join(f.cwd, 'module', 'app.txt'), 'original\n');
+  writeFileSync(join(f.cwd, 'module', 'new-test.txt'), 'untracked child test\n');
+  f.git('config', 'submodule.module.ignore', 'all');
+  assert.equal(f.git('status', '--porcelain=v1', '--untracked-files=all'), '');
+  assert.throws(() => captureReviewCandidate({ cwd: f.cwd, base: f.base }), /Uncommitted.*module/);
+});
+
+test('includes a committed submodule pointer change even when Git configuration hides it', t => {
+  const f = submoduleFixture(t);
+  writeFileSync(join(f.cwd, 'module', 'app.txt'), 'committed child change\n');
+  f.child('add', 'app.txt');
+  f.child('commit', '-m', 'child candidate');
+  f.git('add', 'module');
+  f.git('commit', '-m', 'update child pointer');
+  f.git('config', 'diff.ignoreSubmodules', 'all');
+  const snapshot = captureReviewCandidate({ cwd: f.cwd, base: f.base });
+  assert.deepEqual(snapshot.changedFiles, ['module']);
+  const args = snapshot.diffCommand.split(' ').slice(1);
+  assert.match(f.git(...args), /Subproject commit/);
+});

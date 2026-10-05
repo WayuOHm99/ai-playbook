@@ -3,6 +3,7 @@
 Version lives in each skill's `metadata.version`. Bump it with every behaviour change and add a line here. After a change, run `node scripts/lint-skills.mjs` and, for description changes, `node scripts/run-trigger-evals.mjs --skill <name>` (results in `evals/results.md`).
 
 ## 2026-10-05
+- **ship 1.4.1**: use the helper's exact pinned diff command with `--ignore-submodules=none`; reviewer definitions call out child-commit review. Two new local-submodule regression cases reproduce dirty work being accepted and committed pointer changes disappearing when Git configuration hides submodules.
 - **ship 1.4.0**: commit all ticket changes and new tests before review; freeze base, merge-base and candidate SHAs; require the same clean candidate before push. New `scripts/review-candidate.mjs` rejects dirty work, empty diffs and stale reviewed commits. The helper checks Git identity, not the review verdict or test results.
 - **All five vault skills explicitly load `instructions/core.md` before acting**: new-request 1.2.1, choose-stack 1.2.1, handoff-pack 1.2.1, retro 1.1.1 and ship 1.4.0. Missing core permits read-only work only. Existing approval is reused within its scope.
 - **Reviewer definitions (Claude and Codex)** now require the pinned candidate diff and report the reviewed SHAs. Later commits require a new review.
