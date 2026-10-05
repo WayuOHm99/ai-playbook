@@ -1,4 +1,4 @@
-# Install the vault's skills, sub-agents and guard hook into Claude Code and Codex. Run by hand after editing a skill.
+# Install the vault's skills and sub-agents into Claude Code and Codex. Run by hand after editing a skill.
 # It does not install global rules, scheduled tasks or auto-sync: nothing from the vault loads unless you type /<skill>.
 # Never deletes: existing real folders/files with the same name are renamed to <name>.bak-<date>.
 $ErrorActionPreference = 'Stop'
@@ -64,31 +64,7 @@ foreach ($a in Get-ChildItem "$Vault\agents\codex\*.toml") {
   Write-IfChanged "$HomeDir\.codex\agents\$($a.Name)" (Get-Content -LiteralPath $a.FullName -Raw -Encoding UTF8)
 }
 
-Write-Host "4) Codex guard hook"
-$hooks = @'
-{
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "^(Bash|shell|apply_patch|Edit|Write)$",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node D:/ai-playbook/guardrails/guard.mjs",
-            "commandWindows": "node D:\\ai-playbook\\guardrails\\guard.mjs",
-            "timeout": 10,
-            "statusMessage": "Playbook guard"
-          }
-        ]
-      }
-    ]
-  }
-}
-'@
-$codexHooks = "$HomeDir\.codex\hooks.json"
-if ((Test-Path $codexHooks) -and -not ((Get-Content $codexHooks -Raw -Encoding UTF8) -match 'ai-playbook')) {
-  Write-Host "  ~/.codex/hooks.json exists with other hooks; merge the playbook guard by hand."
-} else { Write-IfChanged $codexHooks $hooks }
+# The guard hook is NOT installed (removed at the user's request on 2026-10-05). See guardrails/README.md to enable it by hand.
 
 Write-Host "5) Git long paths"
 if ((git config --global core.longpaths) -ne 'true') { git config --global core.longpaths true; Write-Host "  set core.longpaths=true" }
@@ -96,4 +72,4 @@ if ((git config --global core.longpaths) -ne 'true') { git config --global core.
 Write-Host "6) Skill lint + drift check (warn-only)"
 node "$Vault\scripts\lint-skills.mjs"
 
-Write-Host "Done. The Claude guard hook is added by scripts\merge-claude-settings.mjs (hook only)."
+Write-Host "Done."
