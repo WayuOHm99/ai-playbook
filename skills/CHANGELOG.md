@@ -2,9 +2,10 @@
 
 > Entries below describe their release dates. The playbook guard was removed on 2026-10-05, and manual sync does not install it; see [current guard status](../guardrails/README.md).
 
-Version lives in each skill's `metadata.version`. Bump it with every behaviour change and add a line here. After a change, run `node scripts/lint-skills.mjs` and, for description changes, `node scripts/run-trigger-evals.mjs --skill <name>` (results in `evals/results.md`).
+Version lives in each skill's `metadata.version`. Bump it with every behaviour change and add a line here. After a change, run `node scripts/lint-skills.mjs`; current manual evals and their coverage limits are in [evals/README.md](../evals/README.md). Installed-copy drift is expected for a repo-only skill change; do not sync without the user's installation approval.
 
 ## 2026-10-05
+- **retro 1.2.0**: select 1–5 explicit sessions or use a user-supplied process summary. The extractor no longer scans home history automatically, reduces common identifiers/secrets into a private draft, and opens only a specifically human-reviewed digest for analysis. Reviewed-file integrity is checked; filtering is best-effort, not an anonymization guarantee. Repo-only update, with no installed skill sync.
 - **ship 1.4.1**: use the helper's exact pinned diff command with `--ignore-submodules=none`; reviewer definitions call out child-commit review. Two new local-submodule regression cases reproduce dirty work being accepted and committed pointer changes disappearing when Git configuration hides submodules.
 - **ship 1.4.0**: commit all ticket changes and new tests before review; freeze base, merge-base and candidate SHAs; require the same clean candidate before push. New `scripts/review-candidate.mjs` rejects dirty work, empty diffs and stale reviewed commits. The helper checks Git identity, not the review verdict or test results.
 - **All five vault skills explicitly load `instructions/core.md` before acting**: new-request 1.2.1, choose-stack 1.2.1, handoff-pack 1.2.1, retro 1.1.1 and ship 1.4.0. Missing core permits read-only work only. Existing approval is reused within its scope.

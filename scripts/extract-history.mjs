@@ -1,103 +1,48 @@
-// Extract recent Claude Code + Codex sessions into small, secret-masked text files for /retro.
-// Usage: node scripts/extract-history.mjs [--since YYYY-MM-DD] [--out DIR]
-// Default: last 7 days, output under _inbox/history-extract/<today>/ (git-ignored).
-// Only user prompts and the first 500 chars of assistant replies are kept; tool output is skipped.
-import { readFileSync, readdirSync, statSync, mkdirSync, writeFileSync, existsSync } from 'node:fs';
-import { join, dirname, resolve, basename, sep } from 'node:path';
-import { homedir } from 'node:os';
-import { fileURLToPath } from 'node:url';
-import { dedupeSessions } from './lib/dedupe-sessions.mjs';
+// Explicitly selected history -> private draft -> human-reviewed analysis file.
+// No default scan, no model/network calls, no raw text in stdout/errors.
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { captureHistory, releaseReviewed, reviewInfo, validDate } from './lib/history-review.mjs';
 
 const VAULT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
-const today = new Date().toISOString().slice(0, 10);
-const since = arg('--since', new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10));
-const OUT = resolve(arg('--out', join(VAULT, '_inbox', 'history-extract', today)));
-const sinceMs = Date.parse(since);
+const HELP = `Select 1-5 explicit sessions (never auto-discovers history):
+  node scripts/extract-history.mjs --session codex=<JSONL path> [--session claude=<JSONL path>] [--since YYYY-MM-DD] [--out <private parent>]
+Inspect metadata/digest without printing transcript contents:
+  node scripts/extract-history.mjs --review-info <review directory>
+Only after the human inspected/edited the draft and explicitly approved it:
+  node scripts/extract-history.mjs --release-reviewed <review directory> --human-reviewed --expect <draft SHA256>
+Output stays under this vault's _inbox/ or .scratch/. Regex filtering is not an anonymization guarantee.`;
 
-// Masking happens before anything is written, so secrets never reach the analysing agent.
-const MASKS = [
-  [/-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z ]*PRIVATE KEY-----/g, 'PRIVATE_KEY'],
-  [/\bsk-(?:ant-|proj-)?[A-Za-z0-9_-]{32,}/g, 'API_KEY'],
-  [/\bgh[pousr]_[A-Za-z0-9]{30,}/g, 'GITHUB_TOKEN'],
-  [/\bAIza[0-9A-Za-z_-]{30,}/g, 'GOOGLE_KEY'],
-  [/\bAKIA[0-9A-Z]{16}\b/g, 'AWS_KEY'],
-  [/\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/g, 'JWT'],
-  [/\b(mysql|mariadb|postgres(?:ql)?|mongodb(?:\+srv)?|redis):\/\/[^:\s/]+:[^@\s]+@/gi, '$1://[REDACTED:DB_CREDS]@'],
-  [/((?:password|passwd|pwd|secret|token|api[_-]?key|pin|รหัสผ่าน|รหัส|พาสเวิร์ด)\s*[:=]\s*)\S+/gi, '$1[REDACTED:SECRET]'],
-];
-const mask = (t) => MASKS.reduce((s, [re, label]) => s.replace(re, label.includes('$1') ? label : `[REDACTED:${label}]`), t);
-
-const NOISE = ['<environment_context>', '# AGENTS.md instructions', '<user_instructions>', '<permissions', '<local-command-stdout>',
-  '<local-command-stderr>', '<system-reminder>', '<turn_aborted>', 'Caveat: The messages below', '<collaboration_mode>', '<skill>', '<INSTRUCTIONS>'];
-const isNoise = (t) => !t.trim() || NOISE.some((p) => t.trimStart().startsWith(p));
-const clean = (t) => t.replace(/<system-reminder>[\s\S]*?<\/system-reminder>/g, '').trim();
-
-const walk = (dir, out = []) => {
-  if (!existsSync(dir)) return out;
-  for (const e of readdirSync(dir, { withFileTypes: true })) {
-    const p = join(dir, e.name);
-    if (e.isDirectory()) walk(p, out);
-    else if (e.name.endsWith('.jsonl') && statSync(p).mtimeMs >= sinceMs) out.push(p);
+export function main(args = process.argv.slice(2)) {
+  if (args.length === 1 && args[0] === '--help') { console.log(HELP); return 0; }
+  const options = {}, selections = [];
+  for (let i = 0; i < args.length; i++) {
+    const key = args[i];
+    if (key === '--human-reviewed') { if (options[key]) throw new Error('Duplicate option'); options[key] = true; continue; }
+    if (!['--session', '--since', '--out', '--review-info', '--release-reviewed', '--expect'].includes(key) || !args[i + 1] || args[i + 1].startsWith('--')) throw new Error('Unknown or incomplete option; use --help');
+    const value = args[++i];
+    if (key === '--session') {
+      const separator = value.indexOf('=');
+      if (separator < 1) throw new Error('Session format is codex=<path> or claude=<path>');
+      selections.push({ tool: value.slice(0, separator), path: value.slice(separator + 1) });
+    } else { if (options[key] !== undefined) throw new Error('Duplicate option'); options[key] = value; }
   }
-  return out;
-};
-const project = (cwd) => {
-  if (!cwd) return 'unknown';
-  const p = cwd.replace(/\//g, '\\');
-  if (/scratch-workspaces/i.test(p)) return 'claude-desktop-scratch';
-  const m = p.match(/^[A-Za-z]:\\[^\\]+/);
-  return (m ? m[0] : p).replace(/[:\\]+/g, '_').replace(/^([a-z])/, (c) => c.toUpperCase());
-};
-
-const sessions = {};
-const add = (proj, s) => (sessions[proj] ||= []).push(s);
-const lines = (f) => { try { return readFileSync(f, 'utf8').split('\n').filter(Boolean); } catch { return []; } };
-
-for (const f of walk(join(homedir(), '.claude', 'projects'))) {
-  if (f.includes(`${sep}subagents${sep}`)) continue;
-  let cwd = null, date = null; const out = [];
-  for (const l of lines(f)) {
-    let o; try { o = JSON.parse(l); } catch { continue; }
-    cwd ||= o.cwd; date ||= o.timestamp?.slice(0, 10);
-    if (o.isSidechain) continue;
-    const c = o.message?.content;
-    if (o.type === 'user' && !o.isMeta) {
-      let t = typeof c === 'string' ? c : Array.isArray(c) ? c.filter((b) => b.type === 'text').map((b) => b.text).join('\n') : '';
-      const cmd = t.match(/<command-name>([^<]*)<\/command-name>[\s\S]*?(?:<command-args>([\s\S]*?)<\/command-args>)?/);
-      if (cmd) t = `[${cmd[1]}${cmd[2] ? ` ${cmd[2].trim()}` : ''}]`;
-      t = clean(t);
-      if (!isNoise(t)) out.push(`[U] ${mask(t).slice(0, 2000)}`);
-    } else if (o.type === 'assistant' && Array.isArray(c)) {
-      const t = c.filter((b) => b.type === 'text').map((b) => b.text).join(' ').trim();
-      if (t) out.push(`[A] ${mask(t).slice(0, 500).replace(/\s+/g, ' ')}`);
-    }
+  let info;
+  if (options['--review-info'] || options['--release-reviewed']) {
+    if (selections.length || options['--since'] || options['--out'] || (options['--review-info'] && (options['--release-reviewed'] || options['--human-reviewed'] || options['--expect']))) throw new Error('Capture, review-info and release modes cannot be mixed');
+    info = options['--review-info'] ? reviewInfo({ vault: VAULT, root: options['--review-info'] })
+      : releaseReviewed({ vault: VAULT, root: options['--release-reviewed'], humanReviewed: options['--human-reviewed'] === true, expectedDigest: options['--expect'] });
+  } else {
+    if (options['--human-reviewed'] || options['--expect']) throw new Error('Review confirmation only applies to release mode');
+    const since = options['--since'] ?? new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
+    if (!validDate(since)) throw new Error('Invalid since date');
+    info = captureHistory({ vault: VAULT, selections, since, ...(options['--out'] ? { outParent: resolve(options['--out']) } : {}) });
   }
-  if (date >= since && out.some((x) => x.startsWith('[U]'))) add(project(cwd), { tool: 'claude', id: basename(f, '.jsonl').slice(0, 8), date, out });
+  console.log(JSON.stringify(info, null, 2));
+  return 0;
 }
 
-for (const f of walk(join(homedir(), '.codex', 'sessions'))) {
-  let cwd = null, date = null; const out = [];
-  for (const l of lines(f)) {
-    let o; try { o = JSON.parse(l); } catch { continue; }
-    if (o.type === 'session_meta') { cwd = o.payload?.cwd; date = (o.payload?.timestamp || o.timestamp || '').slice(0, 10); continue; }
-    if (o.type !== 'response_item' || o.payload?.type !== 'message') continue;
-    const t = clean((o.payload.content || []).filter((b) => /^(input|output)_text$/.test(b.type)).map((b) => b.text).join('\n'));
-    if (o.payload.role === 'user' && !isNoise(t)) out.push(`[U] ${mask(t).slice(0, 2000)}`);
-    else if (o.payload.role === 'assistant' && t) out.push(`[A] ${mask(t).slice(0, 500).replace(/\s+/g, ' ')}`);
-  }
-  if (date >= since && out.some((x) => x.startsWith('[U]'))) add(project(cwd), { tool: 'codex', id: basename(f, '.jsonl').slice(-12), date, out });
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+  try { process.exitCode = main(); }
+  catch (error) { console.error(error.code ? `History operation failed (${error.code}); no transcript content is printed` : error.message); process.exitCode = 2; }
 }
-
-mkdirSync(OUT, { recursive: true });
-const summary = [];
-for (const [proj, all] of Object.entries(sessions)) {
-  all.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
-  const list = dedupeSessions(all);
-  if (!list.length) continue;
-  const body = list.map((s) => `\n## ${s.tool} ${s.date} ${s.id}\n${s.out.join('\n')}`).join('\n');
-  writeFileSync(join(OUT, `${proj}.txt`), `# ${proj} (since ${since}, secrets masked)\n${body}\n`);
-  summary.push(`${proj}: ${list.length} sessions, ${list.reduce((n, s) => n + s.out.filter((x) => x.startsWith('[U]')).length, 0)} prompts`);
-}
-console.log(`extract-history: since ${since} -> ${OUT}`);
-console.log(summary.length ? summary.map((s) => `  ${s}`).join('\n') : '  no sessions in range');

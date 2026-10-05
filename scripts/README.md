@@ -25,6 +25,7 @@ node --test scripts/review-candidate.test.mjs
 node --test scripts/lib/eval-workspace.test.mjs
 node --test scripts/lib/manual-evals.test.mjs
 node --test scripts/lib/manual-evals-followup.test.mjs
+node --test scripts/lib/history-review.test.mjs
 node --test guardrails/guard.test.mjs scripts/lib/dedupe-sessions.test.mjs
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/sync.test.ps1
 node scripts/lint-skills.mjs --strict
@@ -60,3 +61,9 @@ See [`evals/README.md`](../evals/README.md) for cases, rubrics, options, limits 
 `manual-evals.test.mjs` tests execution health, successful loading evidence, six synthetic cases, behavior failures, safe stdin, missing executables, real exit codes and Windows timeout/descendant termination. Fake agent events verify the runner/grader, not actual model skill quality. Both runners return pass/fail/inconclusive and never treat execution errors as passes. Historical auto-trigger results are preserved; new JSON output is separate and does not append to them.
 
 `manual-evals-followup.test.mjs` covers truncated continuations after an earlier successful turn, missing/empty final-turn replies, manual and legacy grader results, `sed` actions before rule loading, and the running manual CLI's exit-2/report/cleanup behavior with a fake truncated stream. It adds regressions without editing the existing tests.
+
+## Selected history for retro
+
+`extract-history.mjs` now requires explicit session files and produces a private draft for human review. With no arguments it stops instead of scanning home history. Only a specifically reviewed digest can be released for analysis. Commands, privacy limits and migration from old date-wide extracts are in [history-privacy.md](history-privacy.md).
+
+`history-review.test.mjs` uses synthetic Claude/Codex JSONL only. It covers selection isolation, common identifier/secret reduction, metadata omission, date/noise/tool filtering, replay dedupe, limits, private output/link checks, digest/confirmation gates, changed-content rejection and the running CLI. It does not read real home history or prove complete anonymization or live retro lesson quality.

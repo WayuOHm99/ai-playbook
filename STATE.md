@@ -1,30 +1,30 @@
 # State
 
-Updated: 2026-10-05 | Branch: `fix/manual-skill-evals` | PR: #5
+Updated: 2026-10-05 | Branch: `fix/retro-history-privacy` | PR: pending
 
-Current ticket: F7 follow-up — close the two final-review false-pass paths (explicitly approved after draft PR #5).
-Route: P2, evaluator bug. Phase: review. Next action: user reviews and merges PR #5 after verification and independent review pass.
-Frozen PR base: `00c41f2a3063e557f5e1507ab6a53dfda0aa14c0`.
-Follow-up starts from: `996f75308035cb62c103284771717b747885dc62`.
+Current ticket: F8 — reduce private information entering retro analysis through explicit session selection and human review.
+Route: P2, existing extractor privacy bug. Phase: review. Next action: user reviews the PR after verification and independent review pass.
+Frozen base: `40b1d4b971245c4cab8ccaad491c032c9f9754dc` (merged PR #5).
 
 Acceptance criteria:
-- A truncated continuation after an earlier successful turn is inconclusive in manual/legacy grading; the running manual CLI returns exit 2 and no pass.
-- A successful trace ends in turn.completed and has its own nonempty final-turn reply; a valid second completed turn and blank trailing lines remain supported.
-- Every sed form counts as a potential write for read-before-action ordering, including -i, --in-place, script writes and shell-wrapped/prefixed commands; ordinary reads still pass.
-- Add separate regression tests, document conservative limits, preserve existing tests/query/history data, and change no installed skills, settings, dependencies or local main.
+- No automatic home-history discovery: require 1–5 explicit files, or use a user-supplied process summary in retro.
+- Filter supported secrets/identifiers before writing a bounded private draft; exclude unselected files, noise and tool output.
+- Omit original source filenames, session IDs and project paths from evidence; retain only generic ordinals and operational metadata.
+- Require actual human approval of the inspected draft's current digest before analysis; release refilters edits and detects changed draft/released content.
+- Prove behavior with synthetic fixtures only; preserve existing tests, installed skills/settings and the clean local main.
 
 Verification evidence (2026-10-05):
-- New regression suite before implementation: 0/6 pass, 6 fail for the two known false-pass paths. `.scratch/ship-F7-followup/reproduction.txt`.
-- Also reproduced a sed write hidden before a PowerShell read wrapper; anchored wrapper recognition now keeps preceding actions. `.scratch/ship-F7-followup/sed-wrapper-reproduction.txt`.
-- `node --test scripts/review-candidate.test.mjs scripts/lib/eval-workspace.test.mjs scripts/lib/manual-evals.test.mjs scripts/lib/manual-evals-followup.test.mjs guardrails/guard.test.mjs scripts/lib/dedupe-sessions.test.mjs`: 57/57 Node entries pass, including 6 new follow-up and 20 original F7 tests. `.scratch/ship-F7-followup/node-tests.txt`.
-- `powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/sync.test.ps1`: 14/14 pass, synthetic homes/vaults only and stubbed Git/Node calls. `.scratch/ship-F7-followup/sync-tests.txt`. No actual sync ran.
-- `node scripts/lint-skills.mjs --strict` and `git diff --check` pass. Installed copies match without installation. `.scratch/ship-F7-followup/lint.txt`.
-- Running manual CLI with a fake agent: 6/6 normal cases still pass using real synthetic Git/files; parent sentinel retained and owned fixtures cleaned. `.scratch/ship-F7-followup/app-report.json`, `app-stderr.txt`, `fake-codex.mjs`.
-- New running-CLI regression confirms a truncated fake stream reports inconclusive, 0 passed, scored rate null and exit 2; parent sentinel survives. Evidence retained by the new tests under `.scratch/manual-eval-followup-tests/`.
-- Original F7 evidence remains under `.scratch/ship-F7/`, including baseline exit-9 false pass reproduction and real Windows timeout/descendant test evidence.
+- Original extractor copied into an isolated synthetic home reproduced the bug: secrets masked, but name/HN/phone remained and an unselected session was included. `.scratch/ship-F8/baseline-result.json` and `baseline/`. No real history was read.
+- `node --test scripts/review-candidate.test.mjs scripts/lib/eval-workspace.test.mjs scripts/lib/manual-evals.test.mjs scripts/lib/manual-evals-followup.test.mjs scripts/lib/history-review.test.mjs guardrails/guard.test.mjs scripts/lib/dedupe-sessions.test.mjs`: 72/72 Node entries pass, including 15 new F8 tests. `.scratch/ship-F8/node-tests.txt`.
+- `powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/sync.test.ps1`: 14/14 pass with synthetic homes/vaults and stubbed Git/Node. `.scratch/ship-F8/sync-tests.txt`. No real sync ran.
+- Running extractor CLI acceptance: 8/8 operations have expected success/denial statuses. Selection isolation, metadata-only stdout, no analysis before review, stale digest rejection, release refiltering and post-release modification rejection pass. `.scratch/ship-F8/app-report.json` and `verify-app.mjs`. Approval is simulated in fixtures; this does not prove real human review.
+- `node scripts/lint-skills.mjs --strict`: exit 1, exactly two expected installed-copy drift warnings for retro, zero other warnings. Retro frontmatter/version/manual-only flags, guide links and approval/metadata gates pass focused checks. `.scratch/ship-F8/lint.txt` and `contract-report.json`. Global copies remain untouched as requested.
+- `git diff --check` passes. Local main remains clean at `24bc111743f6089262c208393d784bd0a276da27`; remote base is PR #5's merge. No checkout/pull/fast-forward or skill installation.
 
-Decision: require terminal success and the final turn's own reply; never borrow an earlier reply/completion. Treat all sed commands as potential writes because scripts can write without in-place flags. This intentionally rejects read-only sed before rule loading; documented as a conservative limit, not a semantic shell parser. Only a leading PowerShell wrapper can be unwrapped.
+Decision: prefer a short process summary; otherwise explicitly selected text goes to a new private `_inbox/` or `.scratch/` draft, the human inspects/reduces it, and only the approved digest is released. Regex filtering is best-effort. A receipt checks content integrity and CLI confirmation; it cannot authenticate a human or enforce approval outside the skill. Do not describe this as complete anonymization.
 
-Scope fences: no skill bodies/versions, installed skills, settings, hooks/CI, dependencies, existing test files or local-main update. No real history extraction. F8 privacy remains separate. This bounded follow-up is the user's approved next step after the earlier two-round review; independent review covers the new candidate.
+Limits/risks: unlabelled names, unusual formats, clinical/contextual details and combinations can remain in the private draft. Human review is required. Ignored drafts are not encrypted or automatically removed. Filtering may remove useful context. Output directory metadata can include a local username if the checkout is under a user folder. Filesystem checks reject ordinary links/invalid manifests but do not protect against hostile concurrent host changes. Partial release is retained for manual inspection; no automatic cleanup/overwrite.
 
-Not tested: new live Codex/Claude model runs (Claude stays skipped), POSIX/live-agent process trees, equivalent/future CLI event/command forms, full choose-stack research/ADR, retro lesson quality or full ship delivery. The evaluator uses conservative observable checks and labeled bootstrap cases, not complete semantic verification. Fake-agent scores test the runner/grader, not model quality.
+Scope fences: only extractor, its new modules/tests, retro 1.2.0 and related documentation/bookkeeping. No new dependencies, CI/hooks, auth/production systems, existing-test edits, actual personal/patient/history data, installed copies/settings or local-main updates. The old no-selection CLI flow now intentionally returns exit 2; older installs stay unchanged until separately authorized.
+
+Not tested: live retro lesson quality, real Codex/Claude histories or models, complete identifier removal, hostile concurrent filesystem mutation, or user identity verification. Claude live testing remains skipped. No new backlog item is required for these stated limits.
