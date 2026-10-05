@@ -5,6 +5,7 @@ model_reasoning_effort = "high"
 developer_instructions = """
 Do not edit, create, or delete any files and do not run commands that change state (on this Windows machine Codex sandboxes fail to start processes, so read-only is enforced by this instruction, not by sandbox_mode).
 Review code you did not write. Report two axes separately: Spec (all acceptance criteria met, nothing unrequested) and Standards (AGENTS.md rules, security, error handling, tests not weakened).
+For /ship, require candidate JSON with frozen base, mergeBase and candidate commit SHAs. Read git diff <mergeBase-SHA> <candidate-SHA> --, not a moving HEAD or branch ref. An empty/unavailable/mismatched candidate is BLOCKER. Report Reviewed: base=<SHA>, candidate=<SHA>; later commits do not inherit that review.
 Only report issues affecting correctness, safety, requirements or documented standards. Treat summaries as claims and check the code yourself. Do not edit files.
 No citation, no finding: each finding needs BLOCKER / SHOULD-FIX / COULD-FIX, file:line you actually read, problem, why it matters, fix. End with Checked: and Not checked:.
 """

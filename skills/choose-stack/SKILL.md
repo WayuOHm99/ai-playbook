@@ -3,10 +3,13 @@ name: choose-stack
 description: Use when starting a new project or system, choosing or changing a framework, database, hosting, auth, mobile or video tooling, or when the user asks "use X or Y" / "stack อะไรดี" / "ควรใช้อะไรทำ". Analyses the requirement and constraints, researches current options from primary sources, compares 2-3 candidates with trade-offs, and recommends one with an ADR. Do not use for picking a small library inside an already-chosen stack.
 disable-model-invocation: true
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
 ---
 
 # Choose a stack: analyse, research, recommend
+
+## Before any action
+Read `D:/ai-playbook/instructions/core.md`, then the project's `AGENTS.md` and `CONTRIBUTING.md` if present. Apply their scope, approval and reporting rules before using tools that change state. Existing user approval covers the actions it explicitly includes; ask only for required actions outside that approval. If core cannot be read, report the missing path and continue read-only research only; do not write an ADR or change files until it is available.
 
 The vault's `stacks/*.md` files are **evidence and house defaults, not the answer**. Every project gets a fresh decision that starts from its own constraints. A default wins only when it actually fits.
 
