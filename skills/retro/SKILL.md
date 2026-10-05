@@ -3,10 +3,13 @@ name: retro
 description: Review recent Claude Code and Codex sessions and propose at most three evidence-backed lessons for the playbook vault (pitfalls, wins, rule or hook changes). Run by hand at the end of a ticket or week, or from the weekly scheduled report. Writes nothing without the user's approval.
 disable-model-invocation: true
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
 ---
 
 # Retro: turn recent sessions into at most three lessons
+
+## Before any action
+Read `D:/ai-playbook/instructions/core.md`, then the project's `AGENTS.md` and `CONTRIBUTING.md` if present. Apply their scope, approval and reporting rules before using tools that change state. Existing user approval covers the actions it explicitly includes; ask only for required actions outside that approval. If core cannot be read, report the missing path and continue read-only analysis only; do not run the extractor or write lessons/candidates until it is available.
 
 Rules adapted from robertantolin/claude-retro-skill and netresearch/retro-skill (`D:/ai-playbook/research/10-skill-libraries-community.md` §5). Goal: the vault improves from real evidence without drifting or filling with noise.
 

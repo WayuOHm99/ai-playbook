@@ -1,5 +1,6 @@
 # private inputs: chat exports, raw extracts — never commit
 _inbox/
+.scratch/
 *.zip
 .env
 .env.*

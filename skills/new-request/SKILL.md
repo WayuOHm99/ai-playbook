@@ -3,10 +3,13 @@ name: new-request
 description: Use when the user brings something new that is not the current ticket - a bug report, user or boss feedback, a new feature idea, a new requirement, an "add this too" or "make it world-class" request, or a mixed message containing several of these (Thai cues: เจอบั๊ก, มี feedback, อยากได้, อยากเพิ่ม, ทำให้ระดับโลก, requirement ใหม่, เริ่มระบบใหม่). Splits the message, classifies each item P0-P7, routes it, and names one next step. Do not use for direct small tasks on the current ticket (run tests, rename, explain code, commit).
 disable-model-invocation: true
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
 ---
 
 # New request: classify, route, and name the next step
+
+## Before any action
+Read `D:/ai-playbook/instructions/core.md`, then the project's `AGENTS.md` and `CONTRIBUTING.md` if present. Apply their scope, approval and reporting rules before using tools that change state. Existing user approval covers the actions it explicitly includes; ask only for required actions outside that approval. If core cannot be read, report the missing path and continue read-only diagnosis only; do not change files or create issues until it is available.
 
 The user often sends long, mixed Thai messages that combine a bug, an idea and a new requirement. Split them, classify each part, and route it so nothing derails the current work. Rationale: `D:\ai-playbook\playbook\triage.md`.
 
@@ -33,7 +36,7 @@ Before finalising, search the tracker and decision records: if the item was alre
 
 ## 4. Route — only actions that need no approval
 - **P0:** stop other work, diagnose read-only (logs, recent commits), propose recovery. Any production change needs the user's yes.
-- **P1/P3:** fix inside the current ticket (hand to `ship` if that flow is active).
+- **P1/P3:** fix only if the item belongs to the approved current ticket and stays inside core's scope and approval rules. Otherwise draft a separate ticket or change request. Continue an already active `ship` flow; suggest `/ship` for a new one (manual-only: the user must invoke it).
 - **P2:** try to reproduce read-only (read code, logs, run existing tests). Then draft a ticket with steps to reproduce and acceptance criteria. Create the issue only after the user approves. The failing test is written later, inside `/ship`.
 - **P4:** draft the change: what changes, why, what it displaces, affected tickets, and external dependencies with current facts. For external services, check current official docs (use the `researcher` sub-agent). Ask for approval. Do not implement.
 - **P5/P6:** append one row to `BACKLOG.md` right away (no approval needed; columns as in the template, Triage = unsorted), then continue the current work.

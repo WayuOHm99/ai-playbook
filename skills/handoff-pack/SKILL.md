@@ -3,10 +3,13 @@ name: handoff-pack
 description: Use when a work session is ending or moving - the user is stopping for the day, about to /clear or compact, running out of quota or context, switching between Claude Code and Codex, or starting a session that continues earlier work (Thai cues: เลิกงาน, พักงาน, เก็บงาน, จะ /clear, โควตาใกล้หมด, context ใกล้เต็ม, สลับไป Codex/Claude, ต่อจาก Codex/Claude, ทำต่อจากเมื่อวาน). Saves or loads state in committed STATE.md and HANDOFF.md. Do not use for README, CHANGELOG, PR descriptions or handing a system over to IT.
 disable-model-invocation: true
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
 ---
 
 # Handoff pack: continue from files, not from copy-paste
+
+## Before any action
+Read `D:/ai-playbook/instructions/core.md`, then the project's `AGENTS.md` and `CONTRIBUTING.md` if present. Apply their scope, approval and reporting rules before using tools that change state. Existing user approval covers the actions it explicitly includes; ask only for required actions outside that approval. If core cannot be read, report the missing path and continue read-only diagnosis only; do not write handoff files, commit or push until it is available.
 
 The user used to relay long reports between Codex and Claude by hand and lost context after `/clear` and compaction. Handoffs live in committed files on the working branch, so they survive and are visible from any worktree or tool.
 
@@ -21,4 +24,4 @@ The user used to relay long reports between Codex and Claude by hand and lost co
 ## Receiving a handoff (start of session)
 1. Check out or open the branch named by the user (or the newest branch with a `wip: handoff` commit), then read `AGENTS.md`, `STATE.md`, `HANDOFF.md`.
 2. Verify before trusting: `git status`, `git log -3`, and the fast verify command (the full one only if the change is risky or the user asks; say which you ran). Reports are claims; the repo is the truth.
-3. Summarise in Thai in ≤5 lines what you found, flag mismatches with the handoff, and propose the next action. Continue if it is inside the autonomy contract; if the next action is an approval gate (push, PR, issue, hard stop), stop after the summary and ask. Delete `HANDOFF.md` in the commit that finishes the ticket.
+3. Summarise in Thai in ≤5 lines what you found, flag mismatches with the handoff, and propose the next action. Continue within core's autonomy contract and existing approval. Push or PR creation inside an approved `ship`/delivery flow does not need approval again; ask only for actions not yet authorised (including issue creation or other hard stops). Delete `HANDOFF.md` before the final candidate commit that finishes the ticket, so review covers that deletion too.
