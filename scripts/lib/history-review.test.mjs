@@ -36,6 +36,29 @@ test('explicit selection excludes unselected sessions and omits source path/cwd/
   assert.ok(!readdirSync(info.root).includes('reviewed.txt'));
 });
 
+test('selected provenance inside quotes is masked literally, including metadata appearing later', () => {
+  const sessionId = 'ea742d28-920d-489f-9749-9355834d547f', cwd = '/srv/SYNTHETIC_HOSPITAL_APP';
+  const filename = 'SYNTHETIC_PRIVATE_[SOURCE]+.jsonl', path = join(sourceRoot, filename);
+  source(filename, [codex(`Review ${filename} (${path.replace(/\\/g, '/')}), project ${cwd}, session ${sessionId}. Keep the process correction.`),
+    { type: 'session_meta', payload: { id: sessionId, cwd, timestamp: '2026-10-05T00:00:00Z' } }]);
+  const info = capture([{ tool: 'codex', path }]);
+  const released = approved(info);
+  for (const value of [filename, path, path.replace(/\\/g, '/'), cwd, sessionId]) assert.ok(!allOutput(released).includes(value));
+  assert.match(readFileSync(released.analysisPath, 'utf8'), /Keep the process correction/);
+  const claudeId = '8c2c047f-b812-4a27-b71e-d8b93c678f06';
+  const claudePath = source('claude-provenance.jsonl', [{ type: 'user', timestamp: '2026-10-05T00:00:00Z', cwd,
+    sessionId: claudeId, message: { content: `Project ${cwd}, session ${claudeId}; process correction: retain verification evidence.` } }]);
+  const claude = capture([{ tool: 'claude', path: claudePath }]);
+  assert.ok(!allOutput(claude).includes(claudeId)); assert.ok(!allOutput(claude).includes(cwd));
+});
+
+test('oversized or excessive provenance metadata is rejected before draft persistence', () => {
+  const long = source('long-metadata.jsonl', [{ type: 'session_meta', payload: { cwd: 'x'.repeat(4097) } }, codex('Process note')]);
+  assert.throws(() => capture([{ tool: 'codex', path: long }]), /4096-character limit/);
+  const many = source('many-metadata.jsonl', Array.from({ length: 130 }, (_, i) => ({ type: 'user', sessionId: `synthetic-session-${i}` })));
+  assert.throws(() => capture([{ tool: 'claude', path: many }]), /128-value limit/);
+});
+
 test('redaction covers synthetic keys, quoted secrets, Thai fields, email, phone, ID and personal paths', () => {
   const values = [
     'sk-proj-' + 'x'.repeat(40), 'ghp_' + 'x'.repeat(36), 'AIza' + 'x'.repeat(35), 'AKIA' + 'A'.repeat(16),

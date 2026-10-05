@@ -1,6 +1,6 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { lstatSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
-import { isAbsolute, join, relative, resolve, sep } from 'node:path';
+import { basename, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { dedupeSessions } from './dedupe-sessions.mjs';
 import { redactHistory } from './history-redaction.mjs';
 
@@ -33,9 +33,26 @@ function extractSelected({ tool, path }, since, id) {
   if (!['codex', 'claude'].includes(tool) || typeof path !== 'string' || !/\.jsonl$/i.test(path)) throw new Error('Select an explicit codex or claude JSONL file');
   if (regularFile(path).size > MAX_SOURCE_BYTES) throw new Error('Selected session exceeds the 20 MiB limit');
   const out = []; let date, cwd, invalidLines = 0, omittedMessages = 0;
+  const events = [], provenance = new Set();
+  const remember = value => {
+    if (typeof value !== 'string' || !value) return;
+    if (value.length > 4096) throw new Error('Selected provenance metadata exceeds the 4096-character limit');
+    provenance.add(value); provenance.add(value.replace(/\\/g, '/')); provenance.add(value.replace(/\//g, '\\'));
+    if (provenance.size > 128) throw new Error('Selected provenance metadata exceeds the 128-value limit');
+  };
+  remember(path); remember(basename(path));
   for (const line of readFileSync(path, 'utf8').split(/\r?\n/).filter(l => l.trim())) {
     let event; try { event = JSON.parse(line); } catch { invalidLines++; continue; }
     if (!event || typeof event !== 'object') { invalidLines++; continue; }
+    events.push(event);
+    remember(event.cwd); remember(event.sessionId);
+    if (event.type === 'session_meta') { remember(event.payload?.cwd); remember(event.payload?.id); }
+  }
+  // Gather known provenance first, including metadata after a quoted message.
+  // Escape literal values; source names/IDs are data, never regex syntax.
+  const provenancePatterns = [...provenance].sort((a, b) => b.length - a.length).map(value => new RegExp(value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'));
+  const reduceProvenance = text => provenancePatterns.reduce((value, pattern) => value.replace(pattern, '[REDACTED:PROVENANCE]'), text);
+  for (const event of events) {
     if (event.type === 'session_meta') {
       cwd = typeof event.payload?.cwd === 'string' ? event.payload.cwd : cwd;
       const timestamp = event.payload?.timestamp ?? event.timestamp;
@@ -60,7 +77,7 @@ function extractSelected({ tool, path }, since, id) {
     if (out.length >= MAX_MESSAGES) { omittedMessages++; continue; }
     // Filter before truncation and flatten each quote so transcript content
     // cannot create unframed headings/metadata in the review document.
-    const safe = redactHistory(text).slice(0, role === 'user' ? 2000 : 500).replace(/\s+/g, ' ');
+    const safe = redactHistory(reduceProvenance(text)).slice(0, role === 'user' ? 2000 : 500).replace(/\s+/g, ' ');
     out.push(`[${role === 'user' ? 'U' : 'A'}] ${safe}`);
   }
   return { tool, id, date: date ?? since, cwd, out, invalidLines, omittedMessages };
