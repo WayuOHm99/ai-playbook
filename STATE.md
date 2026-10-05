@@ -1,25 +1,28 @@
 # State
 
-Updated: 2026-10-05 | Branch: `docs/current-workflow-guide`
+Updated: 2026-10-05 | Branch: `fix/manual-skill-evals`
 
-Current ticket: F5/F6 — align current guard guidance and repair the start-here page (approved).
-Phase: review. Next action: user reviews the pull request after documentation verification and independent review pass.
-Base: `883cdee564114092cba42721e30ddc79c6705d83`.
+Current ticket: F7 — replace automatic-trigger quality scoring with scoped manual skill evals (approved).
+Route: P2, shipped evaluator bug. Phase: review. Next action: user reviews the PR after verification and independent review pass.
+Base: `00c41f2a3063e557f5e1507ab6a53dfda0aa14c0`.
 
 Acceptance criteria:
-- One intact start-here introduction/quick start, with correct Claude slash and Codex dollar examples.
-- Start-here, README and skills-lock list all five actual vault skills.
-- Active guidance treats the playbook guard as optional/uninstalled, not an automatic gate; points to its current status.
-- Historical reports keep their original bodies with dated status notices; local navigation links resolve.
+- Explicit Codex invocation cases cover all five skills; new-request and handoff writer/receiver grade scoped behavior, while choose-stack/retro/ship are labeled bootstrap-only.
+- Require completed successful skill/core/project-rule reads with content; check fixture files/HEAD and workflow-specific outcomes rather than path mentions alone.
+- Errors, timeout, auth/limits and malformed/incomplete events are inconclusive, never passes; report both total and scored denominators with meaningful exit codes.
+- Use owned isolated fixtures and stdin without shell interpolation; retain fixtures if process-tree termination fails. No installation or global settings changes.
+- Preserve historical auto-trigger query data/results; gate and document the legacy mode separately from current manual evaluation.
 
 Verification evidence (2026-10-05):
-- One-off documentation checker: baseline 19 pass, 16 fail/missing updates; fixed 35/35 pass. Covers duplicate/corrupt quick start, dollar examples, skill lists/counts, active guard guidance, preserved historical bodies, fenced blocks and relative links/anchors. Logs: `.scratch/ship-F5-F6/docs-baseline.json`, `.scratch/ship-F5-F6/docs-check.json`.
-- `node scripts/lint-skills.mjs --strict` and `git diff --check` pass; diff touches Markdown only.
-- GitHub GFM render: one page title, intact Claude slash quick start and all five Codex dollar examples; evidence `.scratch/ship-F5-F6/render-check.json`, `start-here-rendered.html`.
-- Checker lives outside the repo and is saved with evidence, not added as a new production script or committed test. No new dependencies.
+- Reproduced baseline bug using a fake CLI with exit 9: old runner reported a near-miss pass at 100%. `.scratch/ship-F7/baseline-error.txt`.
+- `node --test scripts/review-candidate.test.mjs scripts/lib/eval-workspace.test.mjs scripts/lib/manual-evals.test.mjs guardrails/guard.test.mjs scripts/lib/dedupe-sessions.test.mjs`: 48 Node test entries pass (including 17 new F7 tests). `.scratch/ship-F7/node-tests.txt`.
+- `powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/sync.test.ps1`: 14 pass; synthetic homes/vaults only, Git/Node calls stubbed. `.scratch/ship-F7/sync-tests.txt`.
+- `node scripts/lint-skills.mjs --strict` passes; installed copies match, no sync performed. `.scratch/ship-F7/lint.txt`. `git diff --check` passes.
+- Running manual CLI with a deterministic fake agent: 6/6 cases pass, shared-parent sentinel retained and owned fixtures cleaned. `.scratch/ship-F7/app-report.json`, `app-stderr.txt`, `fake-codex.mjs`. Fake events exercise grading and real synthetic Git/files; they are not model skill-quality scores.
+- Real Node processes verify literal Thai/shell metacharacter stdin, missing binary, exit 9, timeout and spawned-descendant termination on Windows. Failed-termination retention is tested by injection.
 
-Decision: dated notices distinguish historical findings from current policy; original report/changelog bodies remain intact. Project-specific required hooks still follow that project's rules.
+Decision: use strict observable loading evidence plus case-specific checks; missing loading evidence in a healthy complete trace is a failure, execution/trace problems are inconclusive. Percentages over all cases expose lost coverage; the separate scored rate is null when no case can be scored. Reports persist only rubric fields/reasons. Legacy execution is opt-in and sequential; its old concurrency flag is retired.
 
-Scope fences: no skill behavior/version, scripts, existing tests, dependencies, CI/hooks, installed skills, global settings or local-main update. F7 eval modernization and F8 history privacy stay outside this ticket. No automatic guard installation.
+Scope fences: no skill bodies/versions, installed skills, settings, hooks/CI, dependencies, existing test files or local-main update. Do not run real history extraction. F8 history privacy is separate.
 
-Not tested: live Claude/Codex invocation, installed guard behavior or external source links. No code changed; unchanged application/unit suites were not rerun for this documentation-only ticket.
+Not tested: new live Codex/Claude model runs (Claude remains skipped at the user's request), POSIX process trees, equivalent CLI event/read-command forms, full choose-stack research/ADR, retro lesson quality, full ship delivery or model ablation. The grader uses conservative heuristics and snapshots, not complete semantic verification. Prior live trials remain separate historical evidence.
