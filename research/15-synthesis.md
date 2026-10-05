@@ -1,5 +1,8 @@
 # 15 — สรุปรวม: วิธีทำงานกับ AI agent ของคุณควรเป็นแบบไหน (2026-10-02)
 
+> **Historical snapshot:** Findings and recommendations below belong to the date shown; they do not describe today's installed configuration.
+> **Guard update (2026-10-05):** The playbook guard was removed at the user's request, and manual sync does not install it. See [guard status](../guardrails/README.md) and the [current workflow](../00-start-here.md).
+
 สรุปจาก `research/01` ถึง `14`, แชทของคุณ 600 กว่าเซสชัน (`_inbox/history-notes`) และผลทดสอบจริงในเครื่อง
 ผลทดสอบที่ใช้ได้แก่ `/ship` กับงานการ์ด KPI, `/new-request`, `/handoff-pack` ข้ามระหว่าง Claude กับ Codex, `/retro`, `/choose-stack` และ trigger evals
 

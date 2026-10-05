@@ -1,5 +1,7 @@
 # Vault skills changelog
 
+> Entries below describe their release dates. The playbook guard was removed on 2026-10-05, and manual sync does not install it; see [current guard status](../guardrails/README.md).
+
 Version lives in each skill's `metadata.version`. Bump it with every behaviour change and add a line here. After a change, run `node scripts/lint-skills.mjs` and, for description changes, `node scripts/run-trigger-evals.mjs --skill <name>` (results in `evals/results.md`).
 
 ## 2026-10-05

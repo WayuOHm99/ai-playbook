@@ -1,5 +1,8 @@
 # 11 - Professional-grade skills for the lifecycle gaps (research 2026-10-01 to 2026-10-02)
 
+> **Historical snapshot:** Findings and recommendations below belong to the date shown; they do not describe today's installed configuration.
+> **Guard update (2026-10-05):** The playbook guard was removed at the user's request, and manual sync does not install it. See [guard status](../guardrails/README.md) and the [current workflow](../00-start-here.md).
+
 Status: COMPLETE for sections 0-5 (ranked shortlist in section 4). Anything not opened is marked UNVERIFIED.
 Tiers: T1 = official vendor/org, T2 = respected practitioner or high-adoption repo, T3 = other.
 Method and limits (read this first):
