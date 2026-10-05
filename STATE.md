@@ -1,25 +1,30 @@
 # State
 
-Updated: 2026-10-05 | Branch: `docs/current-workflow-guide`
+Updated: 2026-10-05 | Branch: `fix/manual-skill-evals` | PR: #5
 
-Current ticket: F5/F6 — align current guard guidance and repair the start-here page (approved).
-Phase: review. Next action: user reviews the pull request after documentation verification and independent review pass.
-Base: `883cdee564114092cba42721e30ddc79c6705d83`.
+Current ticket: F7 follow-up — close the two final-review false-pass paths (explicitly approved after draft PR #5).
+Route: P2, evaluator bug. Phase: review. Next action: user reviews and merges PR #5 after verification and independent review pass.
+Frozen PR base: `00c41f2a3063e557f5e1507ab6a53dfda0aa14c0`.
+Follow-up starts from: `996f75308035cb62c103284771717b747885dc62`.
 
 Acceptance criteria:
-- One intact start-here introduction/quick start, with correct Claude slash and Codex dollar examples.
-- Start-here, README and skills-lock list all five actual vault skills.
-- Active guidance treats the playbook guard as optional/uninstalled, not an automatic gate; points to its current status.
-- Historical reports keep their original bodies with dated status notices; local navigation links resolve.
+- A truncated continuation after an earlier successful turn is inconclusive in manual/legacy grading; the running manual CLI returns exit 2 and no pass.
+- A successful trace ends in turn.completed and has its own nonempty final-turn reply; a valid second completed turn and blank trailing lines remain supported.
+- Every sed form counts as a potential write for read-before-action ordering, including -i, --in-place, script writes and shell-wrapped/prefixed commands; ordinary reads still pass.
+- Add separate regression tests, document conservative limits, preserve existing tests/query/history data, and change no installed skills, settings, dependencies or local main.
 
 Verification evidence (2026-10-05):
-- One-off documentation checker: baseline 19 pass, 16 fail/missing updates; fixed 35/35 pass. Covers duplicate/corrupt quick start, dollar examples, skill lists/counts, active guard guidance, preserved historical bodies, fenced blocks and relative links/anchors. Logs: `.scratch/ship-F5-F6/docs-baseline.json`, `.scratch/ship-F5-F6/docs-check.json`.
-- `node scripts/lint-skills.mjs --strict` and `git diff --check` pass; diff touches Markdown only.
-- GitHub GFM render: one page title, intact Claude slash quick start and all five Codex dollar examples; evidence `.scratch/ship-F5-F6/render-check.json`, `start-here-rendered.html`.
-- Checker lives outside the repo and is saved with evidence, not added as a new production script or committed test. No new dependencies.
+- New regression suite before implementation: 0/6 pass, 6 fail for the two known false-pass paths. `.scratch/ship-F7-followup/reproduction.txt`.
+- Also reproduced a sed write hidden before a PowerShell read wrapper; anchored wrapper recognition now keeps preceding actions. `.scratch/ship-F7-followup/sed-wrapper-reproduction.txt`.
+- `node --test scripts/review-candidate.test.mjs scripts/lib/eval-workspace.test.mjs scripts/lib/manual-evals.test.mjs scripts/lib/manual-evals-followup.test.mjs guardrails/guard.test.mjs scripts/lib/dedupe-sessions.test.mjs`: 57/57 Node entries pass, including 6 new follow-up and 20 original F7 tests. `.scratch/ship-F7-followup/node-tests.txt`.
+- `powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/sync.test.ps1`: 14/14 pass, synthetic homes/vaults only and stubbed Git/Node calls. `.scratch/ship-F7-followup/sync-tests.txt`. No actual sync ran.
+- `node scripts/lint-skills.mjs --strict` and `git diff --check` pass. Installed copies match without installation. `.scratch/ship-F7-followup/lint.txt`.
+- Running manual CLI with a fake agent: 6/6 normal cases still pass using real synthetic Git/files; parent sentinel retained and owned fixtures cleaned. `.scratch/ship-F7-followup/app-report.json`, `app-stderr.txt`, `fake-codex.mjs`.
+- New running-CLI regression confirms a truncated fake stream reports inconclusive, 0 passed, scored rate null and exit 2; parent sentinel survives. Evidence retained by the new tests under `.scratch/manual-eval-followup-tests/`.
+- Original F7 evidence remains under `.scratch/ship-F7/`, including baseline exit-9 false pass reproduction and real Windows timeout/descendant test evidence.
 
-Decision: dated notices distinguish historical findings from current policy; original report/changelog bodies remain intact. Project-specific required hooks still follow that project's rules.
+Decision: require terminal success and the final turn's own reply; never borrow an earlier reply/completion. Treat all sed commands as potential writes because scripts can write without in-place flags. This intentionally rejects read-only sed before rule loading; documented as a conservative limit, not a semantic shell parser. Only a leading PowerShell wrapper can be unwrapped.
 
-Scope fences: no skill behavior/version, scripts, existing tests, dependencies, CI/hooks, installed skills, global settings or local-main update. F7 eval modernization and F8 history privacy stay outside this ticket. No automatic guard installation.
+Scope fences: no skill bodies/versions, installed skills, settings, hooks/CI, dependencies, existing test files or local-main update. No real history extraction. F8 privacy remains separate. This bounded follow-up is the user's approved next step after the earlier two-round review; independent review covers the new candidate.
 
-Not tested: live Claude/Codex invocation, installed guard behavior or external source links. No code changed; unchanged application/unit suites were not rerun for this documentation-only ticket.
+Not tested: new live Codex/Claude model runs (Claude stays skipped), POSIX/live-agent process trees, equivalent/future CLI event/command forms, full choose-stack research/ADR, retro lesson quality or full ship delivery. The evaluator uses conservative observable checks and labeled bootstrap cases, not complete semantic verification. Fake-agent scores test the runner/grader, not model quality.

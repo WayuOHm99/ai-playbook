@@ -1,77 +1,61 @@
-// Trigger evals: does the agent load a skill for the queries that should trigger it, and not for near-misses?
-// Usage: node scripts/run-trigger-evals.mjs --skill new-request [--tool codex|claude] [--runs 1] [--concurrency 3] [--fixture-root D:/ev]
-// Each invocation owns a unique D:\ev\run-<random> root; queries get separate children.
-// Detection: Claude = a Skill tool call with that skill name; Codex = the agent reading <skill>/SKILL.md.
-// Results are appended to evals/results.md.
-import { spawn } from 'node:child_process';
-import { readFileSync, writeFileSync, appendFileSync, existsSync } from 'node:fs';
+// Historical auto-trigger experiment only. Manual-only skills use run-manual-evals.mjs.
+import { readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { DEFAULT_FIXTURE_PARENT, runEvalFixtures, waitForEvalChildClose } from './lib/eval-workspace.mjs';
+import { createEvalWorkspace } from './lib/eval-workspace.mjs';
+import { runEvalProcess } from './lib/eval-process.mjs';
+import { gradeLegacyTrigger, summarizeEvals, evalExitCode } from './lib/eval-outcomes.mjs';
 
 const VAULT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
-const skill = arg('--skill');
-const tool = arg('--tool', 'codex');
-const runs = Number(arg('--runs', 1));
-const concurrency = Number(arg('--concurrency', 3));
-const fixtureParent = arg('--fixture-root', DEFAULT_FIXTURE_PARENT);
-const TIMEOUT_MS = 240_000;
-if (!skill) { console.error('--skill is required'); process.exit(2); }
-const set = JSON.parse(readFileSync(join(VAULT, 'evals', `${skill}.json`), 'utf8'));
-
-const FIXTURE = {
-  'AGENTS.md': '# AGENTS.md\nSmall internal hospital web app (Vue + Express). Tracker: BACKLOG.md. Verify: npm test.\n',
-  'STATE.md': '# State\nPhase: implement. Current ticket: #3 login page (in progress). Next action: finish form validation.\n',
-  'BACKLOG.md': '# Backlog\n| # | Date | Source | Idea | Risk | Triage | Decision | Issue | Status |\n|---|---|---|---|---|---|---|---|---|\n',
-  'README.md': '# Demo\nระบบ demo\n',
-};
-
-const jobs = [];
-for (const [expect, list] of [['trigger', set.should], ['no-trigger', set.shouldNot]]) {
-  list.forEach((q, i) => { for (let r = 0; r < runs; r++) jobs.push({ id: `${expect === 'trigger' ? 's' : 'n'}${i}r${r}`, expect, q }); });
-}
-
-const detect = (out) => tool === 'claude'
-  ? out.split('\n').some((l) => { try { return JSON.parse(l).message?.content?.some((b) => b.type === 'tool_use' && b.name === 'Skill' && String(b.input?.skill || '').includes(skill)); } catch { return false; } })
-  : new RegExp(`[\\\\/]${skill}[\\\\/]+SKILL\\.md`, 'i').test(out);
-
-const runOne = async (job, dir) => {
-  for (const [f, c] of Object.entries(FIXTURE)) writeFileSync(join(dir, f), c);
-  const cmd = tool === 'claude'
-    ? ['claude', ['-p', job.q, '--model', 'sonnet', '--permission-mode', 'plan', '--max-turns', '3', '--output-format', 'stream-json', '--verbose']]
-    : ['codex', ['exec', '-m', 'gpt-6-luna', '--skip-git-repo-check', job.q]];
-  const p = spawn(cmd[0], cmd[1], { cwd: dir, shell: true });
-  let out = '';
-  p.stdout.on('data', (d) => (out += d));
-  p.stderr.on('data', (d) => (out += d));
-  const t = setTimeout(() => p.kill(), TIMEOUT_MS);
-  try {
-    await waitForEvalChildClose(p);
-  } finally {
-    clearTimeout(t);
+try {
+  const options = {};
+  for (let i = 2; i < process.argv.length; i++) {
+    const key = process.argv[i];
+    if (['--legacy-trigger', '--live'].includes(key)) { options[key] = true; continue; }
+    if (!['--skill', '--tool', '--runs', '--cli-bin', '--model', '--fixture-root', '--timeout-ms', '--output'].includes(key) || !process.argv[i + 1] || process.argv[i + 1].startsWith('--')) throw new Error(`Invalid or missing option: ${key}`);
+    options[key] = process.argv[++i];
   }
-  const fired = detect(out);
-  const authFail = /Failed to authenticate|usage limit/i.test(out);
-  return { ...job, fired, pass: authFail ? null : fired === (job.expect === 'trigger'), authFail };
-};
-
-const results = await runEvalFixtures(jobs, {
-  fixtureParent,
-  concurrency,
-  execute: runOne,
-  onResult(r) {
-    console.log(`${r.pass === null ? 'ERR ' : r.pass ? 'pass' : 'FAIL'} ${r.expect.padEnd(10)} fired=${r.fired} ${r.q.slice(0, 70)}`);
-  },
-});
-
-const valid = results.filter((r) => r.pass !== null);
-const recall = valid.filter((r) => r.expect === 'trigger');
-const neg = valid.filter((r) => r.expect === 'no-trigger');
-const pct = (a) => (a.length ? Math.round((100 * a.filter((r) => r.pass).length) / a.length) : 0);
-const line = `| ${new Date().toISOString().slice(0, 10)} | ${skill} | ${tool} | ${runs} | ${pct(recall)}% (${recall.filter((r) => r.pass).length}/${recall.length}) | ${pct(neg)}% (${neg.filter((r) => r.pass).length}/${neg.length}) | ${results.length - valid.length} |`;
-const file = join(VAULT, 'evals', 'results.md');
-if (!existsSync(file)) writeFileSync(file, '# Trigger eval results\n\n| Date | Skill | Tool | Runs | Should trigger (recall) | Near-miss correctly ignored | Errors |\n|---|---|---|---|---|---|---|\n');
-appendFileSync(file, `${line}\n`);
-const fails = valid.filter((r) => !r.pass).map((r) => `  - ${r.expect}: ${r.q}`);
-console.log(`\n${line}${fails.length ? `\nFailures:\n${fails.join('\n')}` : ''}`);
+  if (!options['--legacy-trigger'] || !options['--live']) throw new Error('Historical automatic-trigger experiment requires --legacy-trigger --live; use run-manual-evals.mjs for current manual-only skills');
+  const skill = options['--skill'];
+  if (!/^[a-z][a-z0-9-]*$/.test(skill ?? '')) throw new Error('--skill is required and must be a safe skill name');
+  const tool = options['--tool'] ?? 'codex';
+  if (!['codex', 'claude'].includes(tool)) throw new Error('--tool must be codex or claude');
+  if (!options['--cli-bin']) throw new Error('--cli-bin is required (native executable or Node CLI entry point)');
+  const runs = Number(options['--runs'] ?? 1), timeoutMs = Number(options['--timeout-ms'] ?? 240_000);
+  if (!Number.isInteger(runs) || runs < 1 || !Number.isInteger(timeoutMs) || timeoutMs < 1) throw new Error('runs and timeout-ms must be positive integers');
+  const set = JSON.parse(readFileSync(join(VAULT, 'evals', `${skill}.json`), 'utf8'));
+  if (![set.should, set.shouldNot].every(list => Array.isArray(list) && list.every(q => typeof q === 'string' && q.trim()))) throw new Error('Invalid legacy query set');
+  const jobs = [];
+  for (const [expected, list] of [[true, set.should], [false, set.shouldNot]]) list.forEach((q, i) => { for (let r = 0; r < runs; r++) jobs.push({ id: `${expected ? 's' : 'n'}${i}r${r}`, expected, q }); });
+  if (!jobs.length) throw new Error('Legacy query set is empty');
+  const workspace = createEvalWorkspace(options['--fixture-root']), results = [];
+  let retain = false;
+  try {
+    for (const job of jobs) {
+      let result;
+      if (retain) result = { status: 'inconclusive', reason: 'not-run-after-termination-error', fired: null };
+      else {
+        const dir = workspace.createFixture(job.id);
+        for (const [name, content] of Object.entries({
+          'AGENTS.md': '# Synthetic trigger fixture\nRead-only. No files, commits, installs, settings or external services. Tracker: BACKLOG.md.\n',
+          'STATE.md': '# State\nPhase: implement. Current ticket: login page. Next: form validation.\n',
+          'BACKLOG.md': '# Backlog\n', 'README.md': '# Demo\n',
+        })) writeFileSync(join(dir, name), content);
+        const args = tool === 'codex'
+          ? ['exec', '--ephemeral', '--json', '--sandbox', 'read-only', '--color', 'never', '--skip-git-repo-check', ...(options['--model'] ? ['--model', options['--model']] : []), '-C', dir, '-']
+          : ['--print', '--verbose', '--output-format', 'stream-json', '--permission-mode', 'plan', '--max-turns', '3', ...(options['--model'] ? ['--model', options['--model']] : [])];
+        const execution = await runEvalProcess(resolve(options['--cli-bin']), args, { cwd: dir, prompt: job.q, timeoutMs });
+        retain ||= !!execution.retainFixture;
+        result = gradeLegacyTrigger(skill, tool, execution, job.expected);
+        if (retain) result.retainedFixtureRoot = workspace.root;
+      }
+      results.push({ id: job.id, expected: job.expected, ...result });
+      console.error(`${result.status} ${job.id}${result.reason ? `: ${result.reason}` : ''}`);
+    }
+  } finally { if (!retain) workspace.cleanup(); }
+  const report = { schemaVersion: 1, mode: 'legacy-auto-trigger', skill, tool, runs, summary: summarizeEvals(results), results };
+  const json = JSON.stringify(report, null, 2) + '\n';
+  if (options['--output']) writeFileSync(resolve(options['--output']), json);
+  console.log(json.trimEnd());
+  process.exitCode = evalExitCode(results);
+} catch (error) { console.error(error.message); process.exitCode = 2; }
