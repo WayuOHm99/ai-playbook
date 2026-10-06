@@ -2,6 +2,8 @@
 
 คลังขั้นตอนทำงานกับ AI ใช้ **27 สกิลหลักของ Matt Pocock / AI Hero** เป็นแกน แล้วเติมวิธีทำงานของผู้ใช้ใน [core policy](instructions/core.md) และ [working style](instructions/working-style.md) เริ่มที่ [00-start-here.md](00-start-here.md) หรือ `ask-matt`
 
+สำหรับใช้จาก repo โดยไม่ติดตั้ง: [quickstart พร้อม prompt](setup/quickstart-repo.md) ตรวจ path/commit ก่อนทำงาน และมี [starter ขั้นต่ำ](templates/repo-only/README.md) สำหรับ repo ใหม่
+
 เส้นทางหลัก: `ask-matt` → `grill-with-docs` (+ `research`/`prototype` เมื่อจำเป็น) → `to-spec` → `to-tickets` → `implement` หรือ `implement-spec` → `tdd` → `code-review` → `pr` → `retro` งานเล็กที่มีเกณฑ์พร้อมแล้วเริ่มที่ `implement` ได้
 
 ต้นฉบับตรวจวันที่ 2026-10-06: package/release **1.3.1 พร้อม main fixes** ที่ commit `6fd947921b935b7e1e69293a200400f0fdd5c15f` เก็บ source ครบ 38 สกิล; 27 ตัวหลักอยู่ใน catalogue และ 11 experimental/misc เป็น reference เท่านั้น [หลักฐานแหล่งที่มา](upstream/matt-pocock/README.md) · [เหตุผลและผลกระทบการปรับ](setup/matt-pocock-adaptation.md) · [AI Hero](https://www.aihero.dev/skills)
