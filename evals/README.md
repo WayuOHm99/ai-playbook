@@ -1,5 +1,7 @@
 # Legacy five-skill evals
 
+> **Installed-state note (2026-10-07):** The legacy five skills were removed from this machine on 2026-10-06, so the live legacy commands below no longer have installed copies to target. The case files and runner regressions are kept as history.
+
 Retained as historical cases and runner regressions. The old skills are no longer the active catalogue. Live commands below deliberately target legacy installed copies and must not be used to certify the current 27 Matt skills. Current architecture evidence: [workflow trial](workflow-trial-2026-10-06.md), [repository quickstart](quickstart-trial-2026-10-06.md), and [multi-ticket trial](multi-ticket-trial-2026-10-06.md). To repeat the join-graph case, use the [multi-ticket scenario](multi-ticket-scenario.md); it is a source-only manual evaluation with explicit limits.
 
 The prior five vault skills had `disable-model-invocation: true`. Current evals explicitly invoke `$skill-name` in Codex; automatic-trigger recall is a historical experiment, not a quality target for manual-only skills.

@@ -58,6 +58,6 @@ Matt มี flow ต่อเนื่องตั้งแต่คำถาม
 
 เป็น repo-only snapshot และ documentation/catalogue refactor: pinned latest upstream commit `6fd947921b935b7e1e69293a200400f0fdd5c15f`, package/release `1.3.1` พร้อม main fixes ที่ commit นี้มี ไม่ใช้เลข package เป็นหลักฐานว่า source ทุกไฟล์ตรง release tag
 
-ไม่มีการติดตั้ง อัปเดต installed lock ย้าย installed folders เปลี่ยน dependencies/CI/hooks/global settings อ่าน real histories หรืออัปเดต local main การ sync/install และการย้าย domain docs ของโปรเจกต์อื่นเป็นอีกงานหนึ่ง ห้ามสั่ง migration ข้าม repo ตามเอกสารนี้เอง
+(บันทึก ณ 2026-10-06 ก่อนติดตั้ง; การติดตั้งจริงเกิดภายหลังในวันเดียวกัน ดู [STATE](../STATE.md)) ในการเปลี่ยนครั้งนั้นไม่มีการติดตั้ง อัปเดต installed lock ย้าย installed folders เปลี่ยน dependencies/CI/hooks/global settings อ่าน real histories หรืออัปเดต local main การ sync/install และการย้าย domain docs ของโปรเจกต์อื่นเป็นอีกงานหนึ่ง ห้ามสั่ง migration ข้าม repo ตามเอกสารนี้เอง
 
 ผลทดสอบใหม่และข้อจำกัดรายงานใน [workflow trial 2026-10-06](../evals/workflow-trial-2026-10-06.md) เทียบกับ legacy evals อย่างชัดเจน เอกสารวิจัยเก่าคงวันที่/ข้อเท็จจริงที่พบตอนนั้น พร้อมป้ายเลิกใช้คำสั่งเก่า ไม่ใช้ประวัติรุ่นห้าสกิลเป็น proof ของ 27-skill flow

@@ -9,4 +9,4 @@ Derived from the user's instructions in this conversation, not personal-note fil
 - Keep implementation focused on the agreed ticket. Record future ideas in the backlog without interrupting it.
 - Use committed state for continuation across agents. Do not make the user copy conversations between tools.
 - Test what changed, explain what the evidence proves, and label skipped or incomplete checks honestly. Explain why skills were retained, adjusted or retired.
-- This migration is repository-only: no skill installation, sync, global settings or local default-branch update. Live Claude testing is deferred until the user changes that instruction. The current new architecture needs its own merge approval.
+- Installed state and the currently approved scope live in STATE.md, not here. Skill installation, sync, global settings and merges each still need their own authorization under core policy. The user lifted the Claude live-testing deferral on 2026-10-07 for one real-project trial.
