@@ -1,6 +1,6 @@
 # State
 
-Updated: 2026-10-07 (Asia/Bangkok). Branch ของงานนี้: `docs/state-after-install`. Base: `9836558` (PR #10 merged). Phase: แก้เอกสารสถานะให้ตรงความจริง รอผู้ใช้ตรวจ PR
+Updated: 2026-10-07 (Asia/Bangkok). Branch ของงานนี้: `docs/core-thai-summary`. Base: main หลัง PR #11. Phase: เกณฑ์ข้อ 5 รอผู้ใช้อ่านและยืนยัน
 
 ## ขอบเขตที่อนุมัติอยู่ (2026-10-07)
 
@@ -8,17 +8,17 @@ Updated: 2026-10-07 (Asia/Bangkok). Branch ของงานนี้: `docs/st
 
 | # | เกณฑ์ | ตรวจได้จาก | สถานะ |
 |---|---|---|---|
-| 1 | เอกสารตรงกับความจริง | STATE/README/working-style ไม่อ้างสิ่งที่ลบแล้ว และ CI ผ่าน | PR นี้ |
+| 1 | เอกสารตรงกับความจริง | STATE/README/working-style ไม่อ้างสิ่งที่ลบแล้ว และ CI ผ่าน | ผ่าน (PR #11 merged 2026-10-07, Actions ผ่าน) |
 | 2 | พิสูจน์กับงานจริง 1 ชิ้น | issue จริงใน `suth-helpdesk-assets` ด้วย Claude Code จนเปิด PR บันทึกผลใน `evals/` | รอผู้ใช้เลือกงาน |
 | 3 | ปิดงานเป็นห่วงโซ่ | ปิด 1 issue ด้วยข้อความจากผู้ใช้ไม่เกิน 3 ครั้ง | ยังไม่เริ่ม |
 | 4 | กันความลับหลุดด้วยเครื่องมือ | ตัวสแกนความลับก่อน commit และ deny rules ใน Claude Code | ยังไม่เริ่ม ต้องขออนุมัติการติดตั้งแยก |
-| 5 | ผู้ใช้อ่านกฎเองได้ | สรุป `instructions/core.md` ภาษาไทย 1 หน้า ผู้ใช้อ่านแล้วยืนยัน | ยังไม่เริ่ม |
+| 5 | ผู้ใช้อ่านกฎเองได้ | สรุป `instructions/core.md` ภาษาไทย 1 หน้า ผู้ใช้อ่านแล้วยืนยัน | ร่างแล้วที่ `instructions/core-th.md` รอผู้ใช้อ่านและยืนยัน |
 
 ไม่ทำในขอบเขตนี้: เพิ่มสกิลจากแหล่งอื่น, merge เอง, แตะข้อมูลจริงหรือ secret, เปลี่ยน global settings นอกข้อ 4
 
 ## สภาพเครื่องจริง (ตรวจ 2026-10-07)
 
-- `D:\ai-playbook` อยู่ที่ `main` = `origin/main` = `9836558` เหลือ worktree เดียว ไม่มี stash
+- `D:\ai-playbook` มี worktree เดียว ไม่มี stash ค้าง `main` ตรงกับ `origin/main` หลัง PR #11
 - ผู้ใช้อนุมัติการติดตั้งเมื่อ 2026-10-06: รัน `scripts/sync.ps1` แล้ว สกิล 27 ตัวใน catalogue เป็นสำเนาจริงใน `~/.claude/skills` และเป็น junction จาก `~/.agents/skills` มาที่ checkout นี้ sub-agent 6 ไฟล์ถูกเขียนใหม่ ตัวตรวจรายงาน catalogue 27 OK และ installation drift OK
 - ถอดออกจากเครื่องแล้ว: `choose-stack`, `handoff-pack`, `new-request`, `ship`, สกิล Matt กลุ่ม reference 11 ตัว และ `sandbox-sdk` รายการ `mattpocock/skills` ถูกลบออกจาก lock ของ `npx skills` แล้ว จึงห้ามใช้ `npx skills update` กับ 27 ตัวนี้ (จะเขียนทับ checkout ผ่าน junction) ให้อัปเดตด้วย `git pull` แล้ว sync
 - สกิลอื่นที่ติดตั้งผ่าน `npx skills`: HyperFrames 18, Cloudflare 10, `developing-with-streamlit`, `find-skills`, `requirements-clarity` รวมทั้งเครื่อง 58 ตัวต่อ harness
@@ -34,4 +34,4 @@ PR #7 สถาปัตยกรรม Matt 27 active / 11 reference · PR #8 q
 
 ## ขั้นต่อไป
 
-ผู้ใช้ตรวจและตัดสินใจ merge PR ของ branch นี้ จากนั้นเลือก issue จริงขนาดจบได้ในเซสชันเดียวใน `suth-helpdesk-assets` เพื่อเริ่มเกณฑ์ข้อ 2 ด้วย Claude Code
+ผู้ใช้อ่าน `instructions/core-th.md` แล้วยืนยันหรือขอแก้ จากนั้นเลือก issue จริงขนาดจบได้ในเซสชันเดียวใน `suth-helpdesk-assets` เพื่อเริ่มเกณฑ์ข้อ 2 ด้วย Claude Code
