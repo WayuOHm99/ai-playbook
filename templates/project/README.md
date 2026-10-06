@@ -2,6 +2,8 @@
 
 Copy into the root of a new project, replace every `<placeholder>`, delete the HTML comments. English on purpose (agents read these); write project-specific facts in the language the team uses.
 
+For a small project starting with source-only playbook use, first read the [quickstart](../../setup/quickstart-repo.md) and [minimal neutral example](../repo-only/README.md). The larger templates below add hospital/operations conventions only when the project has confirmed them.
+
 | File | Copy when | Who writes / updates | Notes |
 |---|---|---|---|
 | `AGENTS.md` | **Day 1, every project** | Human drafts, agent may propose edits | Canonical rules for Claude Code and Codex. Under 120 lines. Declare the **tier** (see `stacks/hospital-web.md` section 3). |
