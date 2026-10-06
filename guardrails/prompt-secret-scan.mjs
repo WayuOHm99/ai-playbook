@@ -2,6 +2,7 @@
 // before it is sent or stored in history. Reads the hook JSON on stdin; exit 2 blocks, exit 0 passes.
 // It only knows the patterns below. A plain password or PIN with no label is not detected.
 // The message never repeats the matched text.
+import { realpathSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const RULES = [
@@ -14,22 +15,24 @@ const RULES = [
   ['Supabase/JWT token', /\beyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/],
   ['private key block', /-----BEGIN [A-Z ]*PRIVATE KEY-----/],
   ['password inside a connection URL', /\b[a-z][a-z0-9+.-]*:\/\/[^\s:/@]+:[^\s@/]{6,}@[^\s/]+/i],
-  ['labelled password or secret', /(?:password|passwd|pwd|secret|api[_-]?key|token|รหัสผ่าน|พาสเวิร์ด)\s*(?:[:=]|คือ|เป็น)\s*["'`]?(?=[^\s"'`]*\d)(?=[^\s"'`]*[A-Za-z])[^\s"'`<>]{8,}/i],
+  // The label may be quoted (JSON, Python/JS dicts), so allow a closing quote before the separator.
+  ['labelled password or secret', /(?:password|passwd|pwd|secret|api[_ -]?key|token|รหัสผ่าน|พาสเวิร์ด)["'`]?\s*(?:[:=]|คือ|เป็น)\s*["'`]?(?=[^\s"'`]*\d)(?=[^\s"'`]*[A-Za-z])[^\s"'`<>,}]{8,}/gi],
 ];
 
 // Placeholders and variable names are the recommended way to refer to a secret, so they must pass.
-const PLACEHOLDER = /^(?:<[^>]+>|\$\{?[A-Z_][A-Z0-9_]*\}?|process\.env\.[A-Z0-9_]+|x{4,}|\*{4,}|your[_-]?\w+|example\w*|changeme)$/i;
+// your_/example_ forms need a separator, so a real value such as "YourHosp1tal2026" is not treated as a placeholder.
+const PLACEHOLDER = /^(?:<[^>]+>|\$\{?[A-Z_][A-Z0-9_]*\}?|process\.env\.[A-Z0-9_]+|x{4,}|\*{4,}|your[_-][a-z0-9_]+|example(?:[_-][a-z0-9_]+)?\d{0,3}|changeme)$/i;
 
 export function scan(prompt) {
   const found = [];
   for (const [name, re] of RULES) {
-    const m = re.exec(prompt);
-    if (!m) continue;
     if (name === 'labelled password or secret') {
-      const value = m[0].replace(/^.*?(?:[:=]|คือ|เป็น)\s*["'`]?/i, '');
-      if (PLACEHOLDER.test(value)) continue;
+      // Check every labelled value: a placeholder earlier in the prompt must not hide a real one later.
+      const real = [...prompt.matchAll(re)].some((m) => !PLACEHOLDER.test(m[0].replace(/^.*?(?:[:=]|คือ|เป็น)\s*["'`]?/i, '')));
+      if (real) found.push(name);
+      continue;
     }
-    found.push(name);
+    if (re.test(prompt)) found.push(name);
   }
   return found;
 }
@@ -43,7 +46,9 @@ export function message(found) {
   ].join('\n');
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+// Compare real paths so the hook still runs when its path goes through a symlink or junction.
+const invokedPath = (() => { try { return realpathSync(process.argv[1] ?? ''); } catch { return ''; } })();
+if (invokedPath === realpathSync(fileURLToPath(import.meta.url))) {
   let raw = '';
   process.stdin.setEncoding('utf8');
   process.stdin.on('data', (c) => { raw += c; });
