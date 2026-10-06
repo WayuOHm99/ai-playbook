@@ -18,6 +18,8 @@ Use the exact SHA values from the saved JSON. New commits require verification a
 
 ## Tests
 
+For the CI entry point and its scope, see [repository CI](../setup/repository-ci.md). It runs the maintained Node roots and both synthetic Windows sync suites, rejects skipped/incomplete results and probes failure detection using owned source copies. Workflow/runner/security behavior is documented there; existing commands below remain available for targeted checks.
+
 Run from the vault root with Node.js and Git installed; no package installation is needed:
 
 ```powershell
