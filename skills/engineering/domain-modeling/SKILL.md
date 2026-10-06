@@ -7,6 +7,10 @@ description: Build and sharpen a project's domain model. Use when discussing cod
 
 Before acting, resolve the playbook root: use the explicit `Playbook root: <absolute checkout>` in the project's AGENTS.md first; otherwise use this skill's containing checkout (following its junction), then D:/ai-playbook as a fallback. Read `instructions/core.md` and `instructions/working-style.md` from that root. An unavailable explicitly bound checkout is BLOCKED; do not silently load a different installed version. Those documents govern permissions, privacy, checkpoints and delivery; the steps below govern this skill's task. Resolve helper skills through that root's `skills/catalog.json`: use the Skill tool only when its registered source matches that checkout, otherwise read the listed file explicitly. User-invoked helpers are suggestions for the human, not automatic calls.
 
+### Local adjustment
+
+The project's AGENTS.md or `docs/agents/domain.md` may set the glossary file (`GLOSSARY.md`, or an existing `CONTEXT.md`) and the ADR directory (the playbook's setup default is `docs/decisions/`). Wherever this skill or its reference files say `GLOSSARY.md` or `docs/adr/`, use the configured paths, including when numbering or scanning existing ADRs. Fall back to `GLOSSARY.md` and `docs/adr/` only when the project configures nothing. Never keep decisions in two directories.
+
 # Domain Modeling
 
 Actively build and sharpen the project's domain model as you design. This is the *active* discipline: challenging terms, inventing edge-case scenarios, and writing the glossary and decisions down the moment they crystallise. (Merely *reading* `GLOSSARY.md` for vocabulary is not this skill: that's a one-line habit any skill can do. This skill is for when you're changing the model, not just consuming it.)

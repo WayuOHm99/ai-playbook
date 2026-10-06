@@ -43,6 +43,6 @@ Communication to and from subagents should be sparse. Communicate primarily thro
 
 7. Once all tickets are complete, verify the integrated acceptance criteria and required checks, update tracked state, and commit all ticket/test/bookkeeping files. Capture the frozen candidate JSON and call `code-review` on that candidate. Fix review findings in a single **implementer subagent** within core's two-round limit, then reverify and review the new candidate against the original frozen base.
 
-8. After review passes, run core's pre-push `--expect` identity gate, push the exact reviewed candidate and verify the remote SHA. Publish the prepared PR (or update an existing one) only with delivery authorization. Report pending merge separately; resolve tickets only when the configured tracker's closure event has actually occurred. For a local tracker, record verified completion without a remote push.
+8. After review passes, stop and report the verdict unless the request asks for delivery. With a delivery request, run core's pre-push `--expect` identity gate, push the exact reviewed candidate, verify the remote SHA and publish the prepared PR (or update an existing one). Report pending merge separately; resolve tickets only when the configured tracker's closure event has actually occurred. For a local tracker, record verified completion without a remote push.
 
 9. Record the integration/worker worktrees and their branches for recovery. Cleanup follows core authorization.

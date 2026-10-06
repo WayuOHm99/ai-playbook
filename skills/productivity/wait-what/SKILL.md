@@ -10,6 +10,6 @@ Before acting, resolve the playbook root: use the explicit `Playbook root: <abso
 
 ### Local adjustment
 
-Explain in plain Thai for this user while retaining code/domain names.
+Explain in plain Thai for this user while retaining code/domain names. This replaces the ASD-STE100 English instruction below: use short, simple Thai sentences in the same spirit.
 
 Wait, I don't understand where you've got to here. Re-pitch that: give me a little bit of context, talk in ASD-STE100 Simplified Technical English, and use the ubiquitous language from `GLOSSARY.md` (follow `GLOSSARY-MAP.md` to the right one if the repo has more than one).
