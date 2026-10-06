@@ -32,3 +32,17 @@ To enable it again by hand:
 1. Make a throwaway repo at a short path (for example `D:\gt`) that contains one untracked file.
 2. Ask the agent to run `git clean -fd`.
 3. Expect `BLOCKED by playbook guard`.
+
+## Prompt secret scan (optional, Claude Code only)
+
+`prompt-secret-scan.mjs` is a separate UserPromptSubmit hook. It blocks a prompt before it is sent when the text matches a known credential shape: Anthropic/OpenAI-style keys, GitHub, AWS, Google and Slack tokens, JWTs, private key blocks, a password inside a connection URL, or a labelled value such as `password: ...` / `รหัสผ่านคือ ...`. Placeholders and variable names (`<DB_PASSWORD>`, `${TOKEN}`, `process.env.X`) pass. The block message never repeats the matched text.
+
+Limits: it only knows these patterns. A bare password or PIN with no label is not detected, so it reduces accidental pastes and does not replace the habit of using variable names. Codex is not covered.
+
+Enable by adding to `~/.claude/settings.json` (user approval required, see core policy):
+
+```json
+"hooks": { "UserPromptSubmit": [ { "hooks": [ { "type": "command", "command": "node", "args": ["D:/ai-playbook/guardrails/prompt-secret-scan.mjs"], "timeout": 10 } ] } ] }
+```
+
+The hook reads the script from this checkout, so the checkout must be on a branch that contains it. Test: `node --test guardrails/prompt-secret-scan.test.mjs` (26 cases, samples are assembled from fragments).
