@@ -11,7 +11,7 @@
 | ส่วน | หน้าที่ |
 |---|---|
 | [skills](skills/README.md) | 27 ตัวหลัก แบ่ง Engineering/Productivity; ชื่อและสิทธิ์เรียกตาม Matt |
-| [instructions](instructions/core.md) | กฎกลางและวิธีสื่อสาร อ่านเมื่อเรียกสกิลหรือขอให้ใช้ |
+| [instructions](instructions/core.md) | กฎกลางและวิธีสื่อสาร อ่านเมื่อเรียกสกิลหรือขอให้ใช้; [ฉบับไทย 1 หน้าสำหรับเจ้าของงาน](instructions/core-th.md) |
 | [playbook](playbook/lifecycle.md), [prompts](prompts/README.md) | คู่มือเส้นทางเดียวกับ Matt และ prompt ไทย |
 | [stacks](stacks/README.md), [templates](templates/project/README.md) | constraints, feasibility, เอกสารโครงการ/ส่งมอบ ตามบริบทงาน |
 | [setup](setup/matt-pocock-setup-answers.md), research | คำตอบเริ่มต้นและข้อมูลวิจัยที่มีวันที่; ข้อมูลเก่ามีป้าย historical |
