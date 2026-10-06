@@ -1,6 +1,6 @@
 # State
 
-Updated: 2026-10-07 (Asia/Bangkok). Branch ของงานนี้: `docs/core-thai-summary`. Base: main หลัง PR #11. Phase: เกณฑ์ข้อ 5 รอผู้ใช้อ่านและยืนยัน
+Updated: 2026-10-07 (Asia/Bangkok). Branch ของงานนี้: `feat/prompt-secret-scan`. Base: main หลัง PR #12. Phase: เกณฑ์ข้อ 4 กำลังทำ
 
 ## ขอบเขตที่อนุมัติอยู่ (2026-10-07)
 
@@ -11,8 +11,8 @@ Updated: 2026-10-07 (Asia/Bangkok). Branch ของงานนี้: `docs/co
 | 1 | เอกสารตรงกับความจริง | STATE/README/working-style ไม่อ้างสิ่งที่ลบแล้ว และ CI ผ่าน | ผ่าน (PR #11 merged 2026-10-07, Actions ผ่าน) |
 | 2 | พิสูจน์กับงานจริง 1 ชิ้น | issue จริงใน `suth-helpdesk-assets` ด้วย Claude Code จนเปิด PR บันทึกผลใน `evals/` | รอผู้ใช้เลือกงาน |
 | 3 | ปิดงานเป็นห่วงโซ่ | ปิด 1 issue ด้วยข้อความจากผู้ใช้ไม่เกิน 3 ครั้ง | ยังไม่เริ่ม |
-| 4 | กันความลับหลุดด้วยเครื่องมือ | ตัวสแกนความลับก่อน commit และ deny rules ใน Claude Code | ยังไม่เริ่ม ต้องขออนุมัติการติดตั้งแยก |
-| 5 | ผู้ใช้อ่านกฎเองได้ | สรุป `instructions/core.md` ภาษาไทย 1 หน้า ผู้ใช้อ่านแล้วยืนยัน | ร่างแล้วที่ `instructions/core-th.md` รอผู้ใช้อ่านและยืนยัน |
+| 4 | กันความลับหลุดด้วยเครื่องมือ | (A) ตัวดักความลับที่ช่องพิมพ์ (B) deny rules ใน Claude Code (C) gitleaks ก่อน commit ใน suth และ ai-playbook | ผู้ใช้อนุมัติ A B C เมื่อ 2026-10-07; A เขียนแล้วพร้อมเทสต์ 26 ข้อ ยังไม่ได้เปิดใช้ใน settings; B และ C ยังไม่ได้ทำ |
+| 5 | ผู้ใช้อ่านกฎเองได้ | สรุป `instructions/core.md` ภาษาไทย 1 หน้า ผู้ใช้อ่านแล้วยืนยัน | ผ่าน (ผู้ใช้ยืนยัน 2026-10-07, PR #12 merged) |
 
 ไม่ทำในขอบเขตนี้: เพิ่มสกิลจากแหล่งอื่น, merge เอง, แตะข้อมูลจริงหรือ secret, เปลี่ยน global settings นอกข้อ 4
 
@@ -34,4 +34,4 @@ PR #7 สถาปัตยกรรม Matt 27 active / 11 reference · PR #8 q
 
 ## ขั้นต่อไป
 
-ผู้ใช้อ่าน `instructions/core-th.md` แล้วยืนยันหรือขอแก้ จากนั้นเลือก issue จริงขนาดจบได้ในเซสชันเดียวใน `suth-helpdesk-assets` เพื่อเริ่มเกณฑ์ข้อ 2 ด้วย Claude Code
+merge PR ของ branch นี้ แล้วเปิดใช้ A และ B ใน `~/.claude/settings.json` ผู้ใช้ติดตั้ง gitleaks เอง จากนั้นเลือก issue จริงขนาดจบได้ในเซสชันเดียวใน `suth-helpdesk-assets` เพื่อเริ่มเกณฑ์ข้อ 2 ด้วย Claude Code
