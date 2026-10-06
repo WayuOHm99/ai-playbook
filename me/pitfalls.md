@@ -29,7 +29,7 @@
 - **อาการ**: Claude เขียน -> คุณคัดลอกไปให้ Codex รีวิว -> คัดลอก finding กลับ -> "อนุมัติส่งกลับแก้" ซ้ำ โดย finding รอบหลังๆ เป็นเรื่องเล็ก (เช่น ความสะอาดของข้อความ error, จำนวนคำสั่งในเทสต์)
 - **หลักฐาน**: Run-Performance platform (ก.ค.-ส.ค.) TASK-012 รวม 6 รอบ, TASK-017 รวม 10 รอบ, TASK-016 5 รอบ, ข้อความอนุมัติ/ส่งต่อราว 40 ข้อความ; SUTH helpdesk 08-11 (PR รีวิว/แก้/commit/push 4 พรอมต์ติดกัน), 09-14 ("โควตาจะหมด ส่งต่อให้ Claude")
 - **ผลกระทบ**: สูง เป็นตัวกินเวลามากที่สุดของโปรเจกต์ platform และคุณทำหน้าที่ตัวส่งข้อความแทนระบบ
-- **วิธีแก้ในคลัง**: `instructions/core.md` (review/fix ไม่เกิน 2 รอบ; BLOCKER ที่ยังเหลือหลังรอบ 2 = หยุดและรายงาน BLOCKED; SHOULD-FIX/COULD-FIX ลงรายงานและ `BACKLOG.md`), finding และ handoff เขียนเป็นไฟล์ใน repo แล้วส่งแค่ path + verdict 1 บรรทัด, มาโคร "ปิดงาน end-to-end" (`/ship`), `prompts/05-review-audit.md` (05-B) และ `/ship` (แก้ไม่เกิน 2 รอบ)
+- **วิธีแก้ในคลัง**: `instructions/core.md` (review/fix ไม่เกิน 2 รอบ; BLOCKER ที่ยังเหลือหลังรอบ 2 = หยุดและรายงาน BLOCKED; SHOULD-FIX/COULD-FIX ลงรายงานและ `BACKLOG.md`), finding และ handoff เขียนเป็นไฟล์ใน repo แล้วส่งแค่ path + verdict 1 บรรทัด, ปิดงานต่อเนื่องด้วย `implement` เมื่อสั่งส่งมอบ (รีวิว แก้ไม่เกิน 2 รอบ push และเปิด PR แล้วหยุดที่ด่าน merge), `prompts/05-review-audit.md` (05-B)
 - **เช็กตัวเอง**: นี่คือรอบที่เท่าไร และ finding ที่เหลือมีข้อไหนเป็น BLOCKER จริง (ตามนิยามใน core)
 
 ## 4. ข้อมูลหายหลัง /clear หรือ compaction
@@ -53,7 +53,7 @@
 - **อาการ**: "อนุญาตทุกอย่าง / ไม่ต้องถามยืนยัน / ฉันไปนอนแล้ว / ทำ 1-7 จนเสร็จ" สลับกับรั้วเข้มงวด และขอปิดการถามสิทธิ์ (ขอวิธีอนุมัติทุกอย่าง 3+ ครั้ง)
 - **หลักฐาน**: RubricLens 08-08/08-09/08-17 (อนุมัติ push+deploy ก่อนนอน); CAMPBANK 08-21; SUTH helpdesk 08-10 ถึง 09-04 (ราว 8 ครั้ง, "ให้ commit และ push ที่ main ตรงๆ" 09-04); codex-documents 09-29 (ส่งอีเมล 2 ฉบับโดยไม่มีการตรวจ, เลย์เอาต์ Canva เสียหาย); Run-Performance (ขอ auto-approve ทั้งหมด)
 - **ผลกระทบ**: สูง ความเสี่ยงต่อฐานข้อมูลจริง ประวัติ git และไฟล์งานจริง ทั้งที่ AGENTS.md เขียนห้ามไว้ พฤติกรรมเดาไม่ได้ (บางครั้งเคารพ บางครั้งข้าม)
-- **วิธีแก้ในคลัง**: `instructions/core.md` (Autonomy contract) (ทำเองได้: แก้ใน branch, test, commit, push feature branch + เปิด PR ตอน `/ship`/สั่งส่งมอบ; ถามก่อนเสมอ: merge, push main/master, deploy, ลบ, DB จริง, secret, บัญชีภายนอก, ส่งข้อความ; หยุดเมื่อ: เทสต์แดง 2 รอบ/ต้องเดา/เกินขอบเขต; จบด้วย "ที่แตะ"), auto mode + deny rules แทน bypass (`research/02-tool-mechanics.md`, `research/07-review.md`), branch protection จริงบน main; guard เป็นตัวเลือกที่ยังไม่ได้ติดตั้ง ดู [สถานะปัจจุบัน](../guardrails/README.md)
+- **วิธีแก้ในคลัง**: `instructions/core.md` (Autonomy contract) (ทำเองได้: แก้ใน branch, test, commit, push feature branch + เปิด PR เมื่อสั่งส่งมอบ; ถามก่อนเสมอ: merge, push main/master, deploy, ลบ, DB จริง, secret, บัญชีภายนอก, ส่งข้อความ; หยุดเมื่อ: เทสต์แดง 2 รอบ/ต้องเดา/เกินขอบเขต; จบด้วย "ที่แตะ"), auto mode + deny rules แทน bypass (`research/02-tool-mechanics.md`, `research/07-review.md`), branch protection จริงบน main; guard เป็นตัวเลือกที่ยังไม่ได้ติดตั้ง ดู [สถานะปัจจุบัน](../guardrails/README.md)
 - **เช็กตัวเอง**: ถ้า agent ทำผิดที่สุดในกรอบที่ฉันอนุญาต ฉันยอมรับผลได้ไหม
 
 ## 7. Process/CI เกินตัวสำหรับทีม 1-2 คน
