@@ -22,7 +22,7 @@ git -C $playbookPath status --porcelain=v1 --untracked-files=all
 
 ## 2. ส่ง prompt เริ่มต้นในแชทใหม่
 
-แทนค่า `<...>` ทุกจุดก่อนส่ง prompt นี้ ใช้ได้ทั้ง Codex และ Claude ที่อ่านไฟล์กับ Git ได้ การทดสอบ Claude ของคลังยังเลื่อนไว้ตามคำสั่งผู้ใช้
+แทนค่า `<...>` ทุกจุดก่อนส่ง prompt นี้ ใช้ได้ทั้ง Codex และ Claude ที่อ่านไฟล์กับ Git ได้ Claude Code ใช้กับงานจริงแล้ว 2026-10-07 (ดู [chain trial](../evals/chain-trial-2026-10-07.md)) แต่ยังไม่ได้ทดสอบโหมดอ่านจาก repo นี้กับ Claude โดยตรง
 
 ```text
 เริ่มใช้ ai-playbook แบบอ่านจาก repo ในโปรเจกต์นี้

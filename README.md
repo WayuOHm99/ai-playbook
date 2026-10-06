@@ -22,4 +22,4 @@
 
 เรียกใน Claude ด้วย `/ชื่อ` และ Codex ด้วย `$ชื่อ` เมื่อสกิลรุ่นนั้นถูกลงทะเบียนแล้ว การเปิด checkout นี้ไม่ได้ทำให้สกิลในเครื่องเป็นรุ่นใหม่เอง สำหรับอ่านจาก repo ให้ระบุ `Playbook root: <absolute checkout>` ใน AGENTS ของงาน แล้วขอให้อ่านสกิลตาม [catalogue](skills/catalog.json) ตัวที่ User-invoked ต้องให้ผู้ใช้เรียก; ตัว Model-invoked ใช้ตามบริบทได้ตามสิทธิ์ที่อนุมัติ
 
-การอัปเดตสกิลในเครื่องทำด้วย `git pull` แล้วรัน [สคริปต์ sync](scripts/README.md) ซึ่งต้องเป็นงานติดตั้งที่อนุมัติแยก ตรวจผลกระทบและไฟล์ชื่อซ้ำก่อนใช้ อย่าใช้ `npx skills update` กับสกิลชุดนี้ ผลทดสอบปัจจุบันอยู่ใน [workflow trial](evals/workflow-trial-2026-10-06.md)
+การอัปเดตสกิลในเครื่องทำด้วย `git pull` แล้วรัน [สคริปต์ sync](scripts/README.md) ซึ่งต้องเป็นงานติดตั้งที่อนุมัติแยก ตรวจผลกระทบและไฟล์ชื่อซ้ำก่อนใช้ อย่าใช้ `npx skills update` กับสกิลชุดนี้ ผลกับงานจริงอยู่ใน [real-work trial](evals/real-work-trial-2026-10-07.md) และ [chain trial](evals/chain-trial-2026-10-07.md) (ทั้งสองผ่านแบบมีข้อจำกัด) ผลทดลองสังเคราะห์ของโครงสร้างอยู่ใน [workflow trial](evals/workflow-trial-2026-10-06.md)
