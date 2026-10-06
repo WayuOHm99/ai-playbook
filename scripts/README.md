@@ -1,6 +1,6 @@
 # Review candidate checks
 
-`review-candidate.mjs` is the read-only Git check used by `/ship`. Run it from the ticket worktree after committing all ticket files, new tests and tracked bookkeeping:
+`review-candidate.mjs` is the read-only Git check used by Matt `code-review` and central delivery policy. Run it from the ticket worktree after committing all ticket files, new tests and tracked bookkeeping:
 
 ```powershell
 node D:/ai-playbook/scripts/review-candidate.mjs --base origin/main
@@ -28,19 +28,24 @@ node --test scripts/lib/manual-evals-followup.test.mjs
 node --test scripts/lib/history-review.test.mjs
 node --test guardrails/guard.test.mjs scripts/lib/dedupe-sessions.test.mjs
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/sync.test.ps1
-node scripts/lint-skills.mjs --strict
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/sync-catalog.test.ps1
+node --test scripts/skill-catalog.test.mjs scripts/matt-snapshot.test.mjs
+node scripts/check-matt-snapshot.mjs
+node scripts/lint-skills.mjs --strict --repo-only
 git diff --check
 ```
 
 Candidate tests create isolated Git repositories under `.scratch/review-candidate-tests/` and remove only their own generated fixture directories. They cover uncommitted/new/staged files, committed tests in the diff, ignored evidence, stale review, frozen and diverged bases, filenames with whitespace, CLI success/error results, and local submodules hidden by Git configuration. Submodule fixtures use local file transport only, without a network or global configuration changes.
 
-Skill lint also compares the vault with installed copies. A feature branch that changes skills will report expected installation drift until those changes are installed. Record that separately from syntax failures; do not synchronize global skills merely to make a branch check green.
+Skill lint recursively discovers leaf SKILL.md folders, checks frontmatter, links, invocation policy and optional catalog.json. --strict fails repository issues only. --repo-only skips installed-home reads; default installation drift is reported separately, and --strict-installations opts into failing drift. Do not sync merely to make a branch check green.
 
-These deterministic checks do not prove an agent follows the entire `/ship` workflow or loads core in a live Claude/Codex session. That needs a separate behavioral trial after installation.
+New catalogue tests cover nested/flat discovery, roles, duplicate names, links and separate synthetic installation drift. Three recursive sync cases test named leaf installation, duplicate refusal before writes and linked-source refusal. Four snapshot cases check primary/reference inventory, byte drift, unexpected files, categories/counts and traversal metadata. All use isolated synthetic fixtures; upstream skill code is never executed by the checker.
+
+These deterministic checks prove script behavior, not the entire Matt workflow. Source-only trial evidence and limits are in [the final architecture trial](../evals/workflow-trial-2026-10-06.md). Installation is a separate task.
 
 ## Manual skill sync
 
-Run `scripts/sync.ps1` by hand after editing vault skills. Claude gets real copies in `~/.claude/skills`; Codex gets junctions in `~/.agents/skills`. Claude copies use `robocopy /E`: destination-only files and directories are retained, including files removed or renamed in the source. Matching source paths can still overwrite local edits. Keep personal notes under distinct names; inspect obsolete files yourself rather than relying on sync to remove them. This is an additive copy, not an exact mirror.
+Run `scripts/sync.ps1` only as a separately authorized installation task. Recursive discovery installs each leaf skill by name, never category folders or upstream references. Claude gets real copies in `~/.claude/skills`; Codex gets junctions in `~/.agents/skills`. Claude copies use `robocopy /E`: destination-only files and directories are retained, including files removed or renamed in the source. Matching source paths can still overwrite local edits. Keep personal notes under distinct names; inspect obsolete files yourself rather than relying on sync to remove them. This is an additive copy, not an exact mirror.
 
 When replacing a Claude destination junction, sync removes only the link and copies into a real directory; its old target is left intact. Codex's existing real paths are moved under `~/.ai-playbook-backups/<timestamp>/<name>` before a junction is installed. Sub-agent files with matching names are updated in place. Sync does not install global AI rules or guard hooks, but it **can change global Git `core.longpaths` to `true`** when needed. Skill lint remains warn-only. Robocopy codes below 8 are accepted; codes 8 and above stop sync.
 

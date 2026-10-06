@@ -1,5 +1,8 @@
 # 14 — How Anthropic and OpenAI use their own agents (2026-10-02)
 
+> **Retired workflow references (2026-10-06):** This research is a dated record, not an active procedure. References to the old five owned workflows, installed inventories, commands or configuration describe the earlier review only. The current 27-skill Matt flow is in [lifecycle](../playbook/lifecycle.md), [adaptation](../setup/matt-pocock-adaptation.md) and [source record](../setup/skills-lock.md). Personal-note sources and automatic reads were disconnected; use only evidence authorized for the current task.
+
+
 > **Historical snapshot:** Findings and recommendations below belong to the date shown; they do not describe today's installed configuration.
 > **Guard update (2026-10-05):** The playbook guard was removed at the user's request, and manual sync does not install it. See [guard status](../guardrails/README.md) and the [current workflow](../00-start-here.md).
 
@@ -118,7 +121,7 @@ Code review costs:
 3. Usage-limit hygiene block in `README.md` and `00-start-here.md`.
 4. `playbook/review-rules.md` (new): one review rule set (nit cap, file:line, Important-only after round 1, 1–2 key invariants per repo). `/ship` pastes it into the reviewer, and ultra review is reserved for risky PRs.
 5. Risk tier + sampling table in `playbook/triage.md`.
-6. Record in `guardrails/README.md` and `me/pitfalls.md` that text-matching hooks are a speed bump (base64, `-EncodedCommand`). New patterns need approval.
+6. Historical source finding: text-matching hooks are a speed bump (base64, `-EncodedCommand`). Private-note destination retired 2026-10-06; any future hook changes need their own authorized scope.
 7. `setup/skill-intake.md`: Claude Code mods have no sandbox; plugins can pre-approve tools via `allowed-tools`.
 8. `instructions/core.md`: if a hook, sandbox or reviewer blocks you, stop and report. Never route around it (encoding, another shell).
 9. Project templates: an owner and last-audit date on AGENTS.md; copy the claude-code repo's CI hardening when Actions call Claude.

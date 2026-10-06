@@ -12,11 +12,11 @@ Copy into the root of a new project, replace every `<placeholder>`, delete the H
 | `RUN.md` | As soon as someone else (or a fresh agent) must start the app | Developer, agent verifies commands | Windows-first. Must be tested by running it. |
 | `.gitignore` | Day 1 | Nobody (add project-specific lines) | Ignores `.env*` (keeps `.env.example`), `.scratch/` (bulk evidence only), build and test output. |
 | `.gitattributes` | Day 1 | Nobody | `eol=lf` by default, CRLF for `.ps1`/`.bat`, binary images. Prevents line-ending noise in diffs on Windows. |
-| `HANDOFF.md` | Not copied: created by `/handoff-pack` on the feature branch | Agent | Session/tool handoff (goal, fences, open findings, next prompt), committed with `STATE.md` as `wip: handoff`. Deleted in the commit that finishes the ticket. |
+| `HANDOFF.md` | Created by Matt `handoff` plus core checkpoint policy on the task branch | Agent | Goal, scope, authorization, verified candidate SHA/evidence, open findings and next skills. Commit with `STATE.md`; receiver verifies the repo. Retire only under project rules. |
 | `HANDOVER.md` | **Start of tier 2 (internal use)**, finish before internship ends | Developer + agent; hospital IT reviews | Bus-factor document. No secret values, only locations. Test with a fresh agent as new maintainer. |
 
 ## Order for a new project
-1. `AGENTS.md`, `CLAUDE.md`, `STATE.md`, `BACKLOG.md` (day 1, takes 15 minutes).
+1. Choose this workflow for the new repo; copy `AGENTS.md`, `CLAUDE.md`, `STATE.md`, `BACKLOG.md`, replacing placeholders. Do not overwrite an existing project's rules.
 2. `RUN.md` once the app starts.
 3. `DECISIONS.md` (or ADR folder) at first real decision.
 4. `HANDOVER.md` when moving to tier 2; fill the restore-drill table before tier 2 go-live.
@@ -24,4 +24,5 @@ Copy into the root of a new project, replace every `<placeholder>`, delete the H
 ## Related
 - Stack, tiers, ops, PDPA checklist: `../../stacks/hospital-web.md`
 - Issue tracker / labels / docs layout for the Matt Pocock skills: `../../setup/matt-pocock-setup-answers.md` (writes `docs/agents/*.md`; do not duplicate here)
-- Existing project that already has richer docs (suth-helpdesk-assets): keep its own `AGENTS.md`; add only `STATE.md`, `BACKLOG.md`, `HANDOVER.md`, `RUN.md`.
+- Matt main flow: [lifecycle](../../playbook/lifecycle.md); central policy/style: [core](../../instructions/core.md), [working style](../../instructions/working-style.md).
+- Existing project with richer docs: retain its own rules and configured domain paths. Add or migrate files only under that project's explicit scope; new repos use `GLOSSARY.md`.

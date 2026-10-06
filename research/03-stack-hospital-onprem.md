@@ -1,5 +1,8 @@
 # 03 - House tech stack for on-prem hospital internal systems (research, as of 2026-09-30/10-01)
 
+> **Retired workflow references (2026-10-06):** This research is a dated record, not an active procedure. References to the old five owned workflows, installed inventories, commands or configuration describe the earlier review only. The current 27-skill Matt flow is in [lifecycle](../playbook/lifecycle.md), [adaptation](../setup/matt-pocock-adaptation.md) and [source record](../setup/skills-lock.md). Personal-note sources and automatic reads were disconnected; use only evidence authorized for the current task.
+
+
 STATUS: complete first pass. Versions and dates were queried directly from package registries / GitHub release APIs on 2026-09-30 (T1). Legal/regulatory text that could not be machine-read is marked UNVERIFIED.
 
 Evidence tiers: T1 = official docs, release pages, registries, statute text, regulator site. T2 = reputable secondary (endoflife.date, law-firm or trade summaries). T3 = blog, forum, my own engineering judgement, or search-snippet only. "L" = local evidence from read-only inspection of the four projects. UNVERIFIED = not confirmed from a primary source in this pass.

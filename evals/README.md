@@ -1,8 +1,10 @@
-# Skill evals
+# Legacy five-skill evals
 
-The five vault skills have `disable-model-invocation: true`. Current evals explicitly invoke `$skill-name` in Codex; automatic-trigger recall is a historical experiment, not a quality target for manual-only skills.
+Retained as historical cases and runner regressions. The old skills are no longer the active catalogue. Live commands below deliberately target legacy installed copies and must not be used to certify the current 27 Matt skills. Current architecture evidence: [workflow trial](workflow-trial-2026-10-06.md).
 
-## Current manual cases
+The prior five vault skills had `disable-model-invocation: true`. Current evals explicitly invoke `$skill-name` in Codex; automatic-trigger recall is a historical experiment, not a quality target for manual-only skills.
+
+## Preserved legacy manual cases
 
 Run from the vault root. List cases or test the grader without an agent, login, model quota, installation or network:
 

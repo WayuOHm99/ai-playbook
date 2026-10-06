@@ -1,55 +1,23 @@
-# ai-playbook: คลังขั้นตอนการทำงานกับ AI Agents
+# ai-playbook
 
-คลังนี้รวมวิธีทำงานตั้งแต่ได้ requirement จนส่งมอบระบบ เป็น**คลังไว้เปิดอ่านและหยิบใช้เอง** ใช้ได้ทั้งกับ **Claude Code** และ **Codex**
+คลังขั้นตอนทำงานกับ AI ใช้ **27 สกิลหลักของ Matt Pocock / AI Hero** เป็นแกน แล้วเติมวิธีทำงานของผู้ใช้ใน [core policy](instructions/core.md) และ [working style](instructions/working-style.md) เริ่มที่ [00-start-here.md](00-start-here.md) หรือ `ask-matt`
 
-👉 **เริ่มที่ [`00-start-here.md`](00-start-here.md)** ในนั้นบอกว่าเจอสถานการณ์ไหนให้ทำอะไร
+เส้นทางหลัก: `ask-matt` → `grill-with-docs` (+ `research`/`prototype` เมื่อจำเป็น) → `to-spec` → `to-tickets` → `implement` หรือ `implement-spec` → `tdd` → `code-review` → `pr` → `retro` งานเล็กที่มีเกณฑ์พร้อมแล้วเริ่มที่ `implement` ได้
 
-## คลังนี้ไม่ตั้งค่าอะไรให้เองเบื้องหลัง (ตั้งแต่ 2026-10-03)
+ต้นฉบับตรวจวันที่ 2026-10-06: package/release **1.3.1 พร้อม main fixes** ที่ commit `6fd947921b935b7e1e69293a200400f0fdd5c15f` เก็บ source ครบ 38 สกิล; 27 ตัวหลักอยู่ใน catalogue และ 11 experimental/misc เป็น reference เท่านั้น [หลักฐานแหล่งที่มา](upstream/matt-pocock/README.md) · [เหตุผลและผลกระทบการปรับ](setup/matt-pocock-adaptation.md) · [AI Hero](https://www.aihero.dev/skills)
 
-เปิดแชทใหม่ใน Claude Code หรือ Codex จะไม่มีกฎหรือการตั้งค่าของคลังโหลดเข้ามา ของในคลังจะทำงานเมื่อคุณเรียกเองเท่านั้น
-
-| สิ่งที่ติดตั้งไว้ในเครื่อง | เรียกใช้ยังไง |
+| ส่วน | หน้าที่ |
 |---|---|
-| สกิล 5 ตัว: `new-request`, `ship`, `handoff-pack`, `retro`, `choose-stack` | พิมพ์ `/ชื่อสกิล` ใน Claude หรือ `$ชื่อสกิล` ใน Codex ทุกตัวตั้งไว้ให้เรียกเองเท่านั้น agent เรียกเองไม่ได้ |
-| Sub-agents: reviewer, researcher, verifier | ไม่ทำงานเอง สกิลจะเรียกเมื่อต้องใช้ |
+| [skills](skills/README.md) | 27 ตัวหลัก แบ่ง Engineering/Productivity; ชื่อและสิทธิ์เรียกตาม Matt |
+| [instructions](instructions/core.md) | กฎกลางและวิธีสื่อสาร อ่านเมื่อเรียกสกิลหรือขอให้ใช้ |
+| [playbook](playbook/lifecycle.md), [prompts](prompts/README.md) | คู่มือเส้นทางเดียวกับ Matt และ prompt ไทย |
+| [stacks](stacks/README.md), [templates](templates/project/README.md) | constraints, feasibility, เอกสารโครงการ/ส่งมอบ ตามบริบทงาน |
+| [setup](setup/matt-pocock-setup-answers.md), research | คำตอบเริ่มต้นและข้อมูลวิจัยที่มีวันที่; ข้อมูลเก่ามีป้าย historical |
+| [scripts](scripts/README.md), [evals](evals/README.md) | ตรวจ source/catalogue, candidate, privacy และผลทดสอบพร้อมขอบเขต |
+| agents, guardrails | ตัวช่วยที่สกิลใช้และ guard แบบเลือกเปิดเอง |
 
-ส่วนที่เหลือเป็นเอกสารให้เปิดอ่านหรือก๊อปไปวางในแชทเอง:
-- `instructions/core.md` กฎการทำงาน สกิลจะอ่านไฟล์นี้ตอนถูกเรียก ถ้าอยากให้ agent ทำตามในแชทไหน ให้พิมพ์ว่า "อ่าน D:\ai-playbook\instructions\core.md แล้วทำตาม"
-- `prompts/` prompt ภาษาไทย 34 แบบ
-- `playbook/`, `stacks/`, `templates/`, `me/`, `research/`
+การเปลี่ยนครั้งนี้อยู่ใน repository เท่านั้น ไม่มีการติดตั้ง/sync เปลี่ยน global settings หรืออัปเดต local main ไฟล์ส่วนตัวเดิมเก็บครบ แต่ถูกตัดออกจากเส้นทางการอ่านและเชื่อมโยงของ workflow
 
-**แก้สกิลในคลังแล้ว** ต้องรัน `scripts\sync.ps1` เองหนึ่งครั้ง สคริปต์นี้ติดตั้งแค่สกิลกับ sub-agents ไม่ติดตั้งกฎกลางและไม่ติดตั้งตัวกันคำสั่งอันตราย (ถอดออกเมื่อ 2026-10-05 วิธีเปิดใช้เองอยู่ใน `guardrails/README.md`)
+เรียกใน Claude ด้วย `/ชื่อ` และ Codex ด้วย `$ชื่อ` เมื่อสกิลรุ่นนั้นถูกลงทะเบียนแล้ว การเปิด checkout นี้ไม่ได้ทำให้สกิลในเครื่องเป็นรุ่นใหม่เอง สำหรับอ่านจาก repo ให้ระบุ `Playbook root: <absolute checkout>` ใน AGENTS ของงาน แล้วขอให้อ่านสกิลตาม [catalogue](skills/catalog.json) ตัวที่ User-invoked ต้องให้ผู้ใช้เรียก; ตัว Model-invoked ใช้ตามบริบทได้ตามสิทธิ์ที่อนุมัติ
 
-Sync เก็บไฟล์ที่มีเฉพาะปลายทางของ Claude ไว้ แต่ไฟล์ชื่อเดียวกับต้นทางอาจถูกเขียนทับ และไฟล์ที่เลิกใช้ในคลังจะยังค้างอยู่ให้ตรวจเอง สคริปต์อาจตั้ง global Git `core.longpaths=true` ด้วย รายละเอียดและเทสต์อยู่ใน [`scripts/README.md`](scripts/README.md#manual-skill-sync)
-
-**ถ้าวันหลังอยากให้ทั้งสองเครื่องมือทำตามกฎของคลังทุกแชท** สร้างไฟล์ `~/.claude/CLAUDE.md` ที่มีบรรทัดเดียว `@D:/ai-playbook/instructions/core.md` และก๊อปเนื้อหา `core.md` ไปไว้ที่ `~/.codex/AGENTS.md`
-
-## โครงสร้างคลัง
-```
-00-start-here.md   แผนที่: สถานการณ์ → สิ่งที่ต้องทำ
-instructions/      กฎกลางสำหรับ agent (ภาษาอังกฤษ)
-playbook/          วงจรงาน 0–13 และกติกาคัดแยกงาน
-prompts/           prompt ภาษาไทยพร้อมใช้ 34 แบบ
-skills/            สกิลของคลัง
-agents/            sub-agents ของ Claude และ Codex
-guardrails/        ตัวกันคำสั่งอันตรายที่เปิดใช้เองได้ (ไม่ได้ติดตั้ง)
-stacks/            สูตร stack: โรงพยาบาล, แดชบอร์ด, cloud web, มือถือ/PWA, วิดีโอ
-templates/project/ ไฟล์ตั้งต้นของทุกโปรเจกต์ (AGENTS, STATE, BACKLOG, DECISIONS, HANDOVER, RUN)
-me/                โปรไฟล์ จุดพลาดบ่อย และสิ่งที่ได้ผล
-setup/             คำตอบ setup สำเร็จรูป และข้อเสนอคัดสกิล
-research/          ข้อมูลอ้างอิงพร้อมแหล่งที่มาและวันที่
-scripts/           sync.ps1, merge-claude-settings.mjs
-_inbox/            ข้อมูลส่วนตัวและไฟล์ export (ไม่ขึ้น Git)
-```
-
-## ทำให้คลังไม่ล้าสมัย
-- ทุกหน้าที่มีเวอร์ชันหรือข้อเท็จจริงภายนอกต้องมีวันที่ "ตรวจล่าสุด" และลิงก์แหล่งที่มา
-- **เดือนละครั้ง:** สั่ง agent ว่า
-  `ใช้ sub-agent researcher ตรวจ stacks/hospital-web.md และ research/02-tool-mechanics.md เทียบกับแหล่งทางการล่าสุด อัปเดตเวอร์ชันและวันที่ แล้วสรุปว่าอะไรเปลี่ยน`
-- เมื่อ Claude Code หรือ Codex ออกเวอร์ชันใหม่: ตรวจว่าสกิลยังเรียกได้ตามคำแนะนำข้างบน ทดสอบ guard เฉพาะเมื่อคุณเปิดใช้ guard เองตาม [guardrails/README.md](guardrails/README.md); `sync.ps1` ไม่ติดตั้ง guard
-- หลังจบแต่ละโปรเจกต์: เพิ่มบทเรียนลง `me/pitfalls.md` หรือ `me/wins.md`
-
-## ดูแลคลังด้วยตัวเอง (ไม่มีงานอัตโนมัติ)
-- **อยากให้ agent สรุปบทเรียนจากแชทล่าสุด:** พิมพ์ `/retro` มันจะเสนอไม่เกิน 3 ข้อและรอคุณอนุมัติก่อนบันทึก
-- **อยากตรวจว่าเวอร์ชันใน `stacks/` ยังใหม่ไหม:** ใช้ prompt ในหัวข้อ "ทำให้คลังไม่ล้าสมัย" ด้านบน
-- **ติดตั้งสกิลของคนอื่น:** ตรวจตาม `setup/skill-intake.md` และบันทึกใน `setup/skills-lock.md`
+สคริปต์ sync ยังเก็บไว้เป็นเครื่องมือเลือกใช้ แต่ต้องเป็นงานติดตั้งที่อนุมัติแยก ตรวจผลกระทบและไฟล์ชื่อซ้ำก่อนใช้ ไม่ใช่ขั้นตอนของการย้ายโครงสร้างครั้งนี้ ผลทดสอบปัจจุบันอยู่ใน [workflow trial](evals/workflow-trial-2026-10-06.md)

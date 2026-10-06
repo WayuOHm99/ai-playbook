@@ -1,5 +1,8 @@
 # 06 - Prompting AI Coding Agents (research)
 
+> **Retired workflow references (2026-10-06):** This research is a dated record, not an active procedure. References to the old five owned workflows, installed inventories, commands or configuration describe the earlier review only. The current 27-skill Matt flow is in [lifecycle](../playbook/lifecycle.md), [adaptation](../setup/matt-pocock-adaptation.md) and [source record](../setup/skills-lock.md). Personal-note sources and automatic reads were disconnected; use only evidence authorized for the current task.
+
+
 Date: 2026-09-30. Audience: Thai solo developer (hospital internal web systems) using Claude Code and Codex, mostly in Thai, with long / mixed / scope-expanding requests.
 Tiers: **T1** = vendor official docs or primary paper; **T2** = respected practitioner / engineering blog; **T3** = secondary or community.
 Source IDs like [A1] point to the tables in section 8. Quotes are kept under 15 words; everything else is paraphrase.

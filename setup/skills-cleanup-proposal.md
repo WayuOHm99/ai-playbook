@@ -1,3 +1,5 @@
+> Historical installation proposal (2026-10-01). The 2026-10-06 Matt backbone preserves original invocation roles; do not run this prior cleanup against the new catalogue.
+
 # Skills cleanup proposal (APPLIED 2026-10-01: sections B1–B3, C1, C2; B4 plugins not applied)
 
 Date: 2026-10-01. Source: `research/05-skills-inventory.md` (scan 2026-09-30) and `research/07-review.md`.

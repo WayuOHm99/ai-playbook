@@ -1,0 +1,2 @@
+# Preserve the verified upstream bytes when core.autocrlf is enabled.
+upstream/matt-pocock/source/** -text

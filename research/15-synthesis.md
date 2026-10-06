@@ -1,9 +1,12 @@
 # 15 — สรุปรวม: วิธีทำงานกับ AI agent ของคุณควรเป็นแบบไหน (2026-10-02)
 
+> **Retired workflow references (2026-10-06):** This research is a dated record, not an active procedure. References to the old five owned workflows, installed inventories, commands or configuration describe the earlier review only. The current 27-skill Matt flow is in [lifecycle](../playbook/lifecycle.md), [adaptation](../setup/matt-pocock-adaptation.md) and [source record](../setup/skills-lock.md). Personal-note sources and automatic reads were disconnected; use only evidence authorized for the current task.
+
+
 > **Historical snapshot:** Findings and recommendations below belong to the date shown; they do not describe today's installed configuration.
 > **Guard update (2026-10-05):** The playbook guard was removed at the user's request, and manual sync does not install it. See [guard status](../guardrails/README.md) and the [current workflow](../00-start-here.md).
 
-สรุปจาก `research/01` ถึง `14`, แชทของคุณ 600 กว่าเซสชัน (`_inbox/history-notes`) และผลทดสอบจริงในเครื่อง
+สรุปครั้งเดิมจาก `research/01` ถึง `14` พร้อมหลักฐานที่ผู้ทำรายงานใช้ในครั้งนั้น การอ้างถึงประวัติส่วนตัวถูกตัดออก 2026-10-06 และไม่ได้อ่านประวัติจริงในการปรับ flow ครั้งนี้
 ผลทดสอบที่ใช้ได้แก่ `/ship` กับงานการ์ด KPI, `/new-request`, `/handoff-pack` ข้ามระหว่าง Claude กับ Codex, `/retro`, `/choose-stack` และ trigger evals
 
 แหล่งข้อมูลหลัก:

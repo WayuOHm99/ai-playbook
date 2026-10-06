@@ -1,6 +1,0 @@
-interface:
-  display_name: "Handoff pack"
-  short_description: "Save or load session state in files"
-  default_prompt: "Use $handoff-pack for this."
-policy:
-  allow_implicit_invocation: false

@@ -15,16 +15,16 @@
 | ระบบต้องพึ่งข้อมูล/สิทธิ์ภายนอก | 01-start-project.md | 01-E ประตู feasibility | research |
 | เปิด session ใหม่ / หลัง /clear | 02-daily-work.md | 02-A ทำต่อ (อ่าน STATE.md) | handoff |
 | ไม่รู้ว่าอยู่ขั้นไหน | 02-daily-work.md | 02-B ตอนนี้เหลืออะไร | ask-matt |
-| มี ticket ชัดแล้ว อยากให้จบในรอบเดียว | 02-daily-work.md | 02-C ทำ ticket ให้จบ | implement, tdd, /ship |
+| มี ticket ชัดแล้ว อยากให้จบในรอบเดียว | 02-daily-work.md | 02-C ทำ ticket ให้จบ | implement, tdd, /implement |
 | จะเปิดระบบดู / หน้าขาว | 02-daily-work.md | 02-D รันโปรเจกต์ | ใช้ skill ของโปรเจกต์ถ้ามี (เช่น run-web ใน suth) ไม่มีก็ใช้ prompt 02-D |
-| อัปเดต dependency / มีช่องโหว่ | 02-daily-work.md | 02-E อัปเดต dependency อย่างปลอดภัย | /ship ทีละ PR |
+| อัปเดต dependency / มีช่องโหว่ | 02-daily-work.md | 02-E อัปเดต dependency อย่างปลอดภัย | /implement ทีละ PR |
 | เจออาการผิดปกติ ยังไม่รู้สาเหตุ | 03-bugs.md | 03-A รายงานบั๊กและหาสาเหตุ | diagnosing-bugs, tdd |
 | ข้อมูลไม่ตรง ยังไม่แน่ใจว่าเป็นบั๊ก | 03-bugs.md | 03-B วินิจฉัยอย่างเดียว | diagnosing-bugs |
 | รู้สาเหตุแล้ว ต้องแก้ | 03-bugs.md | 03-C แก้บั๊กเดียวที่ยืนยันแล้ว | tdd |
 | ระบบจริงพัง / ข้อมูลผิดคน | 03-bugs.md | 03-D เหตุฉุกเฉินบนระบบจริง | diagnosing-bugs (engineering:incident-response ถ้ามี ไม่มีใช้ prompt 03-D) |
-| นึกฟีเจอร์ใหม่ออก | 04-change-requests.md | 04-A ไอเดียฟีเจอร์ใหม่ | /new-request, triage |
-| ฟีดแบ็กจากผู้ใช้หรือไอที | 04-change-requests.md | 04-B ฟีดแบ็กจากผู้ใช้ | /new-request, triage |
-| ของที่ตกลงแล้วต้องเปลี่ยนความหมาย | 04-change-requests.md | 04-C ขอเปลี่ยนขอบเขต | /new-request, to-spec |
+| นึกฟีเจอร์ใหม่ออก | 04-change-requests.md | 04-A ไอเดียฟีเจอร์ใหม่ | /ask-matt, triage |
+| ฟีดแบ็กจากผู้ใช้หรือไอที | 04-change-requests.md | 04-B ฟีดแบ็กจากผู้ใช้ | /ask-matt, triage |
+| ของที่ตกลงแล้วต้องเปลี่ยนความหมาย | 04-change-requests.md | 04-C ขอเปลี่ยนขอบเขต | /ask-matt, to-spec |
 | "เพิ่มอันนี้ด้วย" ระหว่างทำงาน | 04-change-requests.md | 04-D ส่งเข้า BACKLOG | triage |
 | ตรวจทั้งระบบก่อนส่งมอบ | 05-review-audit.md | 05-A ตรวจทั้งระบบ | code-review |
 | ให้ agent อีกตัวตรวจงานของอีกตัว | 05-review-audit.md | 05-B รีวิวโดย agent ตัวที่สอง | code-review |
@@ -32,8 +32,8 @@
 | ปรับหรือรีวิวหน้าจอ | 05-review-audit.md | 05-D รีวิว UI ด้วย brief ที่ล็อก | prototype |
 | ต้องการข้อเท็จจริงที่อ้างอิงได้ | 06-research.md | 06-A ค้นคว้าพร้อมอ้างอิงและวันที่ | research |
 | "ทำให้เหมือนระบบระดับโลก" | 06-research.md | 06-B แปลงเป็นเกณฑ์ไม่เกิน 5 ข้อ | research, /to-tickets |
-| โควตาใกล้หมด / สลับ Codex-Claude | 07-handoff-delivery.md | 07-A ส่งต่อผ่านไฟล์ | handoff, /handoff-pack |
-| จบวัน | 07-handoff-delivery.md | 07-B ปิดวัน | handoff, /handoff-pack |
+| โควตาใกล้หมด / สลับ Codex-Claude | 07-handoff-delivery.md | 07-A ส่งต่อผ่านไฟล์ | handoff, /handoff |
+| จบวัน | 07-handoff-delivery.md | 07-B ปิดวัน | handoff, /handoff |
 | จะขึ้นระบบจริง | 07-handoff-delivery.md | 07-C เช็กลิสต์ก่อนปล่อย | engineering:deploy-checklist (อาจไม่ได้ติดตั้ง; ถ้าไม่มีใช้ prompt 07-C) |
 | ส่งมอบให้ไอทีโรงพยาบาล | 07-handoff-delivery.md | 07-D ชุดส่งมอบ | engineering:documentation (อาจไม่ได้ติดตั้ง; ถ้าไม่มีใช้ prompt 07-D) |
 | เปลี่ยน schema ฐานข้อมูล | 07-handoff-delivery.md | 07-E ตรวจ migration (plan-only) | - |
@@ -43,7 +43,7 @@
 | รู้สึกไม่มั่นใจ / กดตามคำแนะนำมาหลายข้อ | 08-critique.md | 08-C ฉันมองข้ามอะไร | grill-with-docs |
 | จะเปลี่ยนการตัดสินใจเดิม | 08-critique.md | 08-D ตรวจเทียบ ADR | domain-modeling |
 
-รวม 34 prompt ใน 8 ไฟล์ สำหรับงานส่วนใหญ่ให้ใช้สกิล `/new-request`, `/ship`, `/handoff-pack` ก่อน แล้วค่อยมาใช้ prompt ในไฟล์เหล่านี้เมื่อต้องการคุมรายละเอียดเอง
+รวม 34 prompt ใน 8 ไฟล์ สำหรับงานส่วนใหญ่ให้ใช้สกิล `/ask-matt`, `/implement`, `/handoff` ก่อน แล้วค่อยมาใช้ prompt ในไฟล์เหล่านี้เมื่อต้องการคุมรายละเอียดเอง
 
 ## ลำดับงานโดยรวม (ถ้าไม่มั่นใจว่าอยู่ขั้นไหน ให้ใช้ 02-B)
 

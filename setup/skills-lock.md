@@ -1,25 +1,36 @@
-# Skills lock: where every third-party skill came from
+# Skills source record: snapshot ใน repo และประวัติการติดตั้ง
 
-`npx skills` keeps the machine-readable lock at `C:\Users\wayuo\.agents\.skill-lock.json` (version 3, with a folder hash per skill). This file is the human summary plus the skills that lock does not cover. Update both when installing, updating or removing a third-party skill (see `setup/skill-intake.md`).
+อัปเดต 2026-10-06: ส่วนแรกเป็น **repo-only snapshot** การแก้ไฟล์นี้ไม่ได้เปลี่ยน `C:\Users\wayuo\.agents\.skill-lock.json` หรือ installed folders ใด ๆ การติดตั้ง/อัปเดตเป็นอีกงานตาม [skill intake](skill-intake.md)
 
-| Source | Skills | Installed via | Location | Reviewed | Notes |
-|---|---|---|---|---|---|
-| github.com/mattpocock/skills | 35 | `npx skills` (lock has hashes) | `~/.agents/skills`, junctions in `~/.claude/skills` | 2026-10-01 (research/09) | Upstream pending rename CONTEXT.md → GLOSSARY.md; read CHANGELOG before updating. |
-| github.com/heygen-com/hyperframes | 18 | `npx skills` | `~/.agents/skills` + real copies in `~/.claude/skills` | not reviewed (UNVERIFIED) | 17 set manual-only 2026-10-01; `hyperframes` stays auto. |
-| github.com/vercel-labs/skills | 1 (`find-skills`) | `npx skills` | `~/.agents/skills` | not reviewed | |
-| github.com/softaworks/agent-toolkit | 1 (`requirements-clarity`) | `npx skills` | `~/.agents/skills` | not reviewed | Set manual-only 2026-10-01; overlaps `grilling`. |
-| Cloudflare skills | 11 | unknown (not in the npx lock) | real folders in `~/.claude/skills` and `~/.agents/skills` | not reviewed (UNVERIFIED source) | Set manual-only 2026-10-01. |
-| Claude plugins (`engineering`, `operations`, `data`, …) | ~60 | Claude plugin marketplaces / Cowork sync | `~/.claude/plugins` | not reviewed | Disable unused plugins from the app's plugin settings (setup/skills-cleanup-proposal.md B4). |
-| Vault skills (`new-request`, `ship`, `handoff-pack`, `retro`, `choose-stack`) | 5 | `scripts/sync.ps1` | copies in `~/.claude/skills`, junctions in `~/.agents/skills` | own | Versions in each SKILL.md `metadata.version`; history in `skills/CHANGELOG.md`. |
+## Source ของ Matt ที่ใช้ในคลังนี้
 
-Parked (moved, not deleted) on 2026-10-01: 29 duplicate Codex copies and 20 Cursor built-ins → `C:\Users\wayuo\.skills-trash\2026-10-01\`.
+| รายการ | Pin / บทบาท |
+|---|---|
+| Upstream | [mattpocock/skills](https://github.com/mattpocock/skills) |
+| Frozen latest source | [`6fd947921b935b7e1e69293a200400f0fdd5c15f`](https://github.com/mattpocock/skills/tree/6fd947921b935b7e1e69293a200400f0fdd5c15f) |
+| Package / latest published release | `1.3.1`; release tag commit `24fe0ef7737efae15c87225755e9f6f5965e4888` |
+| Main vs release | ใช้ frozen latest commit พร้อม main fixes; ไม่อ้างว่าตรง release tag ทุก byte |
+| Licence | MIT; เก็บ licence/provenance กับ upstream snapshot |
+| Primary catalogue | 27 skills: 20 Engineering + 7 Productivity; source names/invocation roles preserved |
+| Reference only | 11 experimental/misc skills; ไม่เป็น active entries และไม่ sync/install เป็นชุดหลัก |
+| Total preserved source | 38 skills ใน `upstream/matt-pocock/source/` |
+| Local active skills | `skills/engineering/**`, `skills/productivity/**`; thin central policy จาก `instructions/core.md` และ `instructions/working-style.md` |
+| Integrity / adaptations | manifest และ byte checker ใน repo; [adaptation rationale](matt-pocock-adaptation.md) |
 
-## Local patches (re-apply after any `npx skills update`)
-`npx skills update` overwrites these edits silently. After updating, re-run the Set-Manual step in `setup/skills-cleanup-proposal.md` §E, then check with `node scripts/lint-skills.mjs`.
+ชุด primary นี้แทน owned workflows รุ่นเก่า ไม่ใช่การติดตั้ง Matt ใหม่ลงเครื่อง ค่า GLOSSARY ของ source ใหม่ใช้งานใน repo ใหม่ตาม [setup answers](matt-pocock-setup-answers.md) ไม่ migrate โปรเจกต์อื่นอัตโนมัติ
 
-| Skill(s) | Patch | Date |
-|---|---|---|
-| 17 HyperFrames skills (all except `hyperframes`), 11 Cloudflare, `developing-with-streamlit` | `disable-model-invocation: true` in the `~/.claude/skills` copy | 2026-10-01 |
-| `wizard`, `setup-pre-commit`, `scaffold-exercises`, `migrate-to-shoehorn`, `requirements-clarity` | `disable-model-invocation: true` in the `~/.agents/skills` copy (shared by Claude and Codex) | 2026-10-01 |
+## Installed inventory ที่บันทึกไว้ก่อนหน้า (2026-10-01)
 
-Policy overrides for the Matt Pocock skills live in each project's `AGENTS.md` (template: `templates/project/AGENTS.md`, section "Overrides for installed third-party skills"), so they survive skill updates.
+ข้อมูลนี้เป็นประวัติจากการตรวจเดิม ไม่ได้สแกนหรือเปลี่ยนเครื่องในงาน 2026-10-06 และไม่ใช้ยืนยันว่าชุด active ใหม่ติดตั้งแล้ว `npx skills` เคยเก็บ lock version 3 พร้อม folder hashes ใน path ที่กล่าวข้างต้น
+
+| Source | จำนวนที่บันทึกครั้งก่อน | Location ครั้งก่อน | หมายเหตุครั้งก่อน |
+|---|---|---|---|
+| Matt Pocock | 35 | `~/.agents/skills`, Claude junctions | Reviewed 2026-10-01; CONTEXT→GLOSSARY ยัง pending ณ วันตรวจนั้น |
+| HeyGen HyperFrames | 18 | `~/.agents/skills` + Claude copies | UNVERIFIED source review; 17 manual-only, hyperframes auto |
+| vercel-labs/skills | 1 (`find-skills`) | `~/.agents/skills` | not reviewed |
+| softaworks/agent-toolkit | 1 (`requirements-clarity`) | `~/.agents/skills` | manual-only; overlaps grilling |
+| Cloudflare | 11 | Claude + agents real folders | not in npx lock; UNVERIFIED source |
+| Claude/Cowork plugins | ~60 | `~/.claude/plugins` | not reviewed |
+| Owned vault workflows | 5 | copies/junctions from prior sync | Legacy catalogue; replaced in repo 2026-10-06, installed state unchanged |
+
+ประวัติการ park copies และ patches อยู่ใน [cleanup record](skills-cleanup-proposal.md) เป็นบันทึกวันที่ 2026-10-01 ห้ามรัน apply script หรือ reapply manual-only patches กับ primary Matt snapshot ใหม่นี้อัตโนมัติ การ update ครั้งถัดไปต้องตรวจ source/CHANGELOG และ invocation roles ใหม่ตาม scope ที่อนุมัติ

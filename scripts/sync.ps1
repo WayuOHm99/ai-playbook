@@ -1,5 +1,5 @@
 # Install the vault's skills and sub-agents into Claude Code and Codex. Run by hand after editing a skill.
-# It does not install global rules, scheduled tasks or auto-sync: nothing from the vault loads unless you type /<skill>.
+# It does not install global rules, scheduled tasks or auto-sync. Skills retain their manual/model invocation policies.
 # Claude copies retain destination-only files; matching source paths may be overwritten.
 # Codex junction installation backs up existing real paths under ~/.ai-playbook-backups/<stamp>/<name>.
 # Replacing a junction removes only the link. This script may also enable global Git core.longpaths.
@@ -51,10 +51,27 @@ function Write-IfChanged($path, $content) {
   }
 }
 
-# Global instructions are NOT installed: the vault is a library. Skills read instructions/core.md only when you invoke them.
+function Get-SkillFolders($root) {
+  $item = Get-Item -LiteralPath $root -Force
+  if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) { throw "Skill source directory must not be a link: $root" }
+  if (Test-Path -LiteralPath (Join-Path $root 'SKILL.md') -PathType Leaf) {
+    $item
+    return
+  }
+  foreach ($child in Get-ChildItem -LiteralPath $root -Directory | Sort-Object Name) {
+    Get-SkillFolders $child.FullName
+  }
+}
+
+# Resolve actual SKILL.md folders before any destination change. Category folders are not skills.
+$SkillFolders = @(Get-SkillFolders (Join-Path $Vault 'skills'))
+$Duplicate = $SkillFolders | Group-Object Name | Where-Object Count -gt 1 | Select-Object -First 1
+if ($Duplicate) { throw "Duplicate skill name in catalogue: $($Duplicate.Name)" }
+
+# Global instructions are NOT installed. Catalogue skills read central repository policy when invoked.
 
 Write-Host "2) Skills (copies into ~/.claude/skills, junctions into ~/.agents/skills for Codex)"
-foreach ($s in Get-ChildItem -Directory "$Vault\skills") {
+foreach ($s in $SkillFolders) {
   Ensure-Copy "$HomeDir\.claude\skills\$($s.Name)" $s.FullName
   Ensure-Junction "$HomeDir\.agents\skills\$($s.Name)" $s.FullName
 }

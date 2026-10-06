@@ -1,5 +1,8 @@
 # 13 — aihero.dev deep dive (2026-10-02)
 
+> **Retired workflow references (2026-10-06):** This research is a dated record, not an active procedure. References to the old five owned workflows, installed inventories, commands or configuration describe the earlier review only. The current 27-skill Matt flow is in [lifecycle](../playbook/lifecycle.md), [adaptation](../setup/matt-pocock-adaptation.md) and [source record](../setup/skills-lock.md). Personal-note sources and automatic reads were disconnected; use only evidence authorized for the current task.
+
+
 > **Historical snapshot:** Findings and recommendations below belong to the date shown; they do not describe today's installed configuration.
 > **Guard update (2026-10-05):** The playbook guard was removed at the user's request, and manual sync does not install it. See [guard status](../guardrails/README.md) and the [current workflow](../00-start-here.md).
 
@@ -184,7 +187,7 @@ Contradictions and open questions:
 2. **`skills/handoff-pack/SKILL.md`:**
    - add a phase-boundary check: continue → `/clear` → handoff-pack → sub-agent → `/compact`;
    - `/clear` only once decisions are in files.
-3. **`me/pitfalls.md` #5:** use `/wizard` for entering secrets (test on Windows first).
+3. **Retired 2026-10-06: private-note-derived wizard recommendation.** Wizard remains a Matt main skill, but secret/infra actions require explicit scope and the central approval policy.
 4. **`skills/new-request/SKILL.md`:** add routes for unclear UI (→ `prototype`), owner questions (→ `to-questionnaire`), P7 (→ `choose-stack` before grill), and grill past ~100 questions (→ split scope).
 5. **Status line showing context %:** use the built-in `/statusline` (T1: code.claude.com/docs/en/statusline). Needs approval.
 6. **`setup/skills-cleanup-proposal.md`:** add the SKIP list and turn those skills off reversibly (`skillOverrides`), measuring with `/context`. Needs approval.
