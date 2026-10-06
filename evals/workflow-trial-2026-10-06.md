@@ -1,5 +1,7 @@
 # Matt architecture verification — 2026-10-06
 
+> **Evidence note (2026-10-07):** The worktrees under `D:/wt` and every `.scratch/` directory named in this report were removed during a user-approved machine cleanup on 2026-10-06/07. The results below stand as recorded, but the raw traces, receipts and fixtures can no longer be re-inspected. Commits, PRs and GitHub Actions results remain available. See [STATE](../STATE.md).
+
 Status: **verification record before final delivery review**. This report records the final 27-skill architecture separately from legacy five-skill evals. Source pin: `6fd947921b935b7e1e69293a200400f0fdd5c15f`; package 1.3.1 plus main fixes. Independent review/push receipts belong to the frozen candidate evidence and PR body, so this tracked report does not create a later unreviewed bookkeeping commit.
 
 ## Evidence boundaries

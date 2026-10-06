@@ -1,5 +1,7 @@
 # Multi-ticket workflow trial — 2026-10-06
 
+> **Evidence note (2026-10-07):** The worktrees under `D:/wt` and every `.scratch/` directory named in this report were removed during a user-approved machine cleanup on 2026-10-06/07. The results below stand as recorded, but the raw traces, receipts and fixtures can no longer be re-inspected. Commits, PRs and GitHub Actions results remain available. See [STATE](../STATE.md).
+
 Status: **integrated behavior verified; record before final delivery review**. This report covers one approval-supplied synthetic join graph through source-bound `to-spec`, `to-tickets`, `implement-spec` and `tdd`. It does not certify all27skills. Final delivery review/closure/publication receipts belong to ignored evidence and the PR body, avoiding a post-review tracked commit.
 
 The user approved broader synthetic workflow testing after [PR8](https://github.com/WayuOHm99/ai-playbook/pull/8) merged as `d54e68a42eac2d7edf80c5da0f7d79517ac66c06`. No installation/sync, global changes, local-main update, CI, existing-test edits, real histories/data, external tracker or live Claude. [Repeatable scenario](multi-ticket-scenario.md) contains the fixed literals and procedure.

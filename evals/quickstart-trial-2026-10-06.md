@@ -1,5 +1,7 @@
 # Repository-only quickstart trial — 2026-10-06
 
+> **Evidence note (2026-10-07):** The worktrees under `D:/wt` and every `.scratch/` directory named in this report were removed during a user-approved machine cleanup on 2026-10-06/07. The results below stand as recorded, but the raw traces, receipts and fixtures can no longer be re-inspected. Commits, PRs and GitHub Actions results remain available. See [STATE](../STATE.md).
+
 Status: **onboarding/task verification passed; record before final delivery review**. This covers the guide and one bounded synthetic ticket, not all 27 skills or installed invocation. Final frozen review/publication receipts belong to ignored evidence and the PR body to avoid an unreviewed bookkeeping commit.
 
 Approved scope: guide/prompt, minimal neutral project example, source-binding and fresh-context use. No installation/sync/global changes/local-main update, live Claude, real histories, CI or external project writes. Previous Matt migration merged as [PR7](https://github.com/WayuOHm99/ai-playbook/pull/7); this is a new scope.
