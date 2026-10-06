@@ -77,7 +77,7 @@
 - เครื่องมือวิเคราะห์ข้อมูล / dashboard เฉพาะบุคคล -> `stacks/data-dashboard.md`
 - ต้องพา user ที่ไม่ใช่ตัวเองมาทำงานจริง + มีรายได้ -> ได้ แต่ต้องย้ายขึ้น Vercel Pro (Hobby ห้าม commercial) และตัดสินใจใน `DECISIONS.md` ก่อน
 
-### 2.1 สิ่งที่เป็น P4 (ถามก่อนทำ ตาม core.md)
+### 2.1 สิ่งที่เป็น P4 (ถามก่อนทำ ตาม `playbook/triage.md`)
 เพิ่ม payment, อีเมลส่งออก, AI API ที่มีค่าใช้จ่าย, field ใหม่ที่เก็บข้อมูลส่วนบุคคลของคนอื่น
 
 ---
@@ -171,7 +171,7 @@ Variant B: `src/`(Vite) `worker/src/index.ts` `shared/`(zod schema + api-contrac
 - Test pyramid ที่พอ: Vitest (logic + schema) -> pgTAP (RLS) -> Playwright 3-5 flow หลัก; แก้บั๊กต้องมี regression test ก่อน
 - `npm run verify` ต้องรันได้บนเครื่องและเป็นตัวตัดสิน; E2E เต็มรันตามสั่ง ไม่ผูก pre-push (pre-push ค้างหลายนาทีเคยเกิดที่ SUTH)
 - `npm audit --omit=dev --audit-level=high` อยู่ใน verify (แบบ RubricLens)
-- CI (GitHub Actions) ทำเฉพาะ tier 3 และ workflow เดียว; ห้ามแก้/ลบ/skip test เพื่อให้เขียว (core.md hard stop 7)
+- CI (GitHub Actions) ทำเฉพาะ tier 3 และ workflow เดียว; ห้ามแก้/ลบ/skip test เพื่อให้เขียว (Permissions ใน `instructions/core.md`: แก้/ลบเทสต์เดิม)
 - ไม่ใช้ข้อมูลจริงหรือ secret จริงใน test/CI; ใช้ Supabase local (`supabase start`) สำหรับ test DB
 
 ---

@@ -18,7 +18,7 @@ It is a safety net, not a security boundary. Command-text regexes can be evaded,
 ```bash
 node D:/ai-playbook/guardrails/guard.test.mjs
 ```
-64 cases (44 must block, 20 must pass), last run 2026-10-01: 64/64.
+64 cases (43 must block, 21 must pass), last run 2026-10-07: 64/64.
 
 The guard scans the whole command text. A shell command that only *mentions* a blocked pattern, such as a heredoc or `node -e` containing one, is blocked too. Agents should write such text with a file tool instead.
 
@@ -35,7 +35,7 @@ To enable it again by hand:
 
 ## Prompt secret scan (optional, Claude Code only)
 
-`prompt-secret-scan.mjs` is a separate UserPromptSubmit hook. It blocks a prompt before it is sent when the text matches a known credential shape: Anthropic/OpenAI-style keys, GitHub, AWS, Google and Slack tokens, JWTs, private key blocks, a password inside a connection URL, or a labelled value such as `password: ...` / `รหัสผ่านคือ ...`. Placeholders and variable names (`<DB_PASSWORD>`, `${TOKEN}`, `process.env.X`) pass. The block message never repeats the matched text.
+`prompt-secret-scan.mjs` is a separate UserPromptSubmit hook. It blocks a prompt before it is sent when the text matches a known credential shape: Anthropic/OpenAI-style keys, GitHub, AWS, Google and Slack tokens, JWTs, private key blocks, a password inside a connection URL, or a labelled value such as `password: ...` / `รหัสผ่านคือ ...`, including a quoted label as in JSON or a Python dict (`"password": "..."`). Every labelled value in the prompt is checked, so a placeholder earlier in the text does not hide a real value later. Placeholders and variable names (`<DB_PASSWORD>`, `${TOKEN}`, `process.env.X`, `your_db_password`) pass; a real value that merely starts with `Your` or `Example` does not. The block message never repeats the matched text.
 
 Limits: it only knows these patterns. A bare password or PIN with no label is not detected, so it reduces accidental pastes and does not replace the habit of using variable names. Codex is not covered.
 
@@ -45,4 +45,4 @@ Enable by adding to `~/.claude/settings.json` (user approval required, see core 
 "hooks": { "UserPromptSubmit": [ { "hooks": [ { "type": "command", "command": "node", "args": ["D:/ai-playbook/guardrails/prompt-secret-scan.mjs"], "timeout": 10 } ] } ] }
 ```
 
-The hook reads the script from this checkout, so the checkout must be on a branch that contains it. Test: `node --test guardrails/prompt-secret-scan.test.mjs` (26 cases, samples are assembled from fragments).
+The hook reads the script from this checkout, so the checkout must be on a branch that contains it. Test: `node --test guardrails/prompt-secret-scan.test.mjs` (36 cases, samples are assembled from fragments).

@@ -65,7 +65,7 @@ export function gradeManualCase(testCase, processResult, before, after) {
   const { events, final } = trace;
   const escaped = testCase.skill.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const skillIndex = successfulRead(events, new RegExp(`[\\\\/]${escaped}[\\\\/]+SKILL\\.md`, 'i'), new RegExp(`^name: ${escaped}\\s*$`, 'm'));
-  const coreIndex = successfulRead(events, /instructions[\\/]core\.md/i, /# Agent working rules/);
+  const coreIndex = successfulRead(events, /instructions[\\/]core\.md/i, /^# Playbook policy/m);
   const projectIndex = successfulRead(events, /AGENTS\.md/i, /# Synthetic eval/);
   // Unknown executables can write. Only simple read commands are exempt from
   // the ordering gate; e.g. node -e cannot silently write before loading rules.

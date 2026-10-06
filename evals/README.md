@@ -1,6 +1,6 @@
 # Legacy five-skill evals
 
-> **Installed-state note (2026-10-07):** The legacy five skills were removed from this machine on 2026-10-06, so the live legacy commands below no longer have installed copies to target. The case files and runner regressions are kept as history.
+> **Installed-state note (2026-10-07):** The legacy five skills were removed from this machine on 2026-10-06. Four of them (`new-request`, `handoff-pack`, `choose-stack`, `ship`) no longer have installed copies to target. `retro` now resolves to the active Matt-derived `retro`, so a live `retro-bootstrap` run would grade that skill, not the legacy one. Do not run the live legacy commands below; the case files and runner regressions are kept as history. Current real-work evidence: [real-work trial](real-work-trial-2026-10-07.md) and [chain trial](chain-trial-2026-10-07.md).
 
 Retained as historical cases and runner regressions. The old skills are no longer the active catalogue. Live commands below deliberately target legacy installed copies and must not be used to certify the current 27 Matt skills. Current architecture evidence: [workflow trial](workflow-trial-2026-10-06.md), [repository quickstart](quickstart-trial-2026-10-06.md), and [multi-ticket trial](multi-ticket-trial-2026-10-06.md). To repeat the join-graph case, use the [multi-ticket scenario](multi-ticket-scenario.md); it is a source-only manual evaluation with explicit limits.
 
@@ -38,7 +38,7 @@ node scripts/run-manual-evals.mjs --live --case new-request --codex-bin '<absolu
 
 `--case all` is the default. `--fixture-root <parent>` overrides `D:/ev`; `--timeout-ms <positive integer>` overrides 240000 ms per case. Cases run sequentially. Windows requires a native `.exe` or Node `.js`/`.mjs` CLI entry point, not an npm `.cmd`/`.ps1` shell shim. Prompts go through stdin and never through shell interpolation. Codex runs with `--ephemeral --json --sandbox workspace-write`. Synthetic fixtures have local Git identity, no remote or dependencies, and scoped AGENTS instructions. Keep output under ignored `.scratch/`; reports contain case IDs, coverage, booleans and error reasons, not raw transcripts/replies.
 
-Claude live evaluation remains deferred at the user's request (2026-10-05). The manual runner currently supports Codex only. Deterministic tests of the legacy Claude event parser do not prove a live Claude run.
+The user lifted the Claude deferral on 2026-10-07 and Claude Code was used on two real tasks (linked above), but the manual runner still supports Codex only. Deterministic tests of the legacy Claude event parser do not prove a live Claude run.
 
 ## Outcomes and cleanup
 

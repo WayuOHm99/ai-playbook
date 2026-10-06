@@ -5,6 +5,9 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { mkdtempSync, rmSync, symlinkSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { scan, message } from './prompt-secret-scan.mjs';
 
 const script = fileURLToPath(new URL('./prompt-secret-scan.mjs', import.meta.url));
@@ -25,6 +28,12 @@ const BLOCK = {
   'labelled password (en)': j('admin password', ': ', 'Hosp1talAdmin99'),
   'labelled password (th)': j('รหัสผ่าน', 'คือ ', 'Admin2026pass'),
   'api key assignment': j('API_KEY', '=', 'q7Wm2Lx9Zp4Tn8Vb'),
+  'quoted label in JSON': j('{"host":"db","user":"root","pass', 'word":"', 'Hosp1talAdmin99"}'),
+  'quoted label in Python dict': j("cfg = {'pass", "word': '", "Hosp1talAdmin99'}"),
+  'API key with a space': j('API key: ', 'q7Wm2Lx9Zp4Tn8Vb'),
+  'real secret after a placeholder': j('ตัวอย่าง password: example123 แต่ของจริงคือ pass', 'word: ', 'Zq81mmTT9x'),
+  'real value starting with Your': j('pass', 'word: ', 'YourHosp1tal2026'),
+  'real value starting with Example': j('pass', 'word: ', 'Example2026x'),
 };
 
 const PASS = [
@@ -38,6 +47,9 @@ const PASS = [
   'commit 9836558c5fb9d7a0a4d2b61e7c2f1d3e4a5b6c7d แล้วเปิด PR',
   'เปิด https://github.com/WayuOHm99/ai-playbook/pull/11',
   'secret: changeme',
+  'password: your_db_password',
+  'API_KEY=YOUR_API_KEY_123',
+  '{"password": "<DB_PASSWORD>"}',
 ];
 
 for (const [name, text] of Object.entries(BLOCK)) {
@@ -62,6 +74,15 @@ test('CLI exits 2 and prints no secret for a credential prompt', () => {
   assert.equal(r.status, 2);
   assert.match(r.stderr, /BLOCKED by playbook secret scan/);
   assert.ok(!r.stderr.includes('Sup3r'));
+});
+
+test('CLI still runs when started through a symlinked path', (t) => {
+  const dir = mkdtempSync(join(tmpdir(), 'secret-scan-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  const link = join(dir, 'linked-scan.mjs');
+  try { symlinkSync(script, link); } catch { t.skip('symlinks unavailable'); return; }
+  const r = spawnSync(process.execPath, [link], { input: JSON.stringify({ prompt: BLOCK['connection URL'] }), encoding: 'utf8' });
+  assert.equal(r.status, 2);
 });
 
 test('CLI exits 0 for a normal prompt and for malformed input', () => {

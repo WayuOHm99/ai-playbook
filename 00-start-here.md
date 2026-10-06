@@ -24,4 +24,4 @@ Claude ใช้ `/ชื่อ` และ Codex ใช้ `$ชื่อ` เ�
 
 วิธีสื่อสารและขอบเขตการอนุมัติอยู่ที่ [core](instructions/core.md) และ [working style](instructions/working-style.md) การอนุมัติเดิมใช้ต่อในขอบเขตเดิมได้ ผลทดสอบต้องแยกสิ่งที่ผ่าน สิ่งที่ยังไม่ครบ และสิ่งที่ไม่ได้ทดสอบ
 
-ดู [รายชื่อ 27 สกิล](skills/README.md), [วงจรงาน](playbook/lifecycle.md), [เหตุผลการย้าย](setup/matt-pocock-adaptation.md) และ [ผลทดสอบ](evals/workflow-trial-2026-10-06.md) โครงสร้างนี้คงไฟล์ส่วนตัวไว้แต่ไม่มีการอ่านหรือเชื่อมโยงจาก workflow
+ดู [รายชื่อ 27 สกิล](skills/README.md), [วงจรงาน](playbook/lifecycle.md), [เหตุผลการย้าย](setup/matt-pocock-adaptation.md) และผลทดสอบ ([งานจริง](evals/chain-trial-2026-10-07.md), [ทดลองสังเคราะห์](evals/workflow-trial-2026-10-06.md)) โครงสร้างนี้คงไฟล์ส่วนตัวไว้แต่ไม่มีการอ่านหรือเชื่อมโยงจาก workflow

@@ -2,8 +2,8 @@
 // Shared PreToolUse guard for Claude Code and Codex. Reads the hook JSON on stdin.
 // Exit 2 + stderr message = block (works in every permission mode). Exit 0 = allow.
 // Rules are tested by guardrails/guard.test.mjs — run `node guardrails/guard.test.mjs` after any change.
-import { readFileSync } from 'node:fs';
-import { pathToFileURL } from 'node:url';
+import { readFileSync, realpathSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 const SQL_CLIENT = /\b(mysql|mariadb|psql|sqlite3|mysqlsh|sqlcmd)\b|\bdocker\b[^\n]*\bexec\b[^\n]*\b(mysql|mariadb|psql)\b|\bprisma\s+db\s+execute\b|\bknex\b|\bexecute\s*\(/i;
 
@@ -69,7 +69,9 @@ export function check(input) {
   return null;
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {
+// Compare real paths so the hook still runs when its path goes through a symlink or junction.
+const invokedPath = (() => { try { return realpathSync(process.argv[1] ?? ''); } catch { return ''; } })();
+if (invokedPath === realpathSync(fileURLToPath(import.meta.url))) {
   let input;
   try { input = JSON.parse(readFileSync(0, 'utf8')); } catch { process.exit(0); }
   const reason = check(input);
