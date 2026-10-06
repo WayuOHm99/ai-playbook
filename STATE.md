@@ -1,6 +1,6 @@
 # State
 
-Updated: 2026-10-06 (Asia/Bangkok). Branch: docs/repo-quickstart. Base: `ff4aefe89bb1e18f448b21b91138c22f8cf19ea6` (merged PR7). Phase: guide written; fresh-context trial pending. Final review/publication receipts belong to ignored evidence and the PR body.
+Updated: 2026-10-06 (Asia/Bangkok). Branch: docs/repo-quickstart. Base: `ff4aefe89bb1e18f448b21b91138c22f8cf19ea6` (merged PR7). Phase: guide and fresh-context trial verified; ready for frozen review. Final review/publication receipts belong to ignored evidence and the PR body.
 
 ## Current approved scope
 
@@ -18,7 +18,7 @@ Done when:
 
 ## Current work and next action
 
-Guide: setup/quickstart-repo.md. Example: templates/repo-only/. Report: evals/quickstart-trial-2026-10-06.md. Initial catalogue/raw integrity and diff checks passed. Commit the draft so the bound checkout can be verified clean, seed an isolated synthetic project with no remote, then use fresh contexts for read-only bootstrap and the approved ticket. Preserve all other worktrees.
+Guide: setup/quickstart-repo.md. Example: templates/repo-only/. Report: evals/quickstart-trial-2026-10-06.md. Two fresh app contexts tested the guide's extracted prompts: valid read-only bootstrap passed, intentional revision mismatch stopped before action. The valid context then observed a public CLI assertion RED on original code, fixed the approved unit rendering and passed five literals/plain tests before committing `501865b7b8f36be9e322b2e0c2537e415706df61`. Parent independently rechecked tests/literals/hashes/no remote/clean/out-of-scope diff and candidate identity. Playbook trial pin was `d0f3aff5577f33671190bd6023c0dd234da89266`; guide/starter contents are unchanged, final bookkeeping follows after execution. Catalogue/raw integrity and link/diff checks passed. This is not installed invocation, native CLI health statistics or all27skill coverage. Preserve all other worktrees.
 
 Subsequent recommendations remain separate: broader behavior coverage, GitHub CI and a maintained release/update policy. Current scope records migration closure only because continuation needs accurate state; it does not implement those later work packages.
 
