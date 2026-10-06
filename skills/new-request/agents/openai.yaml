@@ -1,6 +1,0 @@
-interface:
-  display_name: "New request"
-  short_description: "Classify and route a new request"
-  default_prompt: "Use $new-request for this."
-policy:
-  allow_implicit_invocation: false

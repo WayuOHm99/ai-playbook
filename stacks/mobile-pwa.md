@@ -3,8 +3,8 @@
 - **Last verified: 2026-10-01** (เวอร์ชันดึงจาก npm registry, expo.dev, developers.line.biz ฯลฯ วันเดียวกัน; `[S#]` ดู "แหล่งอ้างอิง" ท้ายไฟล์; "accessed" = 2026-10-01 ถ้าไม่ระบุ)
 - **ต้อง re-verify ทุกเดือน** (section 9): Expo SDK 58 ยังเป็น beta, LIFF เพิ่งออกแพตช์ความปลอดภัย
 - "UNVERIFIED" = ยังไม่ยืนยันจาก primary source ที่เปิดอ่านจริง ห้ามใช้ตัดสินใจ ต้องตรวจก่อน
-- ต่อจาก `stacks/hospital-web.md` (เว็บ Vue/Express/MySQL ใช้ต่อ) และ `me/pitfalls.md` ข้อ 8 (ตรวจความเป็นไปได้ช้า)
-- หมายเหตุ: `D:\Run-Performance-Project\platform` ไม่พบตอนตรวจ (มีแค่ไฟล์ระดับบนของ `D:\Run-Performance-Project`) จึงอ้างเหตุที่ทิ้ง Expo + Supabase จาก `pitfalls.md` ข้อ 8 เท่านั้น: สร้างแอปก่อน แล้วพบทีหลังว่า API ทางการของผู้ให้บริการอุปกรณ์ไม่อนุญาตสำหรับโปรเจกต์นักศึกษา
+- ต่อจาก `stacks/hospital-web.md` (เว็บ Vue/Express/MySQL เป็นตัวเลือกตั้งต้น); ตรวจ feasibility ก่อนเลือกวิธีสร้าง
+- ปรับ 2026-10-06: ยกเลิกการอ้างประวัติส่วนตัวเป็นหลักฐานของ recipe นี้ ทุกโปรเจกต์ใหม่ต้องตรวจ API/data access, สิทธิ์นักศึกษา/หน่วยงาน, network และค่าใช้จ่ายจากแหล่งที่ยืนยันได้ก่อน build
 
 หลักการข้อเดียว: **เริ่มที่ PWA บนเว็บ stack เดิมเสมอ ออกไปทางอื่นเมื่อ (1) ผ่าน feasibility gate (section 3) และ (2) พิสูจน์ได้ว่า PWA ทำข้อที่จำเป็นไม่ได้จริง** (ตรงกับ hospital-web section 8: "ต้อง push/NFC/MDM -> Native หลังพิสูจน์ว่า PWA ไม่พอ")
 
@@ -149,7 +149,7 @@
 ## 8. Kickoff prompt (copy-paste; บังคับ feasibility ก่อนเสมอ)
 
 ```text
-โปรเจกต์มือถือใหม่: <ชื่อ>. อ่าน D:\ai-playbook\stacks\mobile-pwa.md และ me\pitfalls.md ข้อ 8 ก่อน.
+โปรเจกต์มือถือใหม่: <ชื่อ>. ใช้ grill-with-docs ระบุข้อจำกัด แล้วอ่าน D:\ai-playbook\stacks\mobile-pwa.md เป็น reference สำหรับ feasibility ก่อน build.
 ประเภทงาน: P7 (โปรเจกต์ใหม่) = คุยก่อน ห้ามเขียนโค้ด ห้าม scaffold ห้ามติดตั้ง dependency.
 เป้าหมาย: <1-2 ประโยค ใครใช้ ทำอะไร ข้อมูลอะไร> | tier: <demo / ใช้ภายใน / ใช้จริง> | อุปกรณ์: <iOS/Android/ทั้งคู่>
 ทำตามลำดับ:

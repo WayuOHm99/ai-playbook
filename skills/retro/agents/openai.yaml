@@ -1,6 +1,0 @@
-interface:
-  display_name: "Retro"
-  short_description: "Propose lessons from selected, reviewed process evidence"
-  default_prompt: "Use $retro with a process summary or selected, human-reviewed sessions."
-policy:
-  allow_implicit_invocation: false

@@ -3,7 +3,7 @@
   "snapshotType": "repo-only-reference",
   "checkedDate": "2026-10-06",
   "sourceRepository": "https://github.com/mattpocock/skills",
-  "sourceCommit": "2b47ffcf2385995a536e43ddc9226e32cf9793d9",
+  "sourceCommit": "6fd947921b935b7e1e69293a200400f0fdd5c15f",
   "packageVersion": "1.3.1",
   "latestPublishedRelease": {
     "tag": "v1.3.1",
@@ -12,126 +12,210 @@
   "includes": [
     "skills/engineering/**",
     "skills/productivity/**",
+    "skills/in-progress/**",
+    "skills/misc/**",
     "LICENSE",
     "CHANGELOG.md"
   ],
   "excludes": [
-    "in-progress",
-    "misc",
     "docs",
     "repository automation",
     "package scripts/dependencies"
   ],
-  "skillCount": 27,
-  "fileCount": 83,
+  "skillCount": 38,
+  "primarySkillCount": 27,
+  "referenceSkillCount": 11,
+  "fileCount": 109,
   "skills": [
     {
       "name": "ask-matt",
-      "path": "skills/engineering/ask-matt/SKILL.md"
+      "path": "skills/engineering/ask-matt/SKILL.md",
+      "category": "engineering"
     },
     {
       "name": "code-review",
-      "path": "skills/engineering/code-review/SKILL.md"
+      "path": "skills/engineering/code-review/SKILL.md",
+      "category": "engineering"
     },
     {
       "name": "codebase-design",
-      "path": "skills/engineering/codebase-design/SKILL.md"
+      "path": "skills/engineering/codebase-design/SKILL.md",
+      "category": "engineering"
     },
     {
       "name": "diagnosing-bugs",
-      "path": "skills/engineering/diagnosing-bugs/SKILL.md"
+      "path": "skills/engineering/diagnosing-bugs/SKILL.md",
+      "category": "engineering"
     },
     {
       "name": "domain-modeling",
-      "path": "skills/engineering/domain-modeling/SKILL.md"
+      "path": "skills/engineering/domain-modeling/SKILL.md",
+      "category": "engineering"
     },
     {
       "name": "grill-with-docs",
-      "path": "skills/engineering/grill-with-docs/SKILL.md"
+      "path": "skills/engineering/grill-with-docs/SKILL.md",
+      "category": "engineering"
     },
     {
       "name": "implement-spec",
-      "path": "skills/engineering/implement-spec/SKILL.md"
+      "path": "skills/engineering/implement-spec/SKILL.md",
+      "category": "engineering"
     },
     {
       "name": "implement",
-      "path": "skills/engineering/implement/SKILL.md"
+      "path": "skills/engineering/implement/SKILL.md",
+      "category": "engineering"
     },
     {
       "name": "improve-codebase-architecture",
-      "path": "skills/engineering/improve-codebase-architecture/SKILL.md"
+      "path": "skills/engineering/improve-codebase-architecture/SKILL.md",
+      "category": "engineering"
     },
     {
       "name": "pr",
-      "path": "skills/engineering/pr/SKILL.md"
+      "path": "skills/engineering/pr/SKILL.md",
+      "category": "engineering"
     },
     {
       "name": "prototype",
-      "path": "skills/engineering/prototype/SKILL.md"
+      "path": "skills/engineering/prototype/SKILL.md",
+      "category": "engineering"
     },
     {
       "name": "research",
-      "path": "skills/engineering/research/SKILL.md"
+      "path": "skills/engineering/research/SKILL.md",
+      "category": "engineering"
     },
     {
       "name": "retro",
-      "path": "skills/engineering/retro/SKILL.md"
+      "path": "skills/engineering/retro/SKILL.md",
+      "category": "engineering"
     },
     {
       "name": "setup-matt-pocock-skills",
-      "path": "skills/engineering/setup-matt-pocock-skills/SKILL.md"
+      "path": "skills/engineering/setup-matt-pocock-skills/SKILL.md",
+      "category": "engineering"
     },
     {
       "name": "tdd",
-      "path": "skills/engineering/tdd/SKILL.md"
+      "path": "skills/engineering/tdd/SKILL.md",
+      "category": "engineering"
     },
     {
       "name": "to-spec",
-      "path": "skills/engineering/to-spec/SKILL.md"
+      "path": "skills/engineering/to-spec/SKILL.md",
+      "category": "engineering"
     },
     {
       "name": "to-tickets",
-      "path": "skills/engineering/to-tickets/SKILL.md"
+      "path": "skills/engineering/to-tickets/SKILL.md",
+      "category": "engineering"
     },
     {
       "name": "triage",
-      "path": "skills/engineering/triage/SKILL.md"
+      "path": "skills/engineering/triage/SKILL.md",
+      "category": "engineering"
     },
     {
       "name": "wayfinder",
-      "path": "skills/engineering/wayfinder/SKILL.md"
+      "path": "skills/engineering/wayfinder/SKILL.md",
+      "category": "engineering"
     },
     {
       "name": "wizard",
-      "path": "skills/engineering/wizard/SKILL.md"
+      "path": "skills/engineering/wizard/SKILL.md",
+      "category": "engineering"
+    },
+    {
+      "name": "chief-of-staff",
+      "path": "skills/in-progress/chief-of-staff/SKILL.md",
+      "category": "in-progress"
+    },
+    {
+      "name": "claude-handoff",
+      "path": "skills/in-progress/claude-handoff/SKILL.md",
+      "category": "in-progress"
+    },
+    {
+      "name": "loop-me",
+      "path": "skills/in-progress/loop-me/SKILL.md",
+      "category": "in-progress"
+    },
+    {
+      "name": "setup-ts-deep-modules",
+      "path": "skills/in-progress/setup-ts-deep-modules/SKILL.md",
+      "category": "in-progress"
+    },
+    {
+      "name": "writing-beats",
+      "path": "skills/in-progress/writing-beats/SKILL.md",
+      "category": "in-progress"
+    },
+    {
+      "name": "writing-fragments",
+      "path": "skills/in-progress/writing-fragments/SKILL.md",
+      "category": "in-progress"
+    },
+    {
+      "name": "writing-shape",
+      "path": "skills/in-progress/writing-shape/SKILL.md",
+      "category": "in-progress"
+    },
+    {
+      "name": "git-guardrails-claude-code",
+      "path": "skills/misc/git-guardrails-claude-code/SKILL.md",
+      "category": "misc"
+    },
+    {
+      "name": "migrate-to-shoehorn",
+      "path": "skills/misc/migrate-to-shoehorn/SKILL.md",
+      "category": "misc"
+    },
+    {
+      "name": "scaffold-exercises",
+      "path": "skills/misc/scaffold-exercises/SKILL.md",
+      "category": "misc"
+    },
+    {
+      "name": "setup-pre-commit",
+      "path": "skills/misc/setup-pre-commit/SKILL.md",
+      "category": "misc"
     },
     {
       "name": "grill-me",
-      "path": "skills/productivity/grill-me/SKILL.md"
+      "path": "skills/productivity/grill-me/SKILL.md",
+      "category": "productivity"
     },
     {
       "name": "grilling",
-      "path": "skills/productivity/grilling/SKILL.md"
+      "path": "skills/productivity/grilling/SKILL.md",
+      "category": "productivity"
     },
     {
       "name": "handoff",
-      "path": "skills/productivity/handoff/SKILL.md"
+      "path": "skills/productivity/handoff/SKILL.md",
+      "category": "productivity"
     },
     {
       "name": "teach",
-      "path": "skills/productivity/teach/SKILL.md"
+      "path": "skills/productivity/teach/SKILL.md",
+      "category": "productivity"
     },
     {
       "name": "to-questionnaire",
-      "path": "skills/productivity/to-questionnaire/SKILL.md"
+      "path": "skills/productivity/to-questionnaire/SKILL.md",
+      "category": "productivity"
     },
     {
       "name": "wait-what",
-      "path": "skills/productivity/wait-what/SKILL.md"
+      "path": "skills/productivity/wait-what/SKILL.md",
+      "category": "productivity"
     },
     {
       "name": "writing-for-agents",
-      "path": "skills/productivity/writing-for-agents/SKILL.md"
+      "path": "skills/productivity/writing-for-agents/SKILL.md",
+      "category": "productivity"
     }
   ],
   "files": [
@@ -512,6 +596,162 @@
       "gitBlob": "1b3cdf40ad4923a9845fd682653d8cc4510f516e",
       "sha256": "33cbe9dfb1d0e9185b60248a52aabed14bc64785a00cac695e302e739dd6c153",
       "bytes": 8567
+    },
+    {
+      "path": "skills/in-progress/README.md",
+      "gitBlob": "792ebaa0aecbc24bf02742558df8873c9df72af2",
+      "sha256": "740e1d097748d68ebc00cb98de7b2dadbbac0e714af37a0d6a251819c0073584",
+      "bytes": 1676
+    },
+    {
+      "path": "skills/in-progress/chief-of-staff/SKILL.md",
+      "gitBlob": "97da622d09acaaacebbb4482663c907e241f4594",
+      "sha256": "6cc6e47ab5022f3e45e5be0fedbb0f6e645f4f0190d6b0c51c7cd60c2d7c1d98",
+      "bytes": 2112
+    },
+    {
+      "path": "skills/in-progress/chief-of-staff/agents/openai.yaml",
+      "gitBlob": "080598b44ad9c843dc3457b6e0e32368aaeec84d",
+      "sha256": "c0f68ed9da6977adc97a791be3bb0830d301b2d27f9c635d92d6f325bffefb83",
+      "bytes": 184
+    },
+    {
+      "path": "skills/in-progress/claude-handoff/SKILL.md",
+      "gitBlob": "77f82fc59c89c3a83ed5a92521dc2869f0533724",
+      "sha256": "79357a18425d66d4c24048bedf83dceb79d3bba356f38014950f764a7fab4026",
+      "bytes": 1424
+    },
+    {
+      "path": "skills/in-progress/claude-handoff/agents/openai.yaml",
+      "gitBlob": "0a7aa5da50d0e73248fc17fb8fe82409ec071eaf",
+      "sha256": "2308a672978864633286fb9f0792b08657e501426b3f7883fc418d5d2eac5eb0",
+      "bytes": 141
+    },
+    {
+      "path": "skills/in-progress/loop-me/SKILL.md",
+      "gitBlob": "e58a474ca80feffdeb28842bc3bdee37da6510e7",
+      "sha256": "e44d1cc3e760fb86ac42964c2a5f1fcac511715db50fb375f3f7be814de1eaa7",
+      "bytes": 2522
+    },
+    {
+      "path": "skills/in-progress/loop-me/agents/openai.yaml",
+      "gitBlob": "1a4f4111192ff75b4771e8a248c603994d5eafdc",
+      "sha256": "b66fa10079957051be6a812f45e55b67ac394b71d5ba88349962b4c9205802c3",
+      "bytes": 140
+    },
+    {
+      "path": "skills/in-progress/setup-ts-deep-modules/SKILL.md",
+      "gitBlob": "7e30047eaeda175de5d93886596a37baf365bb90",
+      "sha256": "29acca66ac99d4532e2a6f0370d8125d7cba1e87c9ac66573203c75189d3e6c7",
+      "bytes": 7546
+    },
+    {
+      "path": "skills/in-progress/setup-ts-deep-modules/agents/openai.yaml",
+      "gitBlob": "5d0581bdd4f9337cfb1e13feb7e1e18f43ea9db1",
+      "sha256": "159f680217d50747702620c05fd65734a152185b3219a8ca5ee4630878a354fa",
+      "bytes": 149
+    },
+    {
+      "path": "skills/in-progress/setup-ts-deep-modules/dependency-cruiser.config.cjs",
+      "gitBlob": "54030ede7d36b7f72fc0f645fa414efa9b6f63ed",
+      "sha256": "3c4973bec69f73b2117654abf9e666a7c28665b213be20e6d39869e29842428e",
+      "bytes": 3712
+    },
+    {
+      "path": "skills/in-progress/writing-beats/SKILL.md",
+      "gitBlob": "3d3b25b605491adc5c62ae5423127717a94b9632",
+      "sha256": "a96abafa2372eede8267d770138b322d6125da8adaa7ccf0a5e08e4ee13ee71e",
+      "bytes": 4855
+    },
+    {
+      "path": "skills/in-progress/writing-beats/agents/openai.yaml",
+      "gitBlob": "e8eaa188d4c70b582eed2d1775fe4c4ea3562b25",
+      "sha256": "ddaef01da61d8e3c5f482c4403033c20cf5823f08a1dbf1d4c871670831d01e2",
+      "bytes": 142
+    },
+    {
+      "path": "skills/in-progress/writing-fragments/SKILL.md",
+      "gitBlob": "c7c889b880cf9c8d289119dea5ff240641b615ca",
+      "sha256": "298b0edd23df229183630de592ed8aa4289233560f2040691f6eb77caeaad4ea",
+      "bytes": 3558
+    },
+    {
+      "path": "skills/in-progress/writing-fragments/agents/openai.yaml",
+      "gitBlob": "be3713e91e3ddc6c71e04e6b512b6ad6502d7cc8",
+      "sha256": "81167f25ee8ea1bb4b4958f12b6702ea972ad31b05e03ec91e39fa4bae0c2641",
+      "bytes": 140
+    },
+    {
+      "path": "skills/in-progress/writing-shape/SKILL.md",
+      "gitBlob": "02f2866d13e72504e010f2ad3458eb9b36b876db",
+      "sha256": "f5e6c57bdd85178ace4a260c92f46da6b64ddee18215b461d875739c68976f72",
+      "bytes": 5922
+    },
+    {
+      "path": "skills/in-progress/writing-shape/agents/openai.yaml",
+      "gitBlob": "87e0c736be148002f9db275258cd2f405643ad7b",
+      "sha256": "56de45430e23104ff178415f5ecf7821d51a9cfabd8814b1607ebf39da2ef5cd",
+      "bytes": 144
+    },
+    {
+      "path": "skills/misc/README.md",
+      "gitBlob": "6b169d22be12c078f1e70763d367fe693de342e2",
+      "sha256": "95f0b467b7f3a2bb27421c6536f35392b6846f5ad26b44ab7df00380ed02edf0",
+      "bytes": 684
+    },
+    {
+      "path": "skills/misc/git-guardrails-claude-code/SKILL.md",
+      "gitBlob": "58bcdd875b164093b95f436fa32a65c6cb5eb572",
+      "sha256": "69b291d655626a01602b998a1836fcb93c058ede68dfafddfd71e87f17074764",
+      "bytes": 2313
+    },
+    {
+      "path": "skills/misc/git-guardrails-claude-code/agents/openai.yaml",
+      "gitBlob": "3f5d756f1b9b97d94cef1473fb480ccda5fdfbc1",
+      "sha256": "d53cd783fc0ac208dec9a4c267989284384785aab6422dccdaed42f9e40243ec",
+      "bytes": 112
+    },
+    {
+      "path": "skills/misc/git-guardrails-claude-code/scripts/block-dangerous-git.sh",
+      "gitBlob": "c40b59cb47880fc9da8fe4179bd742f51f09d17d",
+      "sha256": "234922b83c0a1737ee7300806c21ac0f389b07aaeb65c2d71ccedafbc5e1ea4b",
+      "bytes": 507
+    },
+    {
+      "path": "skills/misc/migrate-to-shoehorn/SKILL.md",
+      "gitBlob": "ae4f965e204fc93cedbc4e2c306e92829d93f800",
+      "sha256": "de4da4c11d924fac79c924b2ee3d2db4a5cb98386eb490a599119463d036ae72",
+      "bytes": 2795
+    },
+    {
+      "path": "skills/misc/migrate-to-shoehorn/agents/openai.yaml",
+      "gitBlob": "3bd79ee2b502075c6d1fe40e6fe98f4fe3f3c5f5",
+      "sha256": "395c2db852e66a199f1cd07f7ed92d66cb6f0787460c5475926f1a5e778b699d",
+      "bytes": 110
+    },
+    {
+      "path": "skills/misc/scaffold-exercises/SKILL.md",
+      "gitBlob": "d87df28e7d8abb4e57ecc6e47d71c274d16054c7",
+      "sha256": "75f5c9d771606fb9762f16522efc954df11c324f87148d8ff069bce166257de9",
+      "bytes": 3589
+    },
+    {
+      "path": "skills/misc/scaffold-exercises/agents/openai.yaml",
+      "gitBlob": "963723a58973effa256cbfe0f23a7bcc03a374b8",
+      "sha256": "525b33913340bea7947ad2de17f2a7c5fb94be543345fe80ae753b9a44ba601d",
+      "bytes": 108
+    },
+    {
+      "path": "skills/misc/setup-pre-commit/SKILL.md",
+      "gitBlob": "1b9708168263067adb4684d06ebb8f4ccfe9682c",
+      "sha256": "c9819d7f1e3b198064edc1faa3154224ed67395e9f07f5d3cea4b67cf0a11a98",
+      "bytes": 2258
+    },
+    {
+      "path": "skills/misc/setup-pre-commit/agents/openai.yaml",
+      "gitBlob": "e5a1c63df9e0703893cdad799bd5e2a6b5e6939d",
+      "sha256": "acf41db398c5c43afe504008bb7d615a97b6498b0f1f6c5b2395254c0bfb57d1",
+      "bytes": 99
     },
     {
       "path": "skills/productivity/README.md",

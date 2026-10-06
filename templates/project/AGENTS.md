@@ -42,21 +42,23 @@ Data: <synthetic only | staff/asset data | other>. **Patient or health data is n
 ## Scope fences: never touch without asking
 - `<database/migrations/*>` (existing files), production config, `.env*`, `deploy/`, backups.
 - `<packages/domain/*>` rules about <fiscal year | money | ...>: read `docs/decisions/` first.
-- Existing tests: do not edit, skip, or delete (except the new tests of the current ticket).
+- Existing tests: follow the central policy and this ticket's authorized scope; never skip or weaken checks to get green.
 - Anything outside the current ticket. Log it in BACKLOG.md instead.
 
-## Global rules
-Hard stops, triage, push policy (feature branch + PR allowed; merge/main/deploy = ask), retry limit (2), definition of done and report format: `D:\ai-playbook\instructions\core.md` (not loaded automatically: paste the parts you want into this file, or tell the agent to read it). Project-specific additions only:
+## Shared policy
+Playbook root: <absolute checkout path; replace before use>
+
+Read instructions/core.md and instructions/working-style.md from that root when this project has opted into the playbook. They own scope, approval, privacy, verified candidate SHA, checkpoints and reporting. These are instructions, not installed enforcement. Project-specific additions only:
 - Project DoD extras: `<npm run verify>` green (and `verify:db` if DB touched); docs updated if behavior, commands or config changed (RUN.md / HANDOVER.md / ADR / CHANGELOG).
 
-## Overrides for installed third-party skills
-Some Matt Pocock skills act without asking. In this repo the global rules win over them:
-- `to-spec`, `to-tickets`, `wayfinder`, `triage`: draft issues and labels, show them, and publish them (or apply `ready-for-agent`) only after the user says yes. Never mark an issue touching personal data, auth or migrations `ready-for-agent`.
-- `diagnosing-bugs`: for a bug in shipped behaviour (P2), stop after reproduce + diagnosis and draft the ticket; fix only inside an approved ticket or `/ship`.
+## Matt workflow and project additions
+Use `ask-matt` → `grill-with-docs` (with `research`/`prototype` as needed) → `to-spec` → `to-tickets` → `implement` per ticket or `implement-spec` for the task graph → `tdd` → `code-review` → `pr` → `retro`. Keep Matt's names and invocation roles. Core policy applies throughout; project additions:
+- `to-spec`, `to-tickets`, `wayfinder`, `triage`: draft tracker changes first and publish within the user's authorization. Do not ask again for an already approved concrete change. An issue awaiting approval for personal data/auth/migration is not `ready-for-agent`.
+- `diagnosing-bugs`: for a bug in shipped behaviour (P2), stop after reproduce + diagnosis and draft the ticket; fix only inside the approved scope with `implement`/`tdd`.
 - `tdd`: take the test seams from the ticket's acceptance criteria instead of asking the user to confirm them.
 - `code-review`: report findings as BLOCKER / SHOULD-FIX / COULD-FIX; at most 2 fix rounds.
 - `prototype`: scratch databases must be local (Docker or SQLite), never a shared or real one.
-- Session handoff: use `handoff-pack` (committed `STATE.md` + `HANDOFF.md`), not `handoff` (writes to a temp folder).
+- `handoff`: keep Matt's portable summary, with committed `STATE.md` + `HANDOFF.md` under the central checkpoint policy before switching harness or directory.
 
 ## Constraints
 <!-- Confirmed external constraints only (who confirmed, date). Prompt 01-E reads this section. Delete rows that do not apply. -->
@@ -66,9 +68,9 @@ Some Matt Pocock skills act without asking. In this repo the global rules win ov
 - Other: <budget, deadlines, vendor limits>
 
 ## Where state lives
-- Current phase, ticket, next action: `STATE.md` (update at the end of every session).
+- Current phase, task/ticket or integration task graph, verified SHA, evidence, authorization and next action: `STATE.md` (update at the end of every session).
 - Ideas and feedback inbox: `BACKLOG.md` (agent appends P5/P6 rows directly). Approved work: GitHub Issues (`<owner/repo>`, use `gh`; agent drafts, creates after approval) <or BACKLOG rows with Triage = now if no Issues>.
-- Handoff between sessions/tools: committed `STATE.md` + `HANDOFF.md` on the feature branch (`wip: handoff`), via `/handoff-pack`.
-- Decisions: `DECISIONS.md` <or `docs/decisions/` ADRs>. Domain terms: `CONTEXT.md/GLOSSARY.md`.
+- Handoff between harnesses/directories: Matt `handoff` plus committed `STATE.md` + `HANDOFF.md` on the task branch, following core checkpoint policy. The receiver verifies branch, SHA, working tree and evidence before continuing.
+- Decisions: `DECISIONS.md` <or `docs/decisions/` ADRs>. Domain terms: `GLOSSARY.md`.
 - Run locally: `RUN.md`. Handover to hospital IT: `HANDOVER.md`.
 - Before starting: read STATE.md, then the ticket, then only the docs it points to.

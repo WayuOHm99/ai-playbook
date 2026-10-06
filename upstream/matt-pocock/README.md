@@ -1,17 +1,12 @@
-# Matt Pocock reference snapshot
+# Matt Pocock source snapshot
 
-Checked 2026-10-06. Latest published release: [v1.3.1](https://github.com/mattpocock/skills/releases/tag/v1.3.1), release commit `24fe0ef7737efae15c87225755e9f6f5965e4888`. This snapshot also includes subsequent main fixes, pinned to [2b47ffcf](https://github.com/mattpocock/skills/tree/2b47ffcf2385995a536e43ddc9226e32cf9793d9). The upstream package still calls itself 1.3.1; this is not the tag's exact tree.
+Checked: **2026-10-06 (Asia/Bangkok)**. Repository-only source import; no installation, dependency or automation execution.
 
-`source/` preserves the upstream bytes for 27 Engineering/Productivity skills, companion files, LICENSE and CHANGELOG: 83 files. Experimental/misc skills, package dependencies, installer/plugin registration and repository automation are excluded. MIT attribution and `pr/CREDITS.md` are retained. `manifest.json` records the source commit, inventory, SHA256 and Git blob hashes.
+- Source: [mattpocock/skills](https://github.com/mattpocock/skills/tree/6fd947921b935b7e1e69293a200400f0fdd5c15f), commit `6fd947921b935b7e1e69293a200400f0fdd5c15f`.
+- Latest published/package version checked: [v1.3.1](https://github.com/mattpocock/skills/releases/tag/v1.3.1), tag commit `24fe0ef7737efae15c87225755e9f6f5965e4888`. This snapshot includes later main fixes; it is not the release tag's exact tree.
+- [AI Hero catalogue](https://www.aihero.dev/skills): 27 main skills. All 27 are active adapters under this repo's skills tree. Seven in-progress and four misc skills are reference only. The source inventory contains **38 skills / 109 files** including LICENSE/CHANGELOG and sibling references/templates.
+- Source is MIT; [original notice](source/LICENSE) and original credits remain. Root installer/package dependencies/CI/plugin automation are excluded.
 
-Run from this playbook checkout:
+[manifest.json](manifest.json) records categories, commit, file bytes, Git blobs and SHA-256. `.gitattributes` disables text conversion for raw source. `node scripts/check-matt-snapshot.mjs` checks inventory/integrity without executing upstream files. Updates freeze a new reviewed commit and deliberately rebase local adjustments; do not overwrite active skills blindly.
 
-```powershell
-node scripts/check-matt-snapshot.mjs
-```
-
-The checker reads files only and detects inventory/byte drift against the recorded manifest. Hash agreement is not a security audit or proof of trustworthy instructions. Source files are reference data; they are outside the playbook's installed `skills/` root and are not registered or synchronized. The Bash templates remain inert unless someone explicitly copies/runs them.
-
-Use the [adaptation guide](../../setup/matt-pocock-adaptation.md) to choose a discipline and apply project/core overrides. The five owned skills carry the actual changes. Installed skills and older project glossaries are unchanged. New projects using this source follow `GLOSSARY.md`; migrate existing projects only under their own approved ticket.
-
-To refresh later, read upstream changes, pin a new commit, review included files and update the manifest in a reviewed PR. Do not run an unscoped installer/update command as part of refreshing this reference.
+Raw source is reference data. Only intentionally selected main adapters and their bound policy are the runtime workflow. Experimental entries may contain external messaging, provisioning or history instructions; storing their source grants no execution permission. [Adaptation reasons](../../setup/matt-pocock-adaptation.md) and [workflow evidence](../../evals/workflow-trial-2026-10-06.md) describe the local changes and their limits.

@@ -200,7 +200,7 @@ Variant B: `src/`(Vite) `worker/src/index.ts` `shared/`(zod schema + api-contrac
 
 ```
 เริ่มโปรเจกต์ใหม่บน cloud (ไม่ใช่ข้อมูลโรงพยาบาล) ตาม D:\ai-playbook\stacks\cloud-web.md
-อ่าน D:\ai-playbook\instructions\core.md, stacks\cloud-web.md, me\pitfalls.md ก่อน แล้วตอบเป็นภาษาไทย
+อ่าน D:\ai-playbook\instructions\core.md และ stacks\cloud-web.md เป็น reference ใช้ grill-with-docs + research เพื่อระบุ constraints และเลือก stack แล้วตอบเป็นภาษาไทย
 ยังไม่เขียนโค้ด ยังไม่ deploy ยังไม่สร้างบัญชี/โปรเจกต์บน Vercel/Supabase/Cloudflare
 
 1. ไอเดีย 1-2 ประโยค: [..]  ผู้ใช้: [ใคร กี่คน]  tier เป้าหมาย: [1/2/3]

@@ -1,6 +1,0 @@
-interface:
-  display_name: "Ship"
-  short_description: "Take one approved ticket to an open PR"
-  default_prompt: "Use $ship to take issue #<n> to an open pull request."
-policy:
-  allow_implicit_invocation: false

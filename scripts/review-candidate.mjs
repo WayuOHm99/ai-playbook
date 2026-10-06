@@ -1,4 +1,4 @@
-// Read-only Git snapshot for /ship. This checks identity/cleanliness, not the review verdict or tests.
+// Read-only Git snapshot for Matt code-review and delivery. This checks identity/cleanliness, not the review verdict or tests.
 // Capture: node scripts/review-candidate.mjs --base origin/main
 // Before push: node scripts/review-candidate.mjs --base <saved-base-SHA> --expect <reviewed-candidate-SHA>
 import { execFileSync } from 'node:child_process';

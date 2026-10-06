@@ -1,5 +1,8 @@
 # 12 - Installed skills vs upstream, and lifecycle-core quality review
 
+> **Retired workflow references (2026-10-06):** This research is a dated record, not an active procedure. References to the old five owned workflows, installed inventories, commands or configuration describe the earlier review only. The current 27-skill Matt flow is in [lifecycle](../playbook/lifecycle.md), [adaptation](../setup/matt-pocock-adaptation.md) and [source record](../setup/skills-lock.md). Personal-note sources and automatic reads were disconnected; use only evidence authorized for the current task.
+
+
 Date: 2026-10-02 (the task said 2026-10-01; the session clock rolled over). Status: COMPLETE (sections 1-5).
 Tiers: T1 official vendor, T2 respected practitioner or high-adoption repo (an author's own repo counts as primary for itself), T3 other.
 

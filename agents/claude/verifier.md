@@ -1,6 +1,6 @@
 ---
 name: verifier
-description: Proves a change works in the running app and captures evidence. Use only when a playbook skill (such as ship) delegates to it or the user asks for the verifier agent by name; do not delegate to it on your own initiative.
+description: Proves a change works in the running app and captures evidence. Use only when a playbook skill (such as code-review) delegates to it or the user asks for the verifier agent by name; do not delegate to it on your own initiative.
 tools: Read, Grep, Glob, Bash, PowerShell
 model: sonnet
 effort: high

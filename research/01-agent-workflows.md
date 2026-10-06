@@ -1,5 +1,8 @@
 # 01 - Agent Workflows: how top engineers work with coding agents (as of 2026-09-30)
 
+> **Retired workflow references (2026-10-06):** This research is a dated record, not an active procedure. References to the old five owned workflows, installed inventories, commands or configuration describe the earlier review only. The current 27-skill Matt flow is in [lifecycle](../playbook/lifecycle.md), [adaptation](../setup/matt-pocock-adaptation.md) and [source record](../setup/skills-lock.md). Personal-note sources and automatic reads were disconnected; use only evidence authorized for the current task.
+
+
 Scope: research backbone for a solo developer (Thai hospital internal web systems) using Claude Code + Codex, Matt Pocock skills installed, agents run in bypass-permissions mode.
 
 Conventions used in this file

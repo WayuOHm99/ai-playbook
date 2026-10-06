@@ -1,72 +1,25 @@
-# 🧭 เริ่มที่นี่: เจอสถานการณ์ไหน → ทำอะไร
+# เริ่มที่นี่
 
-> ไม่รู้จะทำอะไรต่อ ให้เปิดไฟล์นี้ก่อน หาแถวที่ตรงกับสถานการณ์ แล้วก๊อป prompt ไปใช้
-> คลังนี้ไม่ตั้งค่าอะไรให้ agent เองเบื้องหลัง ทุกอย่างในตารางทำงานเมื่อคุณพิมพ์ `/สกิล` หรือก๊อป prompt ไปวางเอง
-> ถ้าอยากให้ agent ทำตามกฎของคลังในแชทไหน ให้พิมพ์ว่า "อ่าน D:\ai-playbook\instructions\core.md แล้วทำตาม"
+จำชื่อเดียว: **`ask-matt`** ให้ช่วยเลือกเส้นทางและขั้นถัดไปตามสถานการณ์ สกิลนี้แนะนำให้คุณเรียกสกิล User-invoked ต่อเอง
 
-## ถ้าจำอะไรไม่ได้เลย ให้จำคำสั่งเดียว
+Claude ใช้ `/ชื่อ` และ Codex ใช้ `$ชื่อ` เมื่อรุ่นนั้นลงทะเบียนแล้ว หากใช้จาก checkout โดยตรงให้ระบุ `Playbook root: <absolute checkout>` และขอให้อ่านไฟล์จาก [catalogue](skills/catalog.json) การเปลี่ยนใน repo ไม่อัปเดตสกิลในเครื่องอัตโนมัติ
 
-```
-/new-request <พิมพ์สิ่งที่อยากได้ / บั๊ก / feedback / ไอเดีย ตามที่คิดได้เลย>
-```
-
-Agent จะคัดแยกให้ว่าเป็นงานประเภทไหน ต้องทำเลยหรือเก็บไว้ก่อน และจะบอกขั้นถัดไปให้เอง
-
-> **ใน Codex ให้พิมพ์ `$` แทน `/`** เช่น `$new-request`, `$ship`, `$handoff-pack`, `$retro`, `$choose-stack` สกิลทุกตัวของคลังเรียกได้เฉพาะตอนพิมพ์ชื่อเอง
-
----
-
-## ตารางสถานการณ์
-
-| สถานการณ์ | ทำอะไร | สกิล / prompt | ไปอ่านต่อ |
-|---|---|---|---|
-| 🆕 **เริ่มโปรเจกต์ใหม่** / ได้ requirement มา | คุยก่อน ยังไม่ต้องเขียนโค้ด → เลือกระดับงาน → ซักถามให้ชัด → spec | `/new-request` แล้วต่อด้วย `/grill-with-docs` → `/to-spec` | `playbook/lifecycle.md` ขั้น 0–4, `prompts/01-start-project.md` |
-| 🧱 **ตั้งค่าโปรเจกต์ครั้งแรก** | ก๊อปเทมเพลต ตอบ setup ครั้งเดียวจากไฟล์ที่ตอบไว้แล้ว | `/setup-matt-pocock-skills` + `setup/matt-pocock-setup-answers.md` | `templates/project/README.md` |
-| 🛠 **เลือก tech stack / เครื่องมือ** | agent วิเคราะห์ข้อจำกัดของงาน ค้นข้อมูลล่าสุด เทียบ 2–3 ตัวเลือก แนะนำพร้อมเหตุผลและแหล่งอ้างอิง แล้วบันทึก ADR โดยใช้สูตรใน `stacks/` เป็นข้อมูลอ้างอิง ไม่ใช่คำตอบตายตัว | `/choose-stack` | `stacks/README.md` |
-| 📋 **spec เสร็จแล้ว จะเริ่มทำ** | แตกเป็น ticket ย่อยที่ตรวจได้ทีละชิ้น | `/to-tickets` | lifecycle ขั้น 7 |
-| ▶️ **ทำงานต่อ** ("ทำต่อ") | agent อ่าน `STATE.md` แล้วทำ **ขั้นถัดไปขั้นเดียว** ของแผนเดิม | prompt 02-A | `prompts/02-daily-work.md` |
-| 🚀 **ทำ ticket นี้ให้จบในคำสั่งเดียว** | branch ใน worktree → test ที่ทำให้บั๊กเกิดซ้ำ → แก้ → ตรวจในแอปจริง → review ไม่เกิน 2 รอบ → push branch + เปิด PR → รายงาน (**ต้องพิมพ์ `/ship` เอง** agent ไม่เรียกเองอัตโนมัติ เพราะมีการ push) | `/ship #<เลข issue>` | `skills/ship/SKILL.md` |
-| 🐞 **เจอบั๊ก** | ทำให้เกิดซ้ำด้วย test ก่อน แล้วค่อยแก้ | `/new-request` (บั๊ก) → `/diagnosing-bugs` | `prompts/03-bugs.md` |
-| 🔥 **ระบบจริงล่ม / ข้อมูลหาย / ข้อมูลรั่ว** | หยุดทุกอย่าง กู้ระบบก่อน แก้ทีหลัง ห้าม agent แตะ production เอง | prompt 03-D | `playbook/triage.md` P0 |
-| 💬 **มี feedback จากผู้ใช้** | แยกก่อน: ไม่ตรง spec (เป็นบั๊ก) หรือเปลี่ยนความต้องการ (ต้องแก้ spec) | `/new-request` | `prompts/04-change-requests.md` |
-| 💡 **มีไอเดีย / อยากเพิ่มฟีเจอร์** กลางคัน | **ยังไม่ทำ** จดลง `BACKLOG.md` แล้วทำงานเดิมต่อ | `/new-request` | `playbook/triage.md` P5 |
-| 🌍 **"อยากให้ระดับโลก" / หาตัวอย่างจากเว็บดังๆ** | ค้นจากแหล่งที่เชื่อถือได้ แล้วแปลงเป็นเกณฑ์ที่ตรวจได้ไม่เกิน 5 ข้อ | `/research` | `prompts/06-research.md` |
-| 🔍 **ตรวจทั้งระบบ หาช่องโหว่ / บั๊ก** | ตรวจแบบอ่านอย่างเดียว ได้รายงานเรียงตามความสำคัญ แล้วแตกเป็น ticket | prompt 05-A, 05-C (Claude มี `/security-review` ในตัว; Codex ใช้ prompt 05-C) | `prompts/05-review-audit.md` |
-| 👀 **อยากให้ agent อีกตัวตรวจงาน** | ใช้ reviewer ที่ไม่ได้เขียนโค้ดนั้น ไม่ต้องก๊อปรายงานส่งต่อเอง | `/code-review` หรือ sub-agent `reviewer` | `prompts/05-review-audit.md` |
-| 🔁 **สลับ Claude ↔ Codex / โควตาใกล้หมด / จะ /clear** | บันทึกสถานะลงไฟล์ก่อน ตัวใหม่อ่านจากไฟล์ต่อได้เลย | `/handoff-pack` | `prompts/07-handoff-delivery.md` |
-| 🤔 **ไม่แน่ใจว่าแผนนี้ดีไหม / กลัวพลาด** | ให้ agent แย้ง หาจุดอ่อน สมมติว่าพังแล้วไล่หาสาเหตุ | prompt 08-A / 08-B / 08-C | `prompts/08-critique.md` |
-| 🚢 **จะ deploy** | ทำ checklist, backup, แผนถอยกลับ แล้ว **คุณ** เป็นคนกด deploy | prompt 07-C | lifecycle ขั้น 11 |
-| 🎓 **ใกล้จบฝึกงาน / ส่งมอบให้ฝ่าย IT** | ทำ `HANDOVER.md` แล้วให้ agent ตัวใหม่ลองทำตามคู่มือเพื่อหาจุดที่ติด | prompt 07-D | `templates/project/HANDOVER.md` |
-| 🧹 **สิ้นวัน / พักงาน** | บันทึกสถานะลง `STATE.md` + `HANDOFF.md` แล้ว commit ให้พรุ่งนี้เริ่มต่อได้ทันที | `/handoff-pack` หรือ prompt 07-B | `prompts/07-handoff-delivery.md` |
-| 🔁 **จบ ticket / จบสัปดาห์: เรียนรู้จากที่ทำมา** | agent อ่านแชทล่าสุด (ปิดบังรหัสก่อน) เสนอบทเรียนไม่เกิน 3 ข้อพร้อมหลักฐาน คุณอนุมัติก่อนบันทึก | `/retro` | `skills/retro/SKILL.md` |
-
----
-
-## กติกา 5 ข้อที่ต้องจำ (จากประวัติแชทของคุณเอง)
-
-1. **ไอเดียใหม่ = จดลง BACKLOG ไม่ใช่ทำทันที** งานบานส่วนใหญ่มาจากคำว่า "เพิ่มอันนี้ด้วย"
-2. **"ระดับโลก" ต้องแปลงเป็นเกณฑ์ที่ตรวจได้ไม่เกิน 5 ข้อ** ถ้าไม่แปลง งานจะไม่มีวันเสร็จ
-3. **อนุมัติ 2 ครั้งพอ:** ตอนอนุมัติแผน/spec และตอนรับงาน/merge ระหว่างนั้นปล่อยให้ agent ทำ
-4. **ไม่ต้องก๊อปข้อความส่งต่อระหว่าง agent** ให้ส่งต่อผ่านไฟล์ `STATE.md` และ handoff แทน
-5. **ห้ามพิมพ์รหัสผ่าน / API key ลงแชท** ให้ตั้งเป็น env var แล้วบอก agent แค่ชื่อตัวแปร
-
-## จุดที่ agent ต้องหยุดถามคุณก่อนเสมอ
-merge PR / push เข้า `main` · deploy · ฐานข้อมูลที่ไม่ใช่ในเครื่อง · migration · ลบข้อมูล/branch · secret หรือ `.env` · เพิ่ม/อัปเกรด dependency · แก้ CI/hooks/สิทธิ์ · แก้ test เดิม · login/สิทธิ์/ข้อมูลส่วนบุคคล · ส่งอะไรออกนอกเครื่อง (ยกเว้น push branch ของงานไปที่ repo ของโปรเจกต์)
-นอกเหนือจากนี้ agent ทำเองได้จน push branch และเปิด PR — รายการเต็มและเป็นต้นฉบับอยู่ใน `instructions/core.md` (Hard stops)
-
-> ตัวกันคำสั่งอันตรายของคลัง **ไม่ได้ติดตั้งแล้ว** (ถอดออกเมื่อ 2026-10-05) รายการด้านบนจึงเป็นกติกาที่ agent จะทำตามเมื่อคุณเรียกสกิล ไม่มี playbook guard บล็อกให้อัตโนมัติ ดู [สถานะและวิธีเปิด guard ด้วยตัวเอง](guardrails/README.md)
-
-## แผนที่คลัง
-
-| โฟลเดอร์ | มีอะไร |
+| สถานการณ์ | เส้นทางที่แนะนำ |
 |---|---|
-| `playbook/` | วงจรงาน 0–13 ขั้น, กติกาคัดแยกงาน |
-| `prompts/` | prompt ภาษาไทยพร้อมใช้ 34 แบบ |
-| `stacks/` | สูตร stack 5 แบบพร้อมเวอร์ชันที่ตรวจแล้ว |
-| `templates/project/` | ไฟล์ตั้งต้นของทุกโปรเจกต์ |
-| `skills/` | สกิลของคลัง 5 ตัว: `new-request`, `ship`, `handoff-pack`, `retro`, `choose-stack` |
-| `agents/` | sub-agents: reviewer, researcher, verifier |
-| `guardrails/` | ตัวกันคำสั่งอันตรายที่เปิดใช้เองได้; ปัจจุบันไม่ได้ติดตั้ง |
-| `me/` | โปรไฟล์ จุดพลาดบ่อย และสิ่งที่ได้ผล |
-| `research/` | ข้อมูลอ้างอิงพร้อมแหล่งที่มา |
-| `setup/` | คำตอบ setup สำเร็จรูป และข้อเสนอคัดสกิล |
+| ตั้ง repo สำหรับ Matt ครั้งแรก | `setup-matt-pocock-skills` + [คำตอบตั้งต้น](setup/matt-pocock-setup-answers.md) |
+| มีไอเดียใหม่/requirement | `ask-matt` → `grill-with-docs` → `to-spec` → `to-tickets` |
+| เลือก stack/ข้อเท็จจริงยังไม่ชัด | `research` → `grill-with-docs`; ใช้ [constraints/feasibility](stacks/README.md) ก่อน ADR |
+| ต้องเห็นของจริงเพื่อตัดสินใจ | `prototype` ตอบคำถามเดียว แล้วนำผลกลับเข้า spec |
+| ticket พร้อมทำ | `implement` ใช้ `tdd` และ `code-review`; ทั้ง spec/task graph ใช้ `implement-spec` |
+| incoming bug/feedback | `triage` → brief พร้อมทำ; บั๊กยากใช้ `diagnosing-bugs` |
+| ไอเดียเพิ่มกลาง ticket | append BACKLOG แล้วทำ ticket เดิมต่อ |
+| งานใหญ่ยังไม่รู้ทาง | `wayfinder` → `to-spec` เมื่อ decision map ชัด |
+| ตรวจ diff/จะส่ง PR | `code-review` กับ committed candidate → `pr` หลังผ่าน gate |
+| เปลี่ยน agent/พักงาน | `handoff` พร้อม committed STATE/HANDOFF และสถานะ push/access |
+| เรียนรู้หลังจบงาน | `retro` จาก conversation/summary ที่อนุญาต; exported history ผ่าน human review |
+| อธิบายยังไม่เข้าใจ | `wait-what` |
+| deploy/ส่งมอบ IT | [prompt ส่งมอบ](prompts/07-handoff-delivery.md) + [templates](templates/project/README.md); สิทธิ์ตาม core |
+
+วิธีสื่อสารและขอบเขตการอนุมัติอยู่ที่ [core](instructions/core.md) และ [working style](instructions/working-style.md) การอนุมัติเดิมใช้ต่อในขอบเขตเดิมได้ ผลทดสอบต้องแยกสิ่งที่ผ่าน สิ่งที่ยังไม่ครบ และสิ่งที่ไม่ได้ทดสอบ
+
+ดู [รายชื่อ 27 สกิล](skills/README.md), [วงจรงาน](playbook/lifecycle.md), [เหตุผลการย้าย](setup/matt-pocock-adaptation.md) และ [ผลทดสอบ](evals/workflow-trial-2026-10-06.md) โครงสร้างนี้คงไฟล์ส่วนตัวไว้แต่ไม่มีการอ่านหรือเชื่อมโยงจาก workflow

@@ -31,7 +31,7 @@ try {
   const names = new Set();
   for (const file of manifest.files) {
     requireValue(typeof file.path === 'string' && !file.path.split('/').some(part => !part || part === '.' || part === '..') && !file.path.includes('\\')
-      && (/^skills\/(engineering|productivity)\/[a-z0-9/_.-]+$/i.test(file.path) || ['LICENSE', 'CHANGELOG.md'].includes(file.path)), 'Invalid snapshot file path');
+      && (/^skills\/(engineering|productivity|in-progress|misc)\/[a-z0-9/_.-]+$/i.test(file.path) || ['LICENSE', 'CHANGELOG.md'].includes(file.path)), 'Invalid snapshot file path');
     requireValue(!names.has(file.path), 'Duplicate inventory path'); names.add(file.path);
     const data = readFileSync(join(source, file.path));
     const blob = createHash('sha1').update(Buffer.from(`blob ${data.length}\0`)).update(data).digest('hex');
@@ -39,13 +39,17 @@ try {
   }
   requireValue(JSON.stringify(actualFiles) === JSON.stringify([...names].sort()), 'Missing or unexpected snapshot files');
   const skillPaths = [...names].filter(path => path.endsWith('/SKILL.md')).sort();
-  requireValue(manifest.skillCount === 27 && JSON.stringify(manifest.skills.map(skill => skill.path).sort()) === JSON.stringify(skillPaths), 'Invalid published-skill inventory');
+  requireValue(manifest.skillCount === 38 && manifest.primarySkillCount === 27 && manifest.referenceSkillCount === 11
+    && JSON.stringify(manifest.skills.map(skill => skill.path).sort()) === JSON.stringify(skillPaths), 'Invalid source-skill inventory');
   const skillNames = new Set();
   for (const skill of manifest.skills) {
+    requireValue(['engineering', 'productivity', 'in-progress', 'misc'].includes(skill.category)
+      && skill.path.split('/')[1] === skill.category, 'Invalid skill category');
     const content = readFileSync(join(source, skill.path), 'utf8');
     requireValue(content.startsWith('---\n') && content.match(/^name:\s*(.+)$/m)?.[1] === skill.name && !skillNames.has(skill.name), 'Invalid skill name/frontmatter');
     skillNames.add(skill.name);
   }
+  requireValue(manifest.skills.filter(s => ['engineering','productivity'].includes(s.category)).length === 27, 'Invalid primary-skill count');
   console.log(JSON.stringify({ status: 'pass', sourceCommit: manifest.sourceCommit, packageVersion: manifest.packageVersion, skills: manifest.skillCount, files: manifest.fileCount, installed: false }));
 } catch (error) {
   console.error(error.code ? `Snapshot check failed (${error.code})` : error.message);

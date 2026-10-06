@@ -1,5 +1,8 @@
 # 05 - Skills Inventory (Claude Code / Codex / Cursor / project-local)
 
+> **Retired workflow references (2026-10-06):** This research is a dated record, not an active procedure. References to the old five owned workflows, installed inventories, commands or configuration describe the earlier review only. The current 27-skill Matt flow is in [lifecycle](../playbook/lifecycle.md), [adaptation](../setup/matt-pocock-adaptation.md) and [source record](../setup/skills-lock.md). Personal-note sources and automatic reads were disconnected; use only evidence authorized for the current task.
+
+
 Scanned 2026-09-30 on this Windows machine. Read-only scan; the scanner and table generator were PowerShell scripts in the session scratchpad (`scan.ps1`, `gen.ps1`). Hashes are the first 8 hex chars of SHA-1 over SKILL.md.
 
 ## 1. Counts
