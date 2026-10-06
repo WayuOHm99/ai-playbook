@@ -25,4 +25,6 @@ Native synthetic duration trial: ask-matt separated bug/CSV and retained KEEP; a
 
 Capture the complete committed playbook candidate against the frozen base above, then run Matt code-review's independent Standards/Spec axes on that candidate and the synthetic candidate. App worker agents reached quota; healthy ephemeral native Codex processes can provide separate read-only review contexts without changing model defaults. At most2review/fix rounds. Blockers prevent delivery; after fixes reverify/review the new SHA. Save receipts under `.scratch/matt-update/`.
 
+Round1 completed on `0abb8835d731a6343717bf400190351048c15414`: both axes found two SHOULD-FIX order inconsistencies (daily prompt review before commit; early draft PR before gate). Repaired both and rechecked catalogue/source/links/diff. Round2 must review this new committed candidate against the same frozen base; the synthetic candidate is unchanged and passed both prior axes. No third round.
+
 After review passes, run the pre-push --expect identity gate, push this feature branch, verify remote SHA and open/attach a reviewable PR. Merge/main needs approval for this new scope. Do not install or update local main. Preserve worktrees and synthetic evidence; no cleanup authorization.

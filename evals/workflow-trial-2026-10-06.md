@@ -42,3 +42,9 @@ Existing tests were not edited. Source scripts/templates were stored, not run; n
 Event/state assessment confirms completed bound-policy reads, the actual assertion before the CLI edit, the committed checkpoint, receiver verification, unchanged backlog entry, consumed handoff and exact candidate identity. Parent separately reran plain `node --test`: five passed. Independent Spec/Standards review follows on the frozen trial and playbook candidates; capture is not a verdict.
 
 The staged prompt explicitly supplies scope, seams and literals. This is a constrained synthetic CLI trial, not proof of autonomous setup/research/stack choices, every one of the 27 skills, a UI, production data, real deployment, or installed versions. Claude live testing and real history remain untested by instruction. Script fixtures/grader checks remain separate from native behavior.
+
+## Delivery review round 1 and repairs
+
+Fresh native Codex Standards and Spec contexts both reviewed playbook candidate `0abb8835d731a6343717bf400190351048c15414` against frozen base `1cce2329e99c65de8c0f7d5c6c18f8cde257e905`, and the frozen synthetic candidate above. Both executions were healthy/completed; each axis found the same two SHOULD-FIX order inconsistencies: daily prompt reviewed before committing, and implement-spec opened an early draft PR before the delivery gate. Both are repaired: verify/state/commit/capture precede review, and PR drafts stay local until the reviewed-SHA push gate. Both axes found no synthetic-spec/standards issue; that trial candidate is unchanged.
+
+Round 2 reviews the repaired committed playbook candidate against the original frozen base. Final receipts are kept outside tracked files and published with the PR; no third review round or unreviewed bookkeeping commit is implied by this report.

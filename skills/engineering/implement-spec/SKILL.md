@@ -30,7 +30,7 @@ Communication to and from subagents should be sparse. Communicate primarily thro
 
 2. (optional) Use an **exploration subagent** to conduct any exploration required by the tickets - relevant codebase files or external documentation. Ensure the exploration subagent can save files - it should save its markdown notes in a directory outside the repo, accessible by all future subagents. This lets **implementer subagents** focus on implementation rather than exploration.
 
-3. Create the integration branch. If the issue tracker closes work through PRs, or the user asks for one, open a draft PR after the first merge in step 5 (a branch with no commits ahead of main can't open one), marked as closing the spec and tickets.
+3. Create the integration branch. If the issue tracker closes work through PRs, or the user asks for one, prepare a local PR body linking the spec and tickets. Publish it only after the verified candidate gate in steps 7–8; an early draft stays local.
 
 4. Use **implementer subagents** to implement each ticket, each in its own worktree on its own branch. Each implementer subagent:
    - confirms its worktree is based on the integration branch before starting, and resets onto it if not;
@@ -41,8 +41,8 @@ Communication to and from subagents should be sparse. Communicate primarily thro
 
 6. If this changes the **frontier** of available tickets, kick off more **implementer subagents** to work on the new tickets. This allows for maximum concurrency.
 
-7. Once all tickets are complete, call the Skill tool with `code-review` on the integration branch. Fix all issues raised by the code review in a single **implementer subagent**.
+7. Once all tickets are complete, verify the integrated acceptance criteria and required checks, update tracked state, and commit all ticket/test/bookkeeping files. Capture the frozen candidate JSON and call `code-review` on that candidate. Fix review findings in a single **implementer subagent** within core's two-round limit, then reverify and review the new candidate against the original frozen base.
 
-8. If a draft PR exists, mark it ready for review. Otherwise, resolve each ticket the way the issue tracker closes work, and report the integration branch.
+8. After review passes, run core's pre-push `--expect` identity gate, push the exact reviewed candidate and verify the remote SHA. Publish the prepared PR (or update an existing one) only with delivery authorization. Report pending merge separately; resolve tickets only when the configured tracker's closure event has actually occurred. For a local tracker, record verified completion without a remote push.
 
 9. Record the integration/worker worktrees and their branches for recovery. Cleanup follows core authorization.

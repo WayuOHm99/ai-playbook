@@ -69,7 +69,7 @@
   ไม่ทำ: ทุกอย่างนอกรายการ; เจอสิ่งที่ควรทำเพิ่มให้จดลง BACKLOG.md ห้ามทำ; ไม่เพิ่ม dependency; ไม่แก้ schema/auth/migration; ไม่แก้หรือลบเทสเดิม
 ถ้าต้องแตะสิทธิ์/ข้อมูลผู้ป่วย/การเงิน หรือออกนอกรายการไฟล์ข้างบน ให้หยุดและถามก่อน; ลองวิธีเดิมที่ล้มเหลวได้ไม่เกิน 2 ครั้ง แล้วเปลี่ยนวิธีหรือหยุดรายงาน
 
-ใช้ flow ของ implement: worktree/branch ของ ticket → tdd ทีละ vertical slice ตาม seams ที่ตกลง → ตรวจเกณฑ์ในแอปจริงตามที่จำเป็น → รัน <คำสั่ง verify ของงาน> → code-review เทียบฐานที่ระบุ → commit/candidate SHA ตาม core งานแก้ข้อความหรือรูปแบบที่ไม่เปลี่ยนพฤติกรรมใช้การตรวจ diff/ผลจริง ไม่สร้างเทสที่เพียงคัดลอก implementation
+ใช้ flow ของ implement: worktree/branch ของ ticket → tdd ทีละ vertical slice ตาม seams ที่ตกลง → ตรวจเกณฑ์ในแอปจริงตามที่จำเป็น → รัน <คำสั่ง verify ของงาน> → อัปเดต tracked state → commit ทุกไฟล์ของ ticket/tests/state → capture frozen candidate JSON → code-review candidate เทียบฐาน SHA ที่บันทึก ตาม core งานแก้ข้อความหรือรูปแบบที่ไม่เปลี่ยนพฤติกรรมใช้การตรวจ diff/ผลจริง ไม่สร้างเทสที่เพียงคัดลอก implementation
 เสร็จเมื่อ
   1. เกณฑ์ตรวจรับของ ticket ทุกข้อผ่าน (แต่ละข้อมีเทสหรือขั้นตอนที่เห็นผลจริงในแอป)
   2. <npm run verify> ผ่าน แสดงผลจริงในรายงาน
