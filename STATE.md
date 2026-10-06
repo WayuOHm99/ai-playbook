@@ -1,32 +1,22 @@
 # State
 
-Updated: 2026-10-05 | Branch: `fix/retro-history-privacy` | PR: pending
+Updated: 2026-10-06 | Branch: `refactor/workflow-skills` | PR: not opened
 
-Current ticket: F8 — reduce private information entering retro analysis through explicit session selection and human review.
-Route: P2, existing extractor privacy bug. Phase: review. Next action: user reviews the PR after verification and independent review pass.
-Frozen base: `40b1d4b971245c4cab8ccaad491c032c9f9754dc` (merged PR #5).
+Current scope: replace the old five-skill backbone with Matt Pocock's latest 27 main Engineering/Productivity skills; retain experimental/misc source as reference; add the user's work style through a small central policy; keep personal notes files unchanged and disconnect all external references/automatic reads. Explicitly approved by the latest user scope and choice replies. Earlier five-skill-reduction plan is superseded.
+
+Phase: architecture/implement. Base: `1cce2329e99c65de8c0f7d5c6c18f8cde257e905` (merged PR #6). Local main stays clean at `24bc111743f6089262c208393d784bd0a276da27`; no installation/sync/local-main update.
 
 Acceptance criteria:
-- No automatic home-history discovery: require 1–5 explicit files, or use a user-supplied process summary in retro.
-- Filter supported secrets/identifiers before writing a bounded private draft; exclude unselected files, noise and tool output.
-- Omit original source filenames, session IDs and project paths from evidence; retain only generic ordinals and operational metadata.
-- Require actual human approval of the inspected draft's current digest before analysis; release refilters edits and detects changed draft/released content.
-- Prove behavior with synthetic fixtures only; preserve existing tests, installed skills/settings and the clean local main.
+- 27 primary Matt skills form the main catalogue and workflow, retaining original names and invocation roles. Experimental/misc source is clearly reference-only, not in the active catalogue.
+- Source commit and licence are pinned; personal behavior/permissions/verified-candidate/privacy protections come from one central layer with narrow skill-specific adjustments, not five competing workflows.
+- Preserve all existing personal-note files; disconnect their external links and automatic reads. New personal working rules derive from this conversation, not those notes.
+- Update entry points, templates and executable catalogue tooling consistently; keep previous tests/history truthful and label legacy eval coverage separately.
+- Verify catalogue/source integrity, retained script regressions and a synthetic native Codex workflow using the final Matt architecture. No Claude live run, real histories, dependencies or global settings.
 
-Verification evidence (2026-10-05):
-- Original extractor copied into an isolated synthetic home reproduced the bug: secrets masked, but name/HN/phone remained and an unselected session was included. `.scratch/ship-F8/baseline-result.json` and `baseline/`. No real history was read.
-- `node --test scripts/review-candidate.test.mjs scripts/lib/eval-workspace.test.mjs scripts/lib/manual-evals.test.mjs scripts/lib/manual-evals-followup.test.mjs scripts/lib/history-review.test.mjs guardrails/guard.test.mjs scripts/lib/dedupe-sessions.test.mjs`: 74/74 Node entries pass, including 17 new F8 tests. `.scratch/ship-F8/node-tests.txt`.
-- `powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/sync.test.ps1`: 14/14 pass with synthetic homes/vaults and stubbed Git/Node. `.scratch/ship-F8/sync-tests.txt`. No real sync ran.
-- Running extractor CLI acceptance: 8/8 operations have expected success/denial statuses. Selection isolation, metadata-only stdout, quoted provenance masking, no analysis before review, stale digest rejection, release refiltering and post-release modification rejection pass. `.scratch/ship-F8/app-report.json` and `verify-app.mjs`. Approval is simulated in fixtures; this does not prove real human review.
-- `node scripts/lint-skills.mjs --strict`: exit 1, exactly two expected installed-copy drift warnings for retro, zero other warnings. Retro frontmatter/version/manual-only flags, guide links and approval/metadata gates pass focused checks. `.scratch/ship-F8/lint.txt` and `contract-report.json`. Global copies remain untouched as requested.
-- `git diff --check` passes. Local main remains clean at `24bc111743f6089262c208393d784bd0a276da27`; remote base is PR #5's merge. No checkout/pull/fast-forward or skill installation.
+Current local work (not final): imported 27 main skills/83 files under `upstream/matt-pocock/source`, pinned `2b47ffcf2385995a536e43ddc9226e32cf9793d9`, manifest and byte checker. Latest queried upstream HEAD is `6fd947921b935b7e1e69293a200400f0fdd5c15f`; its only diff from that snapshot is experimental chief-of-staff. Latest published release/package is 1.3.1 (tag commit `24fe0ef7737efae15c87225755e9f6f5965e4888`). Refresh/reference import must freeze that newest commit before final delivery.
 
-Decision: prefer a short process summary; otherwise explicitly selected text goes to a new private `_inbox/` or `.scratch/` draft, the human inspects/reduces it, and only the approved digest is released. Regex filtering is best-effort. A receipt checks content integrity and CLI confirmation; it cannot authenticate a human or enforce approval outside the skill. Do not describe this as complete anonymization.
+Superseded uncommitted work: rewrote the five old SKILL.md files to shorter versions and drafted setup/matt-pocock-adaptation.md around that plan. Restore/rebuild those edits for the new architecture rather than delivering them. Existing setup/skills-lock and setup answers edits may be rewritten as appropriate. All current work belongs to this agent; no other agent has changed tracked files.
 
-Review round 1 found a BLOCKER at candidate `3bd75bc5bb8778ab889479718c3808053848955d`: structural omission did not mask selected filenames, /srv project paths or session UUIDs mentioned inside quote text. Fixed by collecting known provenance in memory before processing quotes, escaping literal values, then masking before generic redaction/truncation. A regression covers Codex metadata arriving later, Claude sessionId, path variants and regex characters in filenames; a separate test bounds provenance values. A copied frozen round-1 module reproduced all three leaks with synthetic input; current code masks all three and retains the process note. `.scratch/ship-F8/provenance-reproduction.json`. Round 2 must review the new frozen candidate before push. `.scratch/ship-F8/review-round1.md`.
+Evidence so far: `.scratch/matt-update/skills-before.json`, captured source and checksum pass. Two healthy native Codex triage-only runs using old/reduced-five-skill drafts exist under `.scratch/workflow-trial/` and `revised/`; they are superseded baselines, not proof of the final Matt architecture. Revised triage code0/completed retained KEEP and appended CSV without implementation. Initial driver had a stream-finish listener race; it was fixed using stream/promises.finished. No implementation/receiver phases have run yet. Current launcher uses native Codex executable and existing default model/auth, --ephemeral --json --sandbox workspace-write; stdout/stderr stay ignored.
 
-Limits/risks: unlabelled names, unusual formats, clinical/contextual details and combinations can remain in the private draft. Human review is required. Exact original provenance is masked at capture but deliberately not persisted; release uses the general filter, so human edits must also remove any reintroduced identifiers. Ignored drafts are not encrypted or automatically removed. Filtering may remove useful context. Output directory metadata can include a local username if the checkout is under a user folder. Filesystem checks reject ordinary links/invalid manifests but do not protect against hostile concurrent host changes. Partial release is retained for manual inspection; no automatic cleanup/overwrite.
-
-Scope fences: only extractor, its new modules/tests, retro 1.2.0 and related documentation/bookkeeping. No new dependencies, CI/hooks, auth/production systems, existing-test edits, actual personal/patient/history data, installed copies/settings or local-main updates. The old no-selection CLI flow now intentionally returns exit 2; older installs stay unchanged until separately authorized.
-
-Not tested: live retro lesson quality, real Codex/Claude histories or models, complete identifier removal, hostile concurrent filesystem mutation, or user identity verification. Claude live testing remains skipped. No new backlog item is required for these stated limits.
+Next: build the new active catalogue/central style+policy and remove old runtime routes/personal-note references, adapt recursive lint/sync without actual installation, then rerun the trial against final architecture. Finish documentation and verification, commit a frozen candidate, independent review (max2 rounds per final scope), push feature PR and attach it. No new merge authorization yet.
