@@ -11,7 +11,7 @@ const command = (command, output) => ({ type: 'item.completed', item: {
 } });
 const reads = [
   command('Get-Content D:/skills/retro/SKILL.md', '---\nname: retro\n---'),
-  command('Get-Content D:/ai-playbook/instructions/core.md', '# Agent working rules'),
+  command('Get-Content D:/ai-playbook/instructions/core.md', '# Playbook policy'),
   command('Get-Content AGENTS.md', '# Synthetic eval'),
 ];
 const message = text => ({ type: 'item.completed', item: { type: 'agent_message', text } });

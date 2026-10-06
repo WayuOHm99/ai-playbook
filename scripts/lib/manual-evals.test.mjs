@@ -11,7 +11,7 @@ const scratch = resolve('.scratch/manual-eval-tests');
 mkdirSync(scratch, { recursive: true });
 const root = mkdtempSync(join(scratch, 'run-'));
 const command = (cmd, output, exit_code = 0) => ({ type: 'item.completed', item: { type: 'command_execution', command: cmd, aggregated_output: output, exit_code } });
-const loaded = skill => [command(`Get-Content D:/skills/${skill}/SKILL.md`, `---\nname: ${skill}\n---\n# Skill`), command('Get-Content D:/ai-playbook/instructions/core.md', '# Agent working rules'), command('Get-Content AGENTS.md', '# Synthetic eval')];
+const loaded = skill => [command(`Get-Content D:/skills/${skill}/SKILL.md`, `---\nname: ${skill}\n---\n# Skill`), command('Get-Content D:/ai-playbook/instructions/core.md', '# Playbook policy'), command('Get-Content AGENTS.md', '# Synthetic eval')];
 const completed = (events = [], final = 'สรุป scope แล้วหยุด') => [...events, { type: 'item.completed', item: { type: 'agent_message', text: final } }, { type: 'turn.completed' }].map(e => JSON.stringify(e)).join('\n');
 const healthy = stdout => ({ code: 0, signal: null, timedOut: false, stdout, stderr: '' });
 const snapshot = { files: {}, head: 'baseline', branch: 'fix/eval', status: '', remotes: '', backlog: '', state: '', handoff: '', subject: '' };
@@ -209,8 +209,22 @@ test('real child exit 9 is inconclusive and timeout kills a spawned descendant',
   if (process.platform === 'win32') {
     const listing = spawnSync('tasklist.exe', ['/FI', `PID eq ${pid}`, '/FO', 'CSV', '/NH'], { encoding: 'utf8' });
     assert.equal(listing.status, 0); assert.ok(!listing.stdout.includes(`"${pid}"`), listing.stdout);
-  } else assert.throws(() => process.kill(pid, 0));
+  } else assert.ok(await posixProcessGone(pid), `descendant ${pid} is still running`);
 });
+
+// A killed orphan can stay a zombie until init reaps it, and kill(pid, 0) still succeeds on a zombie.
+// Treat "no such process" or a zombie state as terminated, polling briefly for the kill to land.
+async function posixProcessGone(pid) {
+  for (let i = 0; i < 20; i++) {
+    try { process.kill(pid, 0); } catch { return true; }
+    const state = existsSync(`/proc/${pid}/stat`)
+      ? readFileSync(`/proc/${pid}/stat`, 'utf8').replace(/^.*\)\s+/, '').charAt(0)
+      : spawnSync('ps', ['-o', 'stat=', '-p', String(pid)], { encoding: 'utf8' }).stdout.trim().charAt(0);
+    if (state === 'Z' || state === '') return true;
+    await new Promise((r) => setTimeout(r, 100));
+  }
+  return false;
+}
 
 test('manual CLI defaults to no execution, lists six cases, and grades a fake CLI JSON trace', () => {
   const cli = resolve('scripts/run-manual-evals.mjs');
@@ -220,7 +234,7 @@ test('manual CLI defaults to no execution, lists six cases, and grades a fake CL
   writeFileSync(fake, `let s=''; for await (const d of process.stdin) s+=d; if(!s.startsWith('$retro\\n')) process.exit(9); console.log(${JSON.stringify(completed(loaded('retro')))});`);
   const run = spawnSync(process.execPath, [cli, '--live', '--case', 'retro-bootstrap', '--codex-bin', fake, '--fixture-root', join(root, 'cli')], { encoding: 'utf8' });
   assert.equal(run.status, 0, run.stderr); const report = JSON.parse(run.stdout); assert.equal(report.summary.passed, 1);
-  assert.ok(!run.stdout.includes('Agent working rules')); assert.equal(report.mode, 'manual');
+  assert.ok(!run.stdout.includes('Playbook policy')); assert.equal(report.mode, 'manual');
 });
 
 test('legacy CLI is gated and every failed fake CLI job stays inconclusive', () => {
