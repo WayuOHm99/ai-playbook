@@ -5,9 +5,9 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { mkdtempSync, rmSync, symlinkSync } from 'node:fs';
+import { mkdtempSync, rmdirSync, symlinkSync, unlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
 import { scan, message } from './prompt-secret-scan.mjs';
 
 const script = fileURLToPath(new URL('./prompt-secret-scan.mjs', import.meta.url));
@@ -76,13 +76,21 @@ test('CLI exits 2 and prints no secret for a credential prompt', () => {
   assert.ok(!r.stderr.includes('Sup3r'));
 });
 
-test('CLI still runs when started through a symlinked path', (t) => {
+// Links the script's directory rather than the file: a Windows junction needs no elevated rights, while a
+// file symlink does, so the file form skipped on ordinary Windows machines. POSIX ignores the type argument
+// and creates a directory symlink. Sync installs Codex skills through junctions, so this is the real shape.
+test('CLI still runs when started through a linked directory', (t) => {
   const dir = mkdtempSync(join(tmpdir(), 'secret-scan-'));
-  t.after(() => rmSync(dir, { recursive: true, force: true }));
-  const link = join(dir, 'linked-scan.mjs');
-  try { symlinkSync(script, link); } catch { t.skip('symlinks unavailable'); return; }
-  const r = spawnSync(process.execPath, [link], { input: JSON.stringify({ prompt: BLOCK['connection URL'] }), encoding: 'utf8' });
+  const link = join(dir, 'linked');
+  // Remove the link itself, never recursively, so cleanup cannot reach the real guardrails directory.
+  t.after(() => {
+    try { rmdirSync(link); } catch { try { unlinkSync(link); } catch { /* link was never created */ } }
+    rmdirSync(dir);
+  });
+  symlinkSync(dirname(script), link, 'junction');
+  const r = spawnSync(process.execPath, [join(link, basename(script))], { input: JSON.stringify({ prompt: BLOCK['connection URL'] }), encoding: 'utf8' });
   assert.equal(r.status, 2);
+  assert.match(r.stderr, /BLOCKED by playbook secret scan/);
 });
 
 test('CLI exits 0 for a normal prompt and for malformed input', () => {
